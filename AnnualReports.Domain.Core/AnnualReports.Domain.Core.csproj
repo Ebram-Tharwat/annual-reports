@@ -30,7 +30,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,7 +49,77 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DistDbModels\DistDbModels.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DistDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DistDbModels\Gl00100.cs">
+      <DependentUpon>DistDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DistDbModels\Gl00102.cs">
+      <DependentUpon>DistDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DistDbModels\Gl10110.cs">
+      <DependentUpon>DistDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DistDbModels\Gl10111.cs">
+      <DependentUpon>DistDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DistDbModels\Gl40200.cs">
+      <DependentUpon>DistDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DistDbModels\SlbAccountSummary.cs">
+      <DependentUpon>DistDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GcDbModels\GcDbModels.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GcDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GcDbModels\Gl00100.cs">
+      <DependentUpon>GcDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GcDbModels\Gl00102.cs">
+      <DependentUpon>GcDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GcDbModels\Gl10110.cs">
+      <DependentUpon>GcDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GcDbModels\Gl10111.cs">
+      <DependentUpon>GcDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GcDbModels\Gl40200.cs">
+      <DependentUpon>GcDbModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GcDbModels\SlbAccountSummary.cs">
+      <DependentUpon>GcDbModels.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DistDbModels\DistDbModels.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DistDbModels.cs</LastGenOutput>
+    </Content>
+    <Content Include="GcDbModels\GcDbModels.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GcDbModels.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="DistDbModels\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="DistDbModels\EF.Reverse.POCO.ttinclude" />
+    <None Include="GcDbModels\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="GcDbModels\EF.Reverse.POCO.ttinclude" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

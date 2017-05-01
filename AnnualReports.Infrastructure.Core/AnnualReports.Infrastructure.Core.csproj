@@ -37,8 +37,11 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,15 +50,103 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbContexts\GcDb\GcDbContext.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GcDbContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
+    <Compile Include="Mappings\DistDb\DistDbMappings.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DistDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\DistDb\Gl00100DistDbConfiguration.cs">
+      <DependentUpon>DistDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\DistDb\Gl00102DistDbConfiguration.cs">
+      <DependentUpon>DistDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\DistDb\Gl10110DistDbConfiguration.cs">
+      <DependentUpon>DistDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\DistDb\Gl10111DistDbConfiguration.cs">
+      <DependentUpon>DistDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\DistDb\Gl40200DistDbConfiguration.cs">
+      <DependentUpon>DistDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\DistDb\SlbAccountSummaryDistDbConfiguration.cs">
+      <DependentUpon>DistDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\GcDb\GcDbMappings.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GcDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\GcDb\Gl00100GcDbConfiguration.cs">
+      <DependentUpon>GcDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\GcDb\Gl00102GcDbConfiguration.cs">
+      <DependentUpon>GcDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\GcDb\Gl10110GcDbConfiguration.cs">
+      <DependentUpon>GcDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\GcDb\Gl10111GcDbConfiguration.cs">
+      <DependentUpon>GcDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\GcDb\Gl40200GcDbConfiguration.cs">
+      <DependentUpon>GcDbMappings.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mappings\GcDb\SlbAccountSummaryGcDbConfiguration.cs">
+      <DependentUpon>GcDbMappings.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\EFRepository.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="DbContexts\GcDb\GcDbContext.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GcDbContext.cs</LastGenOutput>
+    </Content>
+    <Content Include="DbContexts\DistDb\DistDbContext.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DistDbContext.cs</LastGenOutput>
+    </Content>
+    <Content Include="Mappings\DistDb\DistDbMappings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DistDbMappings.cs</LastGenOutput>
+    </Content>
+    <Content Include="Mappings\GcDb\GcDbMappings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GcDbMappings.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DbContexts\GcDb\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="DbContexts\GcDb\EF.Reverse.POCO.ttinclude" />
+    <None Include="DbContexts\DistDb\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="DbContexts\DistDb\EF.Reverse.POCO.ttinclude" />
+    <None Include="Mappings\DistDb\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="Mappings\DistDb\EF.Reverse.POCO.ttinclude" />
+    <None Include="Mappings\GcDb\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="Mappings\GcDb\EF.Reverse.POCO.ttinclude" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AnnualReports.Domain.Core\AnnualReports.Domain.Core.csproj">
+      <Project>{fd7c757d-50b2-40c4-8321-c916c02fc334}</Project>
+      <Name>AnnualReports.Domain.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
