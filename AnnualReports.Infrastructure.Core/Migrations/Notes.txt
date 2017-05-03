@@ -1,0 +1,5 @@
+﻿Enable-Migrations -MigrationsDirectory "Migrations\AnnualReportsDb" -ContextTypeName AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb.AnnualReportsDbContext
+
+Add-Migration 'Initial' -ConfigurationTypeName ConfigurationAnnualReportsDb
+
+Update-Database -ConfigurationTypeName ConfigurationAnnualReportsDb
