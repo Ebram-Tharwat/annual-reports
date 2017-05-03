@@ -1,30 +1,34 @@
+using AnnualReports.Infrastructure.Core;
+using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
+using AnnualReports.Infrastructure.Core.DbContexts.DistDb;
+using AnnualReports.Infrastructure.Core.DbContexts.GcDb;
+using AnnualReports.Infrastructure.Core.Interfaces;
+
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(AnnualReports.Utilities.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(AnnualReports.Utilities.App_Start.NinjectWebCommon), "Stop")]
 
 namespace AnnualReports.Utilities.App_Start
 {
+    using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+    using Ninject;
+    using Ninject.Web.Common;
     using System;
     using System.Web;
 
-    using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
-    using Ninject;
-    using Ninject.Web.Common;
-
-    public static class NinjectWebCommon 
+    public static class NinjectWebCommon
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
 
         /// <summary>
         /// Starts the application
         /// </summary>
-        public static void Start() 
+        public static void Start()
         {
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
             bootstrapper.Initialize(CreateKernel);
         }
-        
+
         /// <summary>
         /// Stops the application.
         /// </summary>
@@ -32,7 +36,7 @@ namespace AnnualReports.Utilities.App_Start
         {
             bootstrapper.ShutDown();
         }
-        
+
         /// <summary>
         /// Creates the kernel that will manage your application.
         /// </summary>
@@ -61,7 +65,21 @@ namespace AnnualReports.Utilities.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            #region Db Contexts
 
-        }        
+            kernel.Bind<AnnualReportsDbContext>().ToSelf().InRequestScope();
+            kernel.Bind<DistDbContext>().ToSelf().InRequestScope();
+            kernel.Bind<GcDbContext>().ToSelf().InRequestScope();
+
+            #endregion Db Contexts
+
+            #region UOWs
+
+            kernel.Bind<IUnitOfWork<AnnualReportsDbContext>>().To<UnitOfWork<AnnualReportsDbContext>>();
+            kernel.Bind<IUnitOfWork<DistDbContext>>().To<UnitOfWork<DistDbContext>>();
+            kernel.Bind<IUnitOfWork<GcDbContext>>().To<UnitOfWork<GcDbContext>>();
+
+            #endregion UOWs
+        }
     }
 }
