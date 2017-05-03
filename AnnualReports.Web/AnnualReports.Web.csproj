@@ -304,6 +304,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AnnualReports.Domain.Core\AnnualReports.Domain.Core.csproj">
+      <Project>{fd7c757d-50b2-40c4-8321-c916c02fc334}</Project>
+      <Name>AnnualReports.Domain.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AnnualReports.Utilities\AnnualReports.Utilities.csproj">
       <Project>{015fb72d-fcd1-4589-bc94-f89228f24f8e}</Project>
       <Name>AnnualReports.Utilities</Name>
