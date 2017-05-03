@@ -50,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbContexts\AnnualReportsDb\AnnualReportsDbContext.cs" />
+    <Compile Include="DbContexts\DistDb\DistDbContext.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DistDbContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="DbContexts\GcDb\GcDbContext.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -57,6 +63,8 @@
     </Compile>
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
+    <Compile Include="Mappings\AnnualReportsDb\BarConfiguration.cs" />
+    <Compile Include="Mappings\AnnualReportsDb\FundConfiguration.cs" />
     <Compile Include="Mappings\DistDb\DistDbMappings.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
