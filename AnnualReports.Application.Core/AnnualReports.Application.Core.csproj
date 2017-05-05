@@ -55,8 +55,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\GPDynamicsFundViewModel.cs" />
     <Compile Include="AppSettings.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Contracts\Paging\PagingInfo.cs" />
     <Compile Include="Enums\ReportType.cs" />
     <Compile Include="Interfaces\IExportingService.cs" />
