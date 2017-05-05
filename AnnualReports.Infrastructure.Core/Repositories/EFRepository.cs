@@ -87,8 +87,8 @@ namespace AnnualReports.Infrastructure.Core.Repositories
         {
             int skipCount = index * size;
             var query = this.Get(filter, orderBy, includes);
-            query = skipCount == 0 ? query.Take(size) : query.Skip(skipCount).Take(size);
             total = query.Count();
+            query = skipCount == 0 ? query.Take(size) : query.Skip(skipCount).Take(size);            
             return query;
         }
 
