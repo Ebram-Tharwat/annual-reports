@@ -32,7 +32,7 @@ namespace AnnualReports.Domain.Core.GcDbModels
         [MaxLength(9)]
         [StringLength(9)]
         [Display(Name = "Actnumbr 1")]
-        public string Actnumbr1 { get; set; }
+        public string FundNumber { get; set; }
 
         [Column(@"ACTNUMBR_2", Order = 3, TypeName = "char")]
         [Required]

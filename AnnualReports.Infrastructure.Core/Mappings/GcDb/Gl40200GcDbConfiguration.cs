@@ -25,7 +25,7 @@ namespace AnnualReports.Infrastructure.Core.Mappings.GcDb
         public Gl40200GcDbConfiguration(string schema)
         {
             Property(x => x.Sgmntid).IsFixedLength().IsUnicode(false);
-            Property(x => x.Dscriptn).IsFixedLength().IsUnicode(false);
+            Property(x => x.FundDescription).IsFixedLength().IsUnicode(false);
             Property(x => x.Noteindx).HasPrecision(19,5);
         }
     }

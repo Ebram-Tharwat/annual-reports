@@ -24,7 +24,7 @@ namespace AnnualReports.Infrastructure.Core.Mappings.DistDb
 
         public Gl00100DistDbConfiguration(string schema)
         {
-            Property(x => x.Actnumbr1).IsFixedLength().IsUnicode(false);
+            Property(x => x.FundNumber).IsFixedLength().IsUnicode(false);
             Property(x => x.Actnumbr2).IsFixedLength().IsUnicode(false);
             Property(x => x.Actnumbr3).IsFixedLength().IsUnicode(false);
             Property(x => x.Actnumbr4).IsFixedLength().IsUnicode(false);

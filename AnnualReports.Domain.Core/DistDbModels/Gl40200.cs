@@ -42,7 +42,7 @@ namespace AnnualReports.Domain.Core.DistDbModels
         [MaxLength(31)]
         [StringLength(31)]
         [Display(Name = "Dscriptn")]
-        public string Dscriptn { get; set; }
+        public string FundDescription { get; set; }
 
         [Column(@"SEGCOUNT", Order = 4, TypeName = "int")]
         [Required]
