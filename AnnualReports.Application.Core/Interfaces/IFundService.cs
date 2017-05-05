@@ -1,5 +1,6 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using System;
+using System.Collections.Generic;
 
 namespace AnnualReports.Application.Core.Interfaces
 {
@@ -12,5 +13,7 @@ namespace AnnualReports.Application.Core.Interfaces
         /// <param name="dbSource">which db to sync with</param>
 
         void SyncFunds(Int16 year, DbSource dbSource);
+
+        List<Fund> GetAllFunds(Int16 year, DbSource dbSource);
     }
 }

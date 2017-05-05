@@ -3,6 +3,7 @@ using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AnnualReports.Application.Core.Services
@@ -64,6 +65,18 @@ namespace AnnualReports.Application.Core.Services
             }
 
             _uow.Commit();
+        }
+
+        public List<Fund> GetAllFunds(Int16 year, DbSource dbSource)
+        {
+            if (dbSource == DbSource.ALL)
+            {
+                return _fundsRepository.Get(null, null, t => t.MapToFund).ToList();
+            }
+            else
+            {
+                return _fundsRepository.Get(t => t.DbSource == dbSource).ToList();
+            }
         }
     }
 }
