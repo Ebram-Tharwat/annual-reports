@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnualReportsDbModels\Bar.cs" />
-    <Compile Include="AnnualReportsDbModels\DbType.cs" />
+    <Compile Include="AnnualReportsDbModels\DbSource.cs" />
     <Compile Include="AnnualReportsDbModels\Fund.cs" />
     <Compile Include="DistDbModels\DistDbModels.cs">
       <AutoGen>True</AutoGen>

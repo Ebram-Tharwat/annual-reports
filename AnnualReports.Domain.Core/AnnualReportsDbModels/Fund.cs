@@ -37,7 +37,7 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         public int? MapToFundId { get; set; }
 
         [Required]
-        public DbType Type { get; set; }
+        public DbSource DbSource { get; set; }
 
         [Required]
         [DefaultValue(true)]

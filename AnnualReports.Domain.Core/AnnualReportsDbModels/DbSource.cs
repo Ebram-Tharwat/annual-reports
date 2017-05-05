@@ -1,6 +1,6 @@
 ﻿namespace AnnualReports.Domain.Core.AnnualReportsDbModels
 {
-    public enum DbType
+    public enum DbSource
     {
         ALL = -1,
         GC = 1,
