@@ -71,11 +71,11 @@ namespace AnnualReports.Application.Core.Services
         {
             if (dbSource == DbSource.ALL)
             {
-                return _fundsRepository.Get(null, null, t => t.MapToFund).ToList();
+                return _fundsRepository.Get(t => t.Year == year, null, t => t.MapToFund).ToList();
             }
             else
             {
-                return _fundsRepository.Get(t => t.DbSource == dbSource).ToList();
+                return _fundsRepository.Get(t => t.Year == year && t.DbSource == dbSource).ToList();
             }
         }
     }
