@@ -1,5 +1,8 @@
-﻿using AnnualReports.Infrastructure.Core.Interfaces;
+﻿using System;
+using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace AnnualReports.Infrastructure.Core
 {
@@ -24,7 +27,27 @@ namespace AnnualReports.Infrastructure.Core
 
         public void Commit()
         {
-            _dbContext.SaveChanges();
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                var msg = new StringBuilder();
+
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        msg.AppendFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        msg.AppendLine();
+                    }
+                }
+
+                // ToDo: Errors should be logged.
+                var fail = new Exception(msg.ToString(), dbEx);
+                throw fail;
+            }
         }
 
         #endregion IUnitOfWork Members
