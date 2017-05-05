@@ -5,6 +5,7 @@ using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.DbContexts.DistDb;
 using AnnualReports.Infrastructure.Core.DbContexts.GcDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
+using AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Repositories.DistDb;
 using AnnualReports.Infrastructure.Core.Repositories.GcDb;
 
@@ -87,14 +88,17 @@ namespace AnnualReports.Utilities.App_Start
 
             #region Repositories
 
-            kernel.Bind<IRepository<Domain.Core.DistDbModels.Gl00100>>().To<DistDbEfRepository<Domain.Core.DistDbModels.Gl00100>>();
-            kernel.Bind<IRepository<Domain.Core.GcDbModels.Gl00100>>().To<GcDbEfRepository<Domain.Core.GcDbModels.Gl00100>>();
+            kernel.Bind<IDistDbFundRepository>().To<DistDbFundRepository>();
+            kernel.Bind<IGcDbFundRepository>().To<GcDbFundRepository>();
+
+            kernel.Bind<IRepository<Domain.Core.AnnualReportsDbModels.Fund>>().To<AnnualReportsDbEfRepository<Domain.Core.AnnualReportsDbModels.Fund>>();
 
             #endregion Repositories
 
             #region Services
 
             kernel.Bind<IGPDynamicsService>().To<GPDynamicsService>();
+            kernel.Bind<IFundService>().To<FundService>();
 
             #endregion Services
         }
