@@ -48,7 +48,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
         public virtual T OneOrDefault(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = this.GetAll();
-            if (includes.Any())
+            if (includes != null && includes.Any())
             {
                 foreach (var includeProperty in includes)
                 {
@@ -67,7 +67,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
                 query = query.Where(filter);
             }
 
-            if (includes.Any())
+            if (includes != null && includes.Any())
             {
                 foreach (var includeProperty in includes)
                 {
