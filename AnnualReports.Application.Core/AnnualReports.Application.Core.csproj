@@ -51,8 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\GPDynamicsFundViewModel.cs" />
+    <Compile Include="Interfaces\IFundService.cs" />
     <Compile Include="Interfaces\IGPDynamicsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FundService.cs" />
     <Compile Include="Services\GPDynamicsService.cs" />
   </ItemGroup>
   <ItemGroup>
