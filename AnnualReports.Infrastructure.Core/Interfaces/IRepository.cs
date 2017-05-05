@@ -43,7 +43,7 @@ namespace AnnualReports.Infrastructure.Core.Interfaces
         /// <param name="orderBy">A function to order entities.</param>
         /// <param name="includes">A lambda expression representing the path(s) to include</param>
         /// <returns>Entities as IQueryable.</returns>
-        IQueryable<T> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, IEnumerable<Expression<Func<T, object>>> includes = null);
+        IQueryable<T> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, params Expression<Func<T, object>>[] includes);
 
         /// <summary>
         ///   Gets paged entities from via optional filter, sort order, and includes.
@@ -54,7 +54,7 @@ namespace AnnualReports.Infrastructure.Core.Interfaces
         /// <param name="size"> Specified the page size </param>
         /// <returns>Entities as IQueryable.</returns>
         /// <remarks>In order to get paged entities, orderBy must be provided.</remarks>
-        IQueryable<T> Get(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, IEnumerable<Expression<Func<T, object>>> includes, out int total, int index = 0, int size = 50);
+        IQueryable<T> Get(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, out int total, int index = 0, int size = 50, params Expression<Func<T, object>>[] includes);
 
         /// <summary>
         ///   Check if there any entities with the specified filtering criteria.

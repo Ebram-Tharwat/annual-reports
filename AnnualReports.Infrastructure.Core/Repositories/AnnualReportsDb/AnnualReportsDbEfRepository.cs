@@ -1,4 +1,5 @@
-﻿using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
+﻿using System;
+using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
 
 namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
@@ -8,6 +9,16 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
         public AnnualReportsDbEfRepository(AnnualReportsDbContext dbContext)
             : base(dbContext)
         {
+            if (dbContext == null)
+                throw new ArgumentNullException("dbContext");
+
+            this._dbContext = dbContext;
         }
+
+        #region Properties
+
+        protected new AnnualReportsDbContext _dbContext;
+
+        #endregion Properties
     }
 }

@@ -58,7 +58,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             return query.FirstOrDefault(filter);
         }
 
-        public IQueryable<T> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, IEnumerable<Expression<Func<T, object>>> includes = null)
+        public IQueryable<T> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = this.GetAll();
 
@@ -83,7 +83,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             return query;
         }
 
-        public IQueryable<T> Get(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, IEnumerable<Expression<Func<T, object>>> includes, out int total, int index = 0, int size = 50)
+        public IQueryable<T> Get(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, out int total, int index = 0, int size = 50, params Expression<Func<T, object>>[] includes)
         {
             int skipCount = index * size;
             var query = this.Get(filter, orderBy, includes);
