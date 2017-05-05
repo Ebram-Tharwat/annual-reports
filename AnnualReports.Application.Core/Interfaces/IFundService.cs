@@ -1,4 +1,5 @@
-﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
+﻿using AnnualReports.Application.Core.Contracts.Paging;
+using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using System;
 using System.Collections.Generic;
 
@@ -14,6 +15,6 @@ namespace AnnualReports.Application.Core.Interfaces
 
         void SyncFunds(Int16 year, DbSource dbSource);
 
-        List<Fund> GetAllFunds(Int16 year, DbSource dbSource);
+        List<Fund> GetAllFunds(Int16 year, DbSource dbSource, PagingInfo pagingInfo = null);
     }
 }

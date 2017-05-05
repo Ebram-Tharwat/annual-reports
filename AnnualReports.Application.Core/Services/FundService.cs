@@ -1,4 +1,5 @@
-﻿using AnnualReports.Application.Core.Interfaces;
+﻿using AnnualReports.Application.Core.Contracts.Paging;
+using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
@@ -67,15 +68,37 @@ namespace AnnualReports.Application.Core.Services
             _uow.Commit();
         }
 
-        public List<Fund> GetAllFunds(Int16 year, DbSource dbSource)
+        public List<Fund> GetAllFunds(Int16 year, DbSource dbSource, PagingInfo pagingInfo = null)
         {
             if (dbSource == DbSource.ALL)
             {
-                return _fundsRepository.Get(t => t.Year == year, null, t => t.MapToFund).ToList();
+                if (pagingInfo == null)
+                    return _fundsRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.FundNumber)), t => t.MapToFund).ToList();
+                else
+                {
+                    int total = 0;
+                    var result = _fundsRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.FundNumber))
+                        , out total, pagingInfo.PageIndex, AppSettings.PageSize,
+                        t => t.MapToFund).ToList();
+                    pagingInfo.Total = total;
+                    return result;
+                }
             }
             else
             {
-                return _fundsRepository.Get(t => t.Year == year && t.DbSource == dbSource).ToList();
+                if (pagingInfo == null)
+                    return _fundsRepository.Get(t => t.Year == year && t.DbSource == dbSource
+                            , (list => list.OrderBy(t => t.FundNumber))).ToList();
+                else
+                {
+                    int total = 0;
+                    var result = _fundsRepository.Get(t => t.Year == year && t.DbSource == dbSource
+                        , (list => list.OrderBy(t => t.FundNumber))
+                        , out total, pagingInfo.PageIndex, AppSettings.PageSize,
+                        t => t.MapToFund).ToList();
+                    pagingInfo.Total = total;
+                    return result;
+                }
             }
         }
     }
