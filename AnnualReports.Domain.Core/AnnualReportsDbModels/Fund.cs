@@ -31,7 +31,7 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         public Int16 Year { get; set; }
 
         [MaxLength(10)]
-        [Required]
+        //[Required]
         public string MCAG { get; set; }
 
         public int? MapToFundId { get; set; }
