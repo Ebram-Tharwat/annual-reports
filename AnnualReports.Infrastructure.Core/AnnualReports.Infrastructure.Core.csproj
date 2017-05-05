@@ -115,6 +115,10 @@
     <Compile Include="Migrations\AnnualReportsDb\201705031925168_Initial.Designer.cs">
       <DependentUpon>201705031925168_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201705051001399_RenameFundTypeColumn.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201705051001399_RenameFundTypeColumn.Designer.cs">
+      <DependentUpon>201705051001399_RenameFundTypeColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbEfRepository.cs" />
@@ -166,6 +170,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201705031925168_Initial.resx">
       <DependentUpon>201705031925168_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705051001399_RenameFundTypeColumn.resx">
+      <DependentUpon>201705051001399_RenameFundTypeColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
