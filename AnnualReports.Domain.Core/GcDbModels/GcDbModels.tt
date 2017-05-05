@@ -211,6 +211,11 @@
     // eg. normalise names etc.
     UpdateColumn = (Column column, Table table) =>
     {
+		if (column.Name == "ACTNUMBR_1" && table.Name == "GL00100")
+            column.NameHumanCase = "FundNumber";
+
+		if (column.Name == "DSCRIPTN" && table.Name == "GL40200")
+            column.NameHumanCase = "FundDescription";
         // Example
         //if (column.IsPrimaryKey && column.NameHumanCase == "PkId")
         //    column.NameHumanCase = "Id";
