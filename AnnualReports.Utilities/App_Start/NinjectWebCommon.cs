@@ -1,8 +1,12 @@
+using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Application.Core.Services;
 using AnnualReports.Infrastructure.Core;
 using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.DbContexts.DistDb;
 using AnnualReports.Infrastructure.Core.DbContexts.GcDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
+using AnnualReports.Infrastructure.Core.Repositories.DistDb;
+using AnnualReports.Infrastructure.Core.Repositories.GcDb;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(AnnualReports.Utilities.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(AnnualReports.Utilities.App_Start.NinjectWebCommon), "Stop")]
@@ -80,6 +84,19 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IUnitOfWork<GcDbContext>>().To<UnitOfWork<GcDbContext>>();
 
             #endregion UOWs
+
+            #region Repositories
+
+            kernel.Bind<IRepository<Domain.Core.DistDbModels.Gl00100>>().To<DistDbEfRepository<Domain.Core.DistDbModels.Gl00100>>();
+            kernel.Bind<IRepository<Domain.Core.GcDbModels.Gl00100>>().To<GcDbEfRepository<Domain.Core.GcDbModels.Gl00100>>();
+
+            #endregion Repositories
+
+            #region Services
+
+            kernel.Bind<IGPDynamicsService>().To<GPDynamicsService>();
+
+            #endregion Services
         }
     }
 }
