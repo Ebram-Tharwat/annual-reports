@@ -1,6 +1,6 @@
-﻿using System;
-using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
+﻿using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
+using System;
 
 namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
 {

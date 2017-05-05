@@ -18,6 +18,7 @@ namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
         public AnnualReportsDbContext()
             : base("Name=AnnualReportsDbContext")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         public AnnualReportsDbContext(string connectionString)
