@@ -1,6 +1,6 @@
-﻿using AnnualReports.Application.Core.Contracts;
-using AnnualReports.Application.Core.Interfaces;
+﻿using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using AnnualReports.Domain.Core.Contracts;
 using AnnualReports.Infrastructure.Core.DbContexts.DistDb;
 using AnnualReports.Infrastructure.Core.DbContexts.GcDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
@@ -11,23 +11,23 @@ namespace AnnualReports.Application.Core.Services
 {
     public class GPDynamicsService : IGPDynamicsService
     {
-        private IUnitOfWork<DistDbContext> _distUow;
-        private IUnitOfWork<GcDbContext> _gcUow;
-        private IRepository<Domain.Core.DistDbModels.Gl00100> _distFundsRepo;
-        private IRepository<Domain.Core.GcDbModels.Gl00100> _gcFundsRepo;
+        private readonly IUnitOfWork<DistDbContext> _distUow;
+        private readonly IUnitOfWork<GcDbContext> _gcUow;
+        private readonly IDistDbFundRepository _distDbFundRepo;
+        private readonly IGcDbFundRepository _gcDbFundRepo;
 
-        public GPDynamicsService(IUnitOfWork<DistDbContext> distUow, IUnitOfWork<GcDbContext> gcUow, IRepository<Domain.Core.DistDbModels.Gl00100> distFundsRepo, IRepository<Domain.Core.GcDbModels.Gl00100> gcFundsRepo)
+        public GPDynamicsService(IUnitOfWork<DistDbContext> distUow, IUnitOfWork<GcDbContext> gcUow, IDistDbFundRepository distDbFundRepo, IGcDbFundRepository gcDbFundRepo)
         {
             _distUow = distUow;
             _gcUow = gcUow;
-            _distFundsRepo = distFundsRepo;
-            _gcFundsRepo = gcFundsRepo;
+            _distDbFundRepo = distDbFundRepo;
+            _gcDbFundRepo = gcDbFundRepo;
         }
 
-        public List<GPDynamicsFundViewModel> GetAllFunds(DbSource dbSource)
+        public List<GPDynamicsFundDetails> GetAllFunds(DbSource dbSource)
         {
-            var distFunds = _distFundsRepo.Get(t => t.Active == 1).Select(t => new GPDynamicsFundViewModel() { Number = t.FundNumber });
-            var gcFunds = _gcFundsRepo.Get(t => t.Active == 1).Select(t => new GPDynamicsFundViewModel() { Number = t.FundNumber });
+            var distFunds = _distDbFundRepo.GetFundDetails();
+            var gcFunds = _gcDbFundRepo.GetFundDetails();
             switch (dbSource)
             {
                 case DbSource.DIST:
