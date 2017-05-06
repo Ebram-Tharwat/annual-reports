@@ -59,10 +59,12 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Contracts\Paging\PagingInfo.cs" />
     <Compile Include="Enums\ReportType.cs" />
+    <Compile Include="Interfaces\IBarService.cs" />
     <Compile Include="Interfaces\IExportingService.cs" />
     <Compile Include="Interfaces\IFundService.cs" />
     <Compile Include="Interfaces\IGPDynamicsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BarService.cs" />
     <Compile Include="Services\ExcelExportingService.cs" />
     <Compile Include="Services\FundService.cs" />
     <Compile Include="Services\GPDynamicsService.cs" />

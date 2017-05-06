@@ -12,10 +12,12 @@ namespace AnnualReports.Application.Core.Services
     public class ExcelExportingService : IExportingService
     {
         private readonly IFundService _fundService;
+        private readonly IBarService _barService;
 
-        public ExcelExportingService(IFundService fundService)
+        public ExcelExportingService(IFundService fundService,IBarService barService)
         {
             _fundService = fundService;
+            _barService = barService;
         }
 
         public MemoryStream GetFundsTemplate(Int16 year)
@@ -31,6 +33,19 @@ namespace AnnualReports.Application.Core.Services
         }
 
         #region Funds Template
+        #region Bars Template
+        public MemoryStream GetBarsTemplate(int year)
+        {
+            string excelTemplate = GetExcelTemplate(ReportType.BarsTemplate);
+            var templateFile = new FileInfo(excelTemplate);
+            ExcelPackage package = new ExcelPackage(templateFile, true);
+
+            GenerateBarsTemplate(package, _barService.GetAllBars(year), year);
+
+            var stream = new MemoryStream(package.GetAsByteArray());
+            return stream;
+        }
+        #endregion
 
         private void GenerateFundsTemplate(ExcelPackage excelPackage, IEnumerable<Fund> reportData, Int16 year)
         {
@@ -45,6 +60,32 @@ namespace AnnualReports.Application.Core.Services
 
             distDataSheet.Cells.AutoFitColumns();
             gcDataSheet.Cells.AutoFitColumns();
+        }
+
+        private void GenerateBarsTemplate(ExcelPackage excelPackage, IEnumerable<Bar> reportData, int year)
+        {
+            var distDataSheet = excelPackage.Workbook.Worksheets[1];
+            var gcDataSheet = excelPackage.Workbook.Worksheets[2];
+
+
+            FillTemplateWithBars(reportData, year, distDataSheet);
+
+            distDataSheet.Cells.AutoFitColumns();
+            gcDataSheet.Cells.AutoFitColumns();
+        }
+
+        private void FillTemplateWithBars(IEnumerable<Bar> bars, int year, ExcelWorksheet dataSheet)
+        {
+            var index = 2; // starting index.
+            foreach (var bar in bars)
+            {
+                dataSheet.Cells["A" + index].Value = year;
+                dataSheet.Cells["B" + index].Value = bar.BarNumber;
+                dataSheet.Cells["C" + index].Value = bar.MapToBarId;
+                dataSheet.Cells["D" + index].Value = bar.DisplayName;
+                dataSheet.Cells["G" + index].Value = bar.IsActive;
+                index++;
+            }
         }
 
         private void FillTemplateWithFunds(IEnumerable<Fund> funds, Int32 year, ExcelWorksheet dataSheet)
@@ -63,6 +104,8 @@ namespace AnnualReports.Application.Core.Services
             }
         }
 
+
+
         #endregion Funds Template
 
         #region Private Methods
@@ -76,7 +119,9 @@ namespace AnnualReports.Application.Core.Services
                 case ReportType.FundsTemplate:
                     templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\FundsTemplate.xlsx";
                     break;
-
+                case ReportType.BarsTemplate:
+                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\BarsTemplate.xlsx";
+                    break;
                 default:
                     templatePath = String.Empty;
                     break;

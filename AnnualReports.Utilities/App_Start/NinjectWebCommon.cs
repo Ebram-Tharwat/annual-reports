@@ -100,6 +100,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IGPDynamicsService>().To<GPDynamicsService>();
             kernel.Bind<IFundService>().To<FundService>();
             kernel.Bind<IExportingService>().To<ExcelExportingService>();
+            kernel.Bind<IBarService>().To<BarService>();
 
             #endregion Services
         }

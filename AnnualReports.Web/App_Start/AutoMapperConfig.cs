@@ -1,4 +1,5 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using AnnualReports.Web.ViewModels.BarModels;
 using AnnualReports.Web.ViewModels.FundModels;
 using AutoMapper;
 
@@ -17,6 +18,10 @@ namespace GRis.App_Start
                 ;
 
                 #endregion Fund
+                cfg.CreateMap<Bar, BarDetailsViewModel>()
+              .ForMember(dest => dest.MapToBarId, opt => opt.MapFrom(src => src.MapToBarId == null ? src.BarNumber : src.MapToBar.BarNumber));
+                #region Bar
+                #endregion
             });
         }
     }
