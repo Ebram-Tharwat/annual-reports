@@ -1,0 +1,52 @@
+﻿@using AnnualReports.Web.ViewModels.CommonModels
+@using X.PagedList.Mvc;
+@using X.PagedList;
+
+@model IEnumerable<AnnualReports.Web.ViewModels.FundModels.FundDetailsViewModel>
+
+@{
+    ViewBag.Title = "Funds";
+    var filterViewModel = ViewBag.FilterViewModel as YearFilterViewModel;
+    var displayResults = true;
+}
+
+<h2>Funds</h2>
+
+<p>
+    @Html.ActionLink("Upload excel sheet", "Upload")
+</p>
+
+<div>
+    @using (Html.BeginForm("Index", "Funds", FormMethod.Get))
+    {
+        <div class="form-horizontal">
+            <hr />
+
+            <div class="form-group">
+                @Html.LabelFor(model => filterViewModel.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => filterViewModel.Year, new { fieldName = "year" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Filter" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (displayResults)
+{
+    Html.RenderPartial("_fundsList", Model);
+    <div>
+        @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page, year = filterViewModel.DateAsYear }))
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/plugins")
+}

@@ -1,0 +1,16 @@
+﻿@model int?
+
+@{
+    var fieldName = ViewData.TemplateInfo.HtmlFieldPrefix;
+    if (ViewData.ContainsKey("fieldName"))
+    {
+        fieldName = ViewData["fieldName"].ToString();
+    }
+
+    var initialValue = Model.HasValue ? Model.Value.ToString() : "";
+}
+
+<div class="input-group date">
+    @Html.TextBoxFor(model => model, new { @class = "form-control year-datepicker", Name = fieldName, @Value = @initialValue, @readonly = "readonly" })
+    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+</div>
