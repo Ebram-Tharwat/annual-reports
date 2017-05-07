@@ -1,0 +1,13 @@
+﻿@model HttpPostedFileBase
+
+@{
+    var fieldName = ViewData.TemplateInfo.HtmlFieldPrefix;
+    if (ViewData.ContainsKey("fieldName"))
+    {
+        fieldName = ViewData["fieldName"].ToString();
+    }
+}
+@Html.LabelFor(m => m, htmlAttributes: new { @class = "control-label col-md-2" })
+<div class="col-md-10">
+    @Html.TextBox("", ViewData.TemplateInfo.HtmlFieldPrefix + ViewData.TemplateInfo.FormattedModelValue.ToString(), new { type = "file", Name = fieldName })
+</div>

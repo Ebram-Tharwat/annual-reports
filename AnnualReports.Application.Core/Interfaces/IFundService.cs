@@ -1,6 +1,5 @@
 ﻿using AnnualReports.Application.Core.Contracts.Paging;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
-using System;
 using System.Collections.Generic;
 
 namespace AnnualReports.Application.Core.Interfaces
@@ -13,8 +12,8 @@ namespace AnnualReports.Application.Core.Interfaces
         /// <param name="year">year to compare existing data against</param>
         /// <param name="dbSource">which db to sync with</param>
 
-        void SyncFunds(Int16 year, DbSource dbSource);
+        void SyncFunds(int year, DbSource dbSource);
 
-        List<Fund> GetAllFunds(Int16 year, DbSource dbSource, PagingInfo pagingInfo = null);
+        List<Fund> GetAllFunds(int year, DbSource dbSource, PagingInfo pagingInfo = null);
     }
 }

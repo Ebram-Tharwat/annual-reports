@@ -22,7 +22,7 @@ namespace AnnualReports.Application.Core.Services
             _uow = uow;
         }
 
-        public void SyncFunds(Int16 year, DbSource dbSource)
+        public void SyncFunds(int year, DbSource dbSource)
         {
             var gpFunds = _gpDynamicsService.GetAllFunds(dbSource);
             var existedFunds = Enumerable.Empty<Fund>();
@@ -49,7 +49,7 @@ namespace AnnualReports.Application.Core.Services
                     DbSource = fund.DbSource,
                     IsActive = true,
                     DisplayName = fund.Description,
-                    Year = year,
+                    Year = (short)year,
                     MapToFundId = null
                 });
             }
@@ -68,7 +68,7 @@ namespace AnnualReports.Application.Core.Services
             _uow.Commit();
         }
 
-        public List<Fund> GetAllFunds(Int16 year, DbSource dbSource, PagingInfo pagingInfo = null)
+        public List<Fund> GetAllFunds(int year, DbSource dbSource, PagingInfo pagingInfo = null)
         {
             if (dbSource == DbSource.ALL)
             {
