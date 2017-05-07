@@ -64,14 +64,14 @@ namespace AnnualReports.Application.Core.Services
 
         private void GenerateBarsTemplate(ExcelPackage excelPackage, IEnumerable<Bar> reportData, int year)
         {
-            var distDataSheet = excelPackage.Workbook.Worksheets[1];
-            var gcDataSheet = excelPackage.Workbook.Worksheets[2];
+            var annualReportDataSheet = excelPackage.Workbook.Worksheets[1];
+            //var gcDataSheet = excelPackage.Workbook.Worksheets[2];
 
 
-            FillTemplateWithBars(reportData, year, distDataSheet);
+            FillTemplateWithBars(reportData, year, annualReportDataSheet);
 
-            distDataSheet.Cells.AutoFitColumns();
-            gcDataSheet.Cells.AutoFitColumns();
+            annualReportDataSheet.Cells.AutoFitColumns();
+            //gcDataSheet.Cells.AutoFitColumns();
         }
 
         private void FillTemplateWithBars(IEnumerable<Bar> bars, int year, ExcelWorksheet dataSheet)

@@ -20,6 +20,8 @@ namespace GRis.App_Start
                 #endregion Fund
                 cfg.CreateMap<Bar, BarDetailsViewModel>()
               .ForMember(dest => dest.MapToBarId, opt => opt.MapFrom(src => src.MapToBarId == null ? src.BarNumber : src.MapToBar.BarNumber));
+                cfg.CreateMap<BarDetailsViewModel, Bar>()
+             .ForMember(dest => dest.MapToBarId, opt => opt.MapFrom(src =>  src.MapToBarId));
                 #region Bar
                 #endregion
             });

@@ -92,6 +92,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IGcDbFundRepository>().To<GcDbFundRepository>();
 
             kernel.Bind<IRepository<Domain.Core.AnnualReportsDbModels.Fund>>().To<AnnualReportsDbEfRepository<Domain.Core.AnnualReportsDbModels.Fund>>();
+            kernel.Bind<IRepository<Domain.Core.AnnualReportsDbModels.Bar>>().To<AnnualReportsDbEfRepository<Domain.Core.AnnualReportsDbModels.Bar>>();
 
             #endregion Repositories
 

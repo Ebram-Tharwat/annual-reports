@@ -41,9 +41,25 @@ namespace AnnualReports.Application.Core.Services
             }
         }
 
+        public Bar GetByBarNumber(int barNumber)
+        {
+            return _barRepository.OneOrDefault(b => b.BarNumber == barNumber.ToString());
+        }
+
+        public List<Bar> GetByYear(int year)
+        {
+            var result = _barRepository.Get(b => b.Year == year);
+            if(result == null)
+            {
+                return null;
+            }
+            return result.ToList();
+        }
+
         public void Update(Bar entity)
         {
-            throw new NotImplementedException();
+            _barRepository.Update(entity);
+            _uow.Commit();
         }
     }
 }

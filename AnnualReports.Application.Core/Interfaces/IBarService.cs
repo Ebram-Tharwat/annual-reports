@@ -14,6 +14,7 @@ namespace AnnualReports.Application.Core.Interfaces
         void Update(Bar entity);
 
         List<Bar> GetAllBars(int year,  PagingInfo pagingInfo = null);
-
+        Bar GetByBarNumber(int barNumber);
+        List<Bar> GetByYear(int year);
     }
 }

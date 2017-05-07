@@ -21,5 +21,8 @@ namespace AnnualReports.Web.ViewModels.BarModels
 
         [Display(Name = "Map to Bar number")]
         public int MapToBarId { get; set; }
+
+        [Display(Name = "Is Active")]
+        public bool IsActive { get; set; }
     }
 }
