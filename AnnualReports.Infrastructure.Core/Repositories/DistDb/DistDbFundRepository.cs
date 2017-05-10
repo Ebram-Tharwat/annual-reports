@@ -17,16 +17,26 @@ namespace AnnualReports.Infrastructure.Core.Repositories.DistDb
         public IEnumerable<GPDynamicsFundDetails> GetFundDetails()
         {
             var query = from fund in _dbContext.Gl00100
-                        join fundDescription in _dbContext.Gl40200 on fund.FundNumber equals fundDescription.Sgmntid into fundDetails
+                        join fundDescription in _dbContext.Gl40200 on fund.FundNumber equals fundDescription.Sgmntid into
+                            fundDetails
                         from item in fundDetails.DefaultIfEmpty()
                         where fund.Active == 1 && !string.IsNullOrEmpty(item.FundDescription)
                         select new GPDynamicsFundDetails()
                         {
                             Number = fund.FundNumber,
-                            Description = (item == null) ? "" : item.FundDescription,
+                            Description = item.FundDescription,
+                            DbSource = DbSource.DIST
+                        } into fundFullDetails
+                        group fundFullDetails by fundFullDetails.Number.Substring(0, 3) into fundGroup
+                        select new GPDynamicsFundDetails()
+                        {
+                            Number = fundGroup.Key,
+                            Description = fundGroup.FirstOrDefault().Description,
                             DbSource = DbSource.DIST
                         };
 
+
+            var test = query.Distinct();
             return query.Distinct().ToList();
         }
     }
