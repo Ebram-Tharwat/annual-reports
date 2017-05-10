@@ -250,6 +250,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\FundsApiController.cs" />
     <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -279,6 +280,8 @@
     <Compile Include="ViewModels\CommonModels\Alert.cs" />
     <Compile Include="ViewModels\CommonModels\YearFilterViewModel.cs" />
     <Compile Include="ViewModels\FundModels\FundDetailsViewModel.cs" />
+    <Compile Include="ViewModels\FundModels\FundsCopyViewModel.cs" />
+    <Compile Include="ViewModels\FundModels\FundsUploadViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-datetimepicker.css" />
@@ -370,20 +373,27 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Bars\Index.cshtml" />
     <Content Include="Views\Bars\_BarsList.cshtml" />
+    <Content Include="Views\Funds\Copy.cshtml" />
     <None Include="Views\Funds\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\YearDatePicker.cshtml" />
     <Content Include="Views\Funds\_fundsList.cshtml" />
+    <Content Include="Views\Funds\Upload.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\FileUpload.cshtml" />
     <Content Include="Views\Shared\_Alerts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Uploads\Funds\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AnnualReports.Application.Core\AnnualReports.Application.Core.csproj">
       <Project>{0b2eb40b-05a9-4628-8d7c-6bdb11d501fb}</Project>
       <Name>AnnualReports.Application.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AnnualReports.Common\AnnualReports.Common.csproj">
+      <Project>{34134df7-e9eb-4c66-84d0-ed5ecad9afdf}</Project>
+      <Name>AnnualReports.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\AnnualReports.Domain.Core\AnnualReports.Domain.Core.csproj">
       <Project>{fd7c757d-50b2-40c4-8321-c916c02fc334}</Project>

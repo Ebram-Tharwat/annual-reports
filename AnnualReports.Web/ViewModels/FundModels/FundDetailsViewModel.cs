@@ -11,7 +11,7 @@ namespace AnnualReports.Web.ViewModels.FundModels
 
         public string DisplayName { get; set; }
 
-        public Int16 Year { get; set; }
+        public int Year { get; set; }
 
         public string MCAG { get; set; }
 

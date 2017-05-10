@@ -1,0 +1,135 @@
+﻿@model AnnualReports.Web.ViewModels.FundModels.FundsUploadViewModel
+
+@{
+    ViewBag.Title = "Upload Funds";
+}
+
+<h2>Upload Funds</h2>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading bold">Upload Funds:</div>
+            <div class="panel-body">
+                @using (Html.BeginForm("Upload", "Funds", FormMethod.Post, new {enctype = "multipart/form-data"}))
+                {
+                    @Html.AntiForgeryToken()
+                    <div id="step-1">
+                        <h3 class="margin-top-0">Step 1:</h3>
+                        <p class="help-block">
+                            Enter the specific year that you intend to add funds to. This will also affect the generated excel template below.
+                        </p>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FundsYear, htmlAttributes: new {@class = "control-label"})
+                            <span class="text-danger">*</span>
+                            <div class="">
+                                @Html.EditorFor(model => model.FundsYear)
+                                @Html.ValidationMessageFor(model => model.FundsYear, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+                        <span class="label label-danger italic">(* this is a mandatory step)</span>
+                        <hr/>
+                    </div>
+                    @*<div id="step-2">
+                        <h3>Step 2:</h3>
+                        <p class="help-block">
+                            If this is the first time to upload funds or there are newly added funds in GP Dynamics system that you like to import
+                            , then click on <strong><i> Sync Data</i></strong> button to add all the new funds.
+                            <br />
+                            If you believe that current funds are the same as in GP Dynamics, then skip this step and go to step 3.
+                        </p>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success" id="btn-sync-funds">
+                                <span><i class="glyphicon glyphicon-hourglass"></i></span> Sync Data
+                            </button>
+                        </div>
+                        <hr />
+                    </div>*@
+                    <div id="step-2">
+                        <h3>Step 2:</h3>
+                        <p class="help-block">
+                            Click on <strong><i>"export funds template"</i></strong> button to download an Excel template to add or update funds.
+                        </p>
+                        <div class="form-group">
+                            <a href="/Funds/ExportFundsTemplate" target="_self" class="btn btn-labeled btn-success" id="btn-download-funds">
+                                <span><i class="glyphicon glyphicon-download-alt"></i></span> Export To Excel
+                            </a>
+                        </div>
+                        <hr/>
+                    </div>
+                    <div id="step-3">
+                        <h3>Step 3</h3>
+                        <p class="help-block">
+                            Upload exported template to update funds.
+                        </p>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.ExcelFile)
+                            @Html.ValidationMessageFor(model => model.ExcelFile, "", new {@class = "text-danger"})
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Upload" class="btn btn-default"/>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/plugins")
+    <script type="text/javascript">
+        $(function () {
+            function syncFundsClick() {
+                $('#btn-sync-funds').click(function () {
+                    if (isYearValid()) {
+                        var year = $('.year-datepicker').val();
+                        $.LoadingOverlay("show", {});
+                        var jqxhr = $.ajax({
+                            method: 'POST',
+                            url: '/api/funds/sync',
+                            data: { year: year }
+                        })
+                            .done(function () { })
+                            .fail(function () {
+                                alert("Sorry! some error happened. Please try again.");
+                            })
+                            .always(function () {
+                                $.LoadingOverlay("hide", {});
+                            });
+                    }
+                    return false;
+                });
+            }
+
+            function downloadFundsTemplateÇlick() {
+                $('#btn-download-funds').click(function (e) {
+                    if (isYearValid()) {
+                        var year = $('.year-datepicker').val();
+                        $(this).attr("href", this.href.split('?')[0] + "?year=" + year);
+                    } else {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            function isYearValid() {
+                return $('.year-datepicker').valid();
+            }
+
+            function isFormValid() {
+                return $('form').valid();
+            }
+
+            //syncFundsClick();
+            downloadFundsTemplateÇlick();
+        });
+    </script>
+}
