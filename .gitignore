@@ -293,4 +293,7 @@ __pycache__/
 
 #Connections
 ConnectionStrings.config
+# Uploads Folder
+**/Uploads/**
+
 # End of https://www.gitignore.io/api/visualstudio
