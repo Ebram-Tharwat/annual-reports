@@ -64,6 +64,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GcDbContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\DbContextExtensions.cs" />
     <Compile Include="Interfaces\IGcDbFundRepository.cs" />
     <Compile Include="Interfaces\IDistDbFundRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
