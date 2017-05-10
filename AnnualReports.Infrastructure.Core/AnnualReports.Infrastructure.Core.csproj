@@ -130,6 +130,10 @@
     <Compile Include="Migrations\AnnualReportsDb\201705051545581_SetMCAGToNotRequired.Designer.cs">
       <DependentUpon>201705051545581_SetMCAGToNotRequired.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201705072331407_RemoveFixedLength.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201705072331407_RemoveFixedLength.Designer.cs">
+      <DependentUpon>201705072331407_RemoveFixedLength.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbEfRepository.cs" />
@@ -190,6 +194,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201705051545581_SetMCAGToNotRequired.resx">
       <DependentUpon>201705051545581_SetMCAGToNotRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705072331407_RemoveFixedLength.resx">
+      <DependentUpon>201705072331407_RemoveFixedLength.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
