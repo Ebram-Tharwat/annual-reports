@@ -14,6 +14,7 @@
 
 <p>
     @Html.ActionLink("Upload excel sheet", "Upload")
+    | @Html.ActionLink("Copy funds from year", "Copy")
 </p>
 
 <div>
@@ -26,6 +27,7 @@
                 @Html.LabelFor(model => filterViewModel.Year, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => filterViewModel.Year, new { fieldName = "year" })
+                    @Html.ValidationMessageFor(model => filterViewModel.Year, "", new { @class = "text-danger", data_valmsg_for = "year" })
                 </div>
             </div>
 

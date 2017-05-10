@@ -11,8 +11,8 @@ namespace AnnualReports.Infrastructure.Core.Mappings.AnnualReportsDb
 
         public FundConfiguration(string schema)
         {
-            Property(x => x.FundNumber).IsFixedLength().IsUnicode(false);
-            Property(x => x.GpDescription).IsFixedLength().IsUnicode(false);
+            //Property(x => x.FundNumber).IsFixedLength().IsUnicode(false);
+            //Property(x => x.GpDescription).IsFixedLength().IsUnicode(false);
         }
     }
 }

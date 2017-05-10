@@ -20,7 +20,7 @@ namespace AnnualReports.Application.Core.Services
             _barService = barService;
         }
 
-        public MemoryStream GetFundsTemplate(Int16 year)
+        public MemoryStream GetFundsTemplate(int year)
         {
             string excelTemplate = GetExcelTemplate(ReportType.FundsTemplate);
             var templateFile = new FileInfo(excelTemplate);
@@ -47,7 +47,7 @@ namespace AnnualReports.Application.Core.Services
         }
         #endregion
 
-        private void GenerateFundsTemplate(ExcelPackage excelPackage, IEnumerable<Fund> reportData, Int16 year)
+        private void GenerateFundsTemplate(ExcelPackage excelPackage, IEnumerable<Fund> reportData, int year)
         {
             var distDataSheet = excelPackage.Workbook.Worksheets[1];
             var gcDataSheet = excelPackage.Workbook.Worksheets[2];
@@ -88,7 +88,7 @@ namespace AnnualReports.Application.Core.Services
             }
         }
 
-        private void FillTemplateWithFunds(IEnumerable<Fund> funds, Int32 year, ExcelWorksheet dataSheet)
+        private void FillTemplateWithFunds(IEnumerable<Fund> funds, int year, ExcelWorksheet dataSheet)
         {
             var index = 2; // starting index.
             foreach (var fund in funds)

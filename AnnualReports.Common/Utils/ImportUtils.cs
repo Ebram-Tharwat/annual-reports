@@ -1,12 +1,9 @@
 ﻿using AnnualReports.Common.Extensions;
 using OfficeOpenXml;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AnnualReports.Common.Utils
 {
@@ -17,18 +14,20 @@ namespace AnnualReports.Common.Utils
         /// </summary>
         /// <param name="inputStream">The Stream object of the excel sheet</param>
         /// <param name="hasHeader">A flag indicates if the excel sheet has a headers row or not</param>
+        /// <param name="workSheetIndex">Index of worksheet, 1-base</param>
+        /// <param name="skipEmptyRow">Should skip adding a row, in case the whole row values are NullOrEmpty().</param>
         /// <returns>A Datatable represents the excel sheet</returns>
-        public static DataTable ImportXlsxToDataTable(Stream inputStream, bool hasHeader, bool skipEmptyRow = true)
+        public static DataTable ImportXlsxToDataTable(Stream inputStream, bool hasHeader, int workSheetIndex = 1, bool skipEmptyRow = true)
         {
             var dt = new DataTable();
             using (var excel = new ExcelPackage(inputStream))
             {
-                var ws = excel.Workbook.Worksheets.First();
+                var ws = excel.Workbook.Worksheets[workSheetIndex];
                 // add DataColumns to DataTable
                 foreach (var firstRowCell in ws.Cells[1, 1, 1, ws.Dimension.End.Column])
                     dt.Columns.Add(hasHeader
                         ? firstRowCell.Text
-                        : String.Format("Column {0}", firstRowCell.Start.Column));
+                        : $"Column {firstRowCell.Start.Column}");
 
                 // add DataRows to DataTable
                 int startRow = hasHeader ? 2 : 1;
@@ -71,7 +70,7 @@ namespace AnnualReports.Common.Utils
                 // add DataColumns to DataTable
                 foreach (var firstRowCell in ws.Cells[1, 1, 1, ws.Dimension.End.Column])
                 {
-                    var columnName = (hasHeader ? firstRowCell.Text : String.Format("Column {0}", firstRowCell.Start.Column));
+                    var columnName = (hasHeader ? firstRowCell.Text : $"Column {firstRowCell.Start.Column}");
                     if (columnsToImport.Contains(columnName))
                     {
                         dt.Columns.Add(columnName);

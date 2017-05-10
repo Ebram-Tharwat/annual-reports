@@ -10,13 +10,13 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         [Key]
         public int Id { get; set; }
 
-        [Column(TypeName = "char")]
+        //[Column(TypeName = "char")]
         [Required]
         [MaxLength(9)]
         [StringLength(9)]
         public string FundNumber { get; set; }
 
-        [Column(TypeName = "char")]
+        //[Column(TypeName = "char")]
         [Required]
         [MaxLength(31)]
         [StringLength(31)]

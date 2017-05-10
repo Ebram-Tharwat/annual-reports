@@ -1,9 +1,8 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
-using System;
 
-namespace AnnualReports.Web.ViewModels.FundModels
+namespace AnnualReports.Application.Core.Contracts.FundEntities
 {
-    public class FundDetailsViewModel
+    public class FundAddEntity
     {
         public int Id { get; set; }
 
