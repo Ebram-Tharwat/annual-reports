@@ -65,6 +65,12 @@ namespace AnnualReports.Web.Controllers
                 , dateForBars.Year));
         }
 
+        public ActionResult Upload()
+        {
+            var viewmodel = new BarsUploadViewModel();
+            return View(viewmodel);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Upload(BarsUploadViewModel viewmodel)
@@ -111,6 +117,16 @@ namespace AnnualReports.Web.Controllers
                         }
                         else
                         {
+                            entityViewModel.Id = existedEntity.Id;
+                            var mapToBar = _barService.GetByBarNumber(entityViewModel.MapToBarId);
+                            if(mapToBar != null)
+                            {
+                                entityViewModel.MapToBarId = mapToBar.Id;
+                            }
+                            else
+                            {
+                                entityViewModel.MapToBarId = existedEntity.MapToBarId.Value;
+                            }
                             Mapper.Map(entityViewModel, existedEntity);
                             _barService.Update(existedEntity);
                             numOfEntitiesUpdated++;
@@ -144,6 +160,7 @@ namespace AnnualReports.Web.Controllers
                 var entities = _barService.GetByYear(int.Parse(item.Key.ToString()));
                 foreach (var entity in entities)
                 {
+                    entity.BarNumber = entity.BarNumber.Trim();
                     yield return entity;
                 }
             }

@@ -11,6 +11,11 @@
 
 <h2>Index</h2>
 
+<p>
+    @Html.ActionLink("Upload excel sheet", "Upload")
+    @Html.ActionLink("Copy funds from year", "Copy")
+</p>
+
 <div class="row">
     <div class="col-md-6 col-xs-12">
         <div class="panel panel-default">
@@ -23,10 +28,10 @@
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                         <div class="form-group">
-                            @Html.LabelFor(model => model.Filters.DateAsYear, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.LabelFor(model => model.Filters.Year, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-10">
-                                @Html.EditorFor(model => model.Filters.DateAsYear, new { fieldName = "year" })
-                                @Html.ValidationMessageFor(model => model.Filters.DateAsYear, "", new { @class = "text-danger", data_valmsg_for = "year" })
+                                @Html.EditorFor(model => model.Filters.Year, new { fieldName = "year" })
+                                @Html.ValidationMessageFor(model => model.Filters.Year, "", new { @class = "text-danger", data_valmsg_for = "year" })
                             </div>
                         </div>
 
@@ -40,7 +45,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-xs-12">
+    @*<div class="col-md-6 col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading bold">Upload Bars:</div>
             <div class="panel-body">
@@ -92,7 +97,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>*@
     @if (displayResults)
     {
         Html.RenderPartial("_BarsList", Model.Data);

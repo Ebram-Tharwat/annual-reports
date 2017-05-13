@@ -20,6 +20,11 @@ namespace AnnualReports.Web.ViewModels.BarModels
         [Required]
         public DateTime? Date { get; set; } = DateTime.Now;
 
+        [Required(ErrorMessage = "Year is required.")]
+        [UIHint("YearDatePicker")]
+        [Display(Name = "Please select year")]
+        public int? BarsYear { get; set; }
+
 
         public string DateAsMonthYear
         {

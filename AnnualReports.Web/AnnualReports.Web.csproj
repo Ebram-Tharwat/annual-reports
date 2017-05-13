@@ -374,6 +374,7 @@
     <Content Include="Views\Bars\Index.cshtml" />
     <Content Include="Views\Bars\_BarsList.cshtml" />
     <Content Include="Views\Funds\Copy.cshtml" />
+    <Content Include="Views\Bars\Upload.cshtml" />
     <None Include="Views\Funds\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\YearDatePicker.cshtml" />
     <Content Include="Views\Funds\_fundsList.cshtml" />
@@ -383,8 +384,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Uploads\Funds\" />
     <Folder Include="Uploads\Bars\" />
+    <Folder Include="Uploads\Funds\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,100 @@
+﻿
+@model AnnualReports.Web.ViewModels.BarModels.BarsUploadViewModel
+
+@{
+    ViewBag.Title = "Upload Bars";
+}
+
+<h2>Upload Bars</h2>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading bold">Upload Bars:</div>
+            <div class="panel-body">
+                @using (Html.BeginForm("Upload", "Bars", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div id="step-1">
+                        <h3 class="margin-top-0">Step 1:</h3>
+                        <p class="help-block">
+                            Enter the specific year that you intend to add bars to. This will also affect the generated excel template below.
+                        </p>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.BarsYear, htmlAttributes: new { @class = "control-label" })
+                            <span class="text-danger">*</span>
+                            <div class="">
+                                @Html.EditorFor(model => model.BarsYear)
+                                @Html.ValidationMessageFor(model => model.BarsYear, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <span class="label label-danger italic">(* this is a mandatory step)</span>
+                        <hr />
+                    </div>
+                    <div id="step-2">
+                        <h3>Step 2:</h3>
+                        <p class="help-block">
+                            Click on <strong><i>"export bars template"</i></strong> button to download an Excel template to add or update bars.
+                        </p>
+                        <div class="form-group">
+                            <a href="/Bars/ExportBarsTemplate" target="_self" class="btn btn-labeled btn-success" id="btn-download-bars">
+                                <span><i class="glyphicon glyphicon-download-alt"></i></span> Export To Excel
+                            </a>
+                        </div>
+                        <hr />
+                    </div>
+                    <div id="step-3">
+                        <h3>Step 3</h3>
+                        <p class="help-block">
+                            Upload exported template to update bars.
+                        </p>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.ExcelFile)
+                            @Html.ValidationMessageFor(model => model.ExcelFile, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Upload" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/plugins")
+    <script type="text/javascript">
+        $(function () {
+          
+
+            function downloadBarsTemplateÇlick() {
+                $('#btn-download-bars').click(function (e) {
+                    if (isYearValid()) {
+                        var year = $('.year-datepicker').val();
+                        $(this).attr("href", this.href.split('?')[0] + "?year=" + year);
+                    } else {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            function isYearValid() {
+                return $('.year-datepicker').valid();
+            }
+
+            function isFormValid() {
+                return $('form').valid();
+            }
+
+            downloadBarsTemplateÇlick();
+        });
+    </script>
+}
