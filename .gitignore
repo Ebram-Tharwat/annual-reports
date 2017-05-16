@@ -296,4 +296,8 @@ ConnectionStrings.config
 # Uploads Folder
 **/Uploads/**
 
+# libraries used by System.js
+*/libs/**
+*/Scripts/app/dist/**
+
 # End of https://www.gitignore.io/api/visualstudio
