@@ -1,4 +1,5 @@
-﻿using AnnualReports.Infrastructure.Core.Interfaces;
+﻿using AnnualReports.Infrastructure.Core.Extensions;
+using AnnualReports.Infrastructure.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -219,6 +220,11 @@ namespace AnnualReports.Infrastructure.Core.Repositories
         {
             if (_dbContext != null)
                 _dbContext.Dispose();
+        }
+
+        public void Delete(Expression<Func<T, bool>> filter)
+        {
+            _dbContext.DeleteWhere(filter);
         }
 
         #endregion IDisposable

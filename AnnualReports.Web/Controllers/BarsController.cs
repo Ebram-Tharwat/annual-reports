@@ -54,15 +54,13 @@ namespace AnnualReports.Web.Controllers
         }
 
         [HttpGet]
-        public FileResult ExportBarsTemplate(BarsUploadViewModel viewmodel)
+        public FileResult ExportBarsTemplate(int year)
         {
-            DateTime dateForBars = viewmodel.Date.HasValue ? viewmodel.Date.Value : DateTime.Now;
-            MemoryStream stream = _exportingService.GetBarsTemplate(viewmodel.Date.HasValue?viewmodel.Date.Value.Year:DateTime.Now.Year);
+            //DateTime dateForBars = viewmodel.Date.HasValue ? viewmodel.Date.Value : DateTime.Now;
+            MemoryStream stream = _exportingService.GetBarsTemplate(year);
 
             return File(stream, Constants.ExcelFilesMimeType,
-                string.Format(Constants.BarsTemplateExcelFileName
-                , CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(dateForBars.Month)
-                , dateForBars.Year));
+                string.Format(Constants.BarsTemplateExcelFileName , year));
         }
 
         public ActionResult Upload()
@@ -149,6 +147,37 @@ namespace AnnualReports.Web.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Copy()
+        {
+            return View(new BarsCopyViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Copy(BarsCopyViewModel viewmodel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (viewmodel.FromYear.Value == viewmodel.ToYear.Value)
+                    {
+                        ModelState.AddModelError("", "The to year field and from year field cannot be the same");
+                        return View(viewmodel);
+                    }
+                    var copiedFunds = _barService.CopyBars(viewmodel.FromYear.Value, viewmodel.ToYear.Value);
+                    Success($"<strong>{copiedFunds.Count}</strong> Bars have been successfully saved.");
+                    return RedirectToAction("Index", new { year = viewmodel.ToYear.Value });
+                }
+                return View(viewmodel);
+            }
+            catch(Exception ex)
+            {
+                Danger("An error happened while updating Bars. Please try again.");
+                return View(viewmodel);
+            }
         }
 
         #region Helpers

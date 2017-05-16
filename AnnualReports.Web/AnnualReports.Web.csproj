@@ -275,6 +275,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Validations\AllowedFileExtensionAttribute.cs" />
     <Compile Include="ViewModels\BarModels\BarDetailsViewModel.cs" />
+    <Compile Include="ViewModels\BarModels\BarsCopyViewModel.cs" />
     <Compile Include="ViewModels\BarModels\BarsListViewModel.cs" />
     <Compile Include="ViewModels\BarModels\BarsUploadViewModel.cs" />
     <Compile Include="ViewModels\CommonModels\Alert.cs" />
@@ -375,6 +376,7 @@
     <Content Include="Views\Bars\_BarsList.cshtml" />
     <Content Include="Views\Funds\Copy.cshtml" />
     <Content Include="Views\Bars\Upload.cshtml" />
+    <Content Include="Views\Bars\Copy.cshtml" />
     <None Include="Views\Funds\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\YearDatePicker.cshtml" />
     <Content Include="Views\Funds\_fundsList.cshtml" />

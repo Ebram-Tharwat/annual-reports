@@ -96,5 +96,7 @@ namespace AnnualReports.Infrastructure.Core.Interfaces
         /// <param name="id">identifier.</param>
         /// <returns></returns>
         void Delete(object id);
+
+        void Delete(Expression<Func<T, bool>> filter);
     }
 }

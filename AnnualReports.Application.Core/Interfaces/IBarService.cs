@@ -16,5 +16,6 @@ namespace AnnualReports.Application.Core.Interfaces
         List<Bar> GetAllBars(int year,  PagingInfo pagingInfo = null);
         Bar GetByBarNumber(int barNumber);
         List<Bar> GetByYear(int year);
+        List<Bar> CopyBars(int fromYear, int toYear);
     }
 }
