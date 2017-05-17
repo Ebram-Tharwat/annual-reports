@@ -150,20 +150,31 @@ namespace AnnualReports.Application.Core.Services
             var childFunds = dbFunds.Except(parentFunds);
 
             // add all funds which map to themselves.
-            var parentFundsToAdd = parentFunds.Select(t =>
+            var parentFundsToAdd = parentFunds.Select(t => new Fund()
             {
-                t.Year = (short)toYear;
-                return t;
+                Year = (short)toYear,
+                FundNumber = t.FundNumber,
+                GpDescription = t.GpDescription,
+                DisplayName = t.DisplayName,
+                MCAG = t.MCAG,
+                MapToFundId = null,
+                DbSource = t.DbSource,
+                IsActive = t.IsActive
             }).ToList();
             _fundsRepository.Add(parentFundsToAdd);
             _uow.Commit(); // commit changes to get the Id value.
 
-            var childFundsToAdd = childFunds.Select(t =>
+            var childFundsToAdd = childFunds.Select(t => new Fund()
             {
-                var mapto = parentFunds.FirstOrDefault(p => p.FundNumber == t.MapToFund.FundNumber);
-                t.MapToFundId = mapto?.Id;
-                t.Year = (short)toYear;
-                return t;
+                Year = (short)toYear,
+                FundNumber = t.FundNumber,
+                GpDescription = t.GpDescription,
+                DisplayName = t.DisplayName,
+                MCAG = t.MCAG,
+                // if null, then null. if not, then get id value
+                MapToFundId = parentFunds.FirstOrDefault(p => p.FundNumber == t.MapToFund.FundNumber)?.Id,
+                DbSource = t.DbSource,
+                IsActive = t.IsActive
             }).ToList();
             _fundsRepository.Add(childFundsToAdd);
             _uow.Commit();
@@ -174,9 +185,13 @@ namespace AnnualReports.Application.Core.Services
         public void RemoveFunds(int year, DbSource dbSource)
         {
             if (dbSource == DbSource.ALL)
-                _fundsRepository.Delete(t => t.Year == year && (t.DbSource == DbSource.DIST || t.DbSource == DbSource.GC));
+            {
+                _fundsRepository.BatchDelete(t => t.Year == year && (t.DbSource == DbSource.DIST || t.DbSource == DbSource.GC));
+            }
             else
-                _fundsRepository.Delete(t => t.Year == year && (t.DbSource == dbSource));
+            {
+                _fundsRepository.BatchDelete(t => t.Year == year && (t.DbSource == dbSource));
+            }
         }
     }
 }

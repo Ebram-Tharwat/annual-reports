@@ -99,8 +99,8 @@ namespace AnnualReports.Web.Controllers
 
                         List<FundAddEntity> rejectedFunds;
                         var uploadedFunds = distFundAddEntities.Union(gcFundAddEntities).ToList();
-                        _fundService.AddUploadedFunds(viewmodel.FundsYear.Value, uploadedFunds, out rejectedFunds);
-                        Success($"<strong>{uploadedFunds.Count}</strong> Funds have been successfully saved.");
+                        var validFunds = _fundService.AddUploadedFunds(viewmodel.FundsYear.Value, uploadedFunds, out rejectedFunds);
+                        Success($"<strong>{validFunds.Count}</strong> Funds have been successfully saved.");
                         if (rejectedFunds.Any())
                             Danger($"<strong>{rejectedFunds.Count}</strong> Funds have been skipped. Please make sure that they exist in GP Dynamics system.");
                     }

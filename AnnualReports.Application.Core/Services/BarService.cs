@@ -71,7 +71,7 @@ namespace AnnualReports.Application.Core.Services
 
         private void RemoveBars(int year)
         {
-            _barRepository.Delete(t => t.Year == year);
+            _barRepository.BatchDelete(t => t.Year == year);
         }
 
         public List<Bar> GetAllBars(int year, PagingInfo pagingInfo = null)
