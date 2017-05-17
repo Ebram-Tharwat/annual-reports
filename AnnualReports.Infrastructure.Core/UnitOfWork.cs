@@ -39,7 +39,8 @@ namespace AnnualReports.Infrastructure.Core
                 {
                     foreach (var validationError in validationErrors.ValidationErrors)
                     {
-                        msg.AppendFormat("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        msg.AppendFormat("Property: {0} Error: {1}", validationError.PropertyName,
+                            validationError.ErrorMessage);
                         msg.AppendLine();
                     }
                 }

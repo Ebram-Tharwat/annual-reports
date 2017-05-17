@@ -6,6 +6,6 @@ namespace AnnualReports.Infrastructure.Core.Interfaces
 {
     public interface IAnnualReportsDbFundRepository : IRepository<Fund>
     {
-        void Delete(Expression<Func<Fund, bool>> filter);
+        //void Delete(Expression<Func<Fund, bool>> filter);
     }
 }

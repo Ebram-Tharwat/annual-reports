@@ -97,6 +97,8 @@ namespace AnnualReports.Infrastructure.Core.Interfaces
         /// <returns></returns>
         void Delete(object id);
 
-        void Delete(Expression<Func<T, bool>> filter);
+        void BatchDelete(Expression<Func<T, bool>> filter);
+
+        void BatchUpdate(Expression<Func<T, bool>> filter, Expression<Func<T, T>> updateFactory);
     }
 }

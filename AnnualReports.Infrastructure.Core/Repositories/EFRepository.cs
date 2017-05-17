@@ -8,6 +8,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Z.EntityFramework.Plus;
 
 namespace AnnualReports.Infrastructure.Core.Repositories
 {
@@ -59,7 +60,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             return query.FirstOrDefault(filter);
         }
 
-        public IQueryable<T> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, params Expression<Func<T, object>>[] includes)
+        public virtual IQueryable<T> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = this.GetAll();
 
@@ -84,7 +85,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             return query;
         }
 
-        public IQueryable<T> Get(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, out int total, int index = 0, int size = 50, params Expression<Func<T, object>>[] includes)
+        public virtual IQueryable<T> Get(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, out int total, int index = 0, int size = 50, params Expression<Func<T, object>>[] includes)
         {
             int skipCount = index * size;
             var query = this.Get(filter, orderBy, includes);
@@ -121,7 +122,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             }
         }
 
-        public void Add(IEnumerable<T> entities)
+        public virtual void Add(IEnumerable<T> entities)
         {
             try
             {
@@ -212,6 +213,16 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             throw fail;
         }
 
+        public virtual void BatchDelete(Expression<Func<T, bool>> filter)
+        {
+            _dbSet.Where(filter).Delete();
+        }
+
+        public virtual void BatchUpdate(Expression<Func<T, bool>> filter, Expression<Func<T, T>> updateFactory)
+        {
+            _dbSet.Where(filter).Update(updateFactory);
+        }
+
         #endregion IRepository Methods
 
         #region IDisposable
@@ -221,12 +232,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             if (_dbContext != null)
                 _dbContext.Dispose();
         }
-
-        public void Delete(Expression<Func<T, bool>> filter)
-        {
-            _dbContext.DeleteWhere(filter);
-        }
-
+        
         #endregion IDisposable
     }
 }

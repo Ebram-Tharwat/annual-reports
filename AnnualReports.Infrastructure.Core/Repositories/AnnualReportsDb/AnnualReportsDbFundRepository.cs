@@ -11,11 +11,6 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
     {
         public AnnualReportsDbFundRepository(AnnualReportsDbContext dbContext) : base(dbContext)
         {
-        }
-
-        public void Delete(Expression<Func<Fund, bool>> filter)
-        {
-            _dbContext.DeleteWhere(filter);
-        }
+        }       
     }
 }
