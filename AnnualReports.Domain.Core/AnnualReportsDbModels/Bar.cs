@@ -26,6 +26,8 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
 
         public int? MapToBarId { get; set; }
 
+        public int? Period { get; set; }
+
         [Required]
         [DefaultValue(true)]
         public bool IsActive { get; set; }
