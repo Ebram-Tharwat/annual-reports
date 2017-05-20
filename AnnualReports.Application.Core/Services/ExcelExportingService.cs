@@ -14,7 +14,7 @@ namespace AnnualReports.Application.Core.Services
         private readonly IFundService _fundService;
         private readonly IBarService _barService;
 
-        public ExcelExportingService(IFundService fundService,IBarService barService)
+        public ExcelExportingService(IFundService fundService, IBarService barService)
         {
             _fundService = fundService;
             _barService = barService;
@@ -33,7 +33,9 @@ namespace AnnualReports.Application.Core.Services
         }
 
         #region Funds Template
+
         #region Bars Template
+
         public MemoryStream GetBarsTemplate(int year)
         {
             string excelTemplate = GetExcelTemplate(ReportType.BarsTemplate);
@@ -45,7 +47,8 @@ namespace AnnualReports.Application.Core.Services
             var stream = new MemoryStream(package.GetAsByteArray());
             return stream;
         }
-        #endregion
+
+        #endregion Bars Template
 
         private void GenerateFundsTemplate(ExcelPackage excelPackage, IEnumerable<Fund> reportData, int year)
         {
@@ -66,7 +69,6 @@ namespace AnnualReports.Application.Core.Services
         {
             var annualReportDataSheet = excelPackage.Workbook.Worksheets[1];
             //var gcDataSheet = excelPackage.Workbook.Worksheets[2];
-
 
             FillTemplateWithBars(reportData, year, annualReportDataSheet);
 
@@ -98,13 +100,11 @@ namespace AnnualReports.Application.Core.Services
                 dataSheet.Cells["C" + index].Value = fund.GpDescription;
                 dataSheet.Cells["D" + index].Value = fund.DisplayName;
                 dataSheet.Cells["E" + index].Value = fund.MCAG;
-                dataSheet.Cells["F" + index].Value = fund.MapToFundId;
+                dataSheet.Cells["F" + index].Value = fund.MapToFund?.FundNumber;
                 dataSheet.Cells["G" + index].Value = fund.IsActive;
                 index++;
             }
         }
-
-
 
         #endregion Funds Template
 
@@ -119,9 +119,11 @@ namespace AnnualReports.Application.Core.Services
                 case ReportType.FundsTemplate:
                     templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\FundsTemplate.xlsx";
                     break;
+
                 case ReportType.BarsTemplate:
                     templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\BarsTemplate.xlsx";
                     break;
+
                 default:
                     templatePath = String.Empty;
                     break;

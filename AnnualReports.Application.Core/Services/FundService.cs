@@ -172,7 +172,7 @@ namespace AnnualReports.Application.Core.Services
                 DisplayName = t.DisplayName,
                 MCAG = t.MCAG,
                 // if null, then null. if not, then get id value
-                MapToFundId = parentFunds.FirstOrDefault(p => p.FundNumber == t.MapToFund.FundNumber)?.Id,
+                MapToFundId = parentFundsToAdd.FirstOrDefault(p => p.FundNumber == t.MapToFund.FundNumber)?.Id,
                 DbSource = t.DbSource,
                 IsActive = t.IsActive
             }).ToList();
