@@ -24,5 +24,7 @@ namespace AnnualReports.Web.ViewModels.BarModels
 
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
+
+        public int? Period { get; set; }
     }
 }
