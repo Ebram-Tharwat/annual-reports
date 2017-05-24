@@ -98,7 +98,7 @@ namespace AnnualReports.Application.Core.Services
                 dataSheet.Cells["C" + index].Value = fund.GpDescription;
                 dataSheet.Cells["D" + index].Value = fund.DisplayName;
                 dataSheet.Cells["E" + index].Value = fund.MCAG;
-                dataSheet.Cells["F" + index].Value = fund.MapToFundId;
+                dataSheet.Cells["F" + index].Value = fund.MapToFund?.FundNumber;
                 dataSheet.Cells["G" + index].Value = fund.IsActive;
                 index++;
             }
