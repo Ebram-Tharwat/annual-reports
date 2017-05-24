@@ -22,5 +22,7 @@ namespace AnnualReports.Application.Core.Interfaces
         List<Fund> CopyFunds(int fromYear, int toYear);
 
         void RemoveFunds(int year, DbSource dbSource);
+
+        List<FundBasicInfo> GetPrimaryFunds(int year, DbSource dbSource, PagingInfo pagingInfo = null);
     }
 }

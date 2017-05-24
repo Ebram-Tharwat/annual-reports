@@ -62,6 +62,7 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Contracts\FundEntities\FundAddEntity.cs" />
+    <Compile Include="Contracts\FundEntities\FundBasicInfo.cs" />
     <Compile Include="Contracts\Paging\PagingInfo.cs" />
     <Compile Include="Enums\ReportType.cs" />
     <Compile Include="Interfaces\IBarService.cs" />

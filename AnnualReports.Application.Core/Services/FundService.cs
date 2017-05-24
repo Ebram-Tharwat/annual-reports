@@ -193,5 +193,17 @@ namespace AnnualReports.Application.Core.Services
                 _fundsRepository.BatchDelete(t => t.Year == year && (t.DbSource == dbSource));
             }
         }
+
+        public List<FundBasicInfo> GetPrimaryFunds(int year, DbSource dbSource, PagingInfo pagingInfo = null)
+        {
+            var funds = this.GetAllFunds(year, dbSource, pagingInfo);
+            var primaryFunds = Mapper.Map<List<Fund>, List<FundBasicInfo>>(funds.Where(t => t.MapToFundId == null).ToList());
+            primaryFunds.ForEach(primary =>
+            {
+                primary.ChildFunds = Mapper.Map<List<Fund>, List<FundBasicInfo>>(funds.Where(child => child.MapToFundId == primary.Id).ToList());
+            });
+
+            return primaryFunds;
+        }
     }
 }
