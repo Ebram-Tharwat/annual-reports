@@ -53,6 +53,7 @@
     <Compile Include="AnnualReportsDbModels\Bar.cs" />
     <Compile Include="AnnualReportsDbModels\DbSource.cs" />
     <Compile Include="AnnualReportsDbModels\Fund.cs" />
+    <Compile Include="Contracts\FundsReportDataRow.cs" />
     <Compile Include="Contracts\GPDynamicsFundDetails.cs" />
     <Compile Include="DistDbModels\DistDbModels.cs">
       <AutoGen>True</AutoGen>
