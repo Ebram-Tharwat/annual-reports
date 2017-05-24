@@ -1,21 +1,19 @@
 ﻿import { Component } from '@angular/core';
+import { ReportsService } from './services/reports.service';
 @Component({
     selector: 'my-app',
-    template: `
-    <h2>My favorite skill is: {{myskills}}</h2>
-    <p>Skill:</p>
-    <ul>
-      <li *ngFor="let skl of skills">
-        {{ skl }}
-      </li>
-    </ul>
+    template: `        
+    <div>
+        <funds-annual-report></funds-annual-report>
+    </div>
   `
 })
 export class AppComponent {
     title = 'ASP.NET MVC 5 with Angular 2';
-    skills = ['MVC 5', 'Angular 2', 'TypeScript', 'Visual Studio 2015'];
+    skills = ['MVC 8', 'Angular 2', 'TypeScript', 'Visual Studio 2015'];
     myskills = this.skills[1];
-    constructor() {
+    value: Date;
+    constructor(private reportsService: ReportsService) {
         this.init();
     }
 

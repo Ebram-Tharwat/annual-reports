@@ -1,0 +1,11 @@
+﻿<div class="form-horizontal">
+    <hr />
+    <div class="form-group">
+        <div class="col-md-6">
+            <label class="control-label">Please Select a fund:</label>            
+            <p-dropdown [options]="funds" [(ngModel)]="fundNumber" [filter]="true"
+                        placeholder="Select..." [autoWidth]="false">
+            </p-dropdown>
+        </div>
+    </div>
+</div>

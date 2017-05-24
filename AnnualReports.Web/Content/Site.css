@@ -32,3 +32,6 @@ textarea {
 .required {
     color: #d9534f;
 }
+.ui-dropdown, .ui-dropdown-filter-container{
+  width:100% !important;
+}

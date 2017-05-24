@@ -253,6 +253,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\FundsApiController.cs" />
+    <Compile Include="API\ReportsController.cs" />
     <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -293,10 +294,13 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\toastr.css" />
     <Content Include="Content\toastr.min.css" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -317,6 +321,11 @@
     <Content Include="Content\toastr.less" />
     <Content Include="gulpfile.js" />
     <Content Include="package.json" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\app\common.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
@@ -341,6 +350,7 @@
     <Content Include="Scripts\systemjs.config.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
+    <Content Include="tsScripts\components\funds-annual-report.component.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -393,6 +403,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="tsScripts\views\" />
     <Folder Include="Uploads\Bars\" />
     <Folder Include="Uploads\Funds\" />
     <Folder Include="Views\Base\" />
@@ -418,7 +429,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="tsScripts\app.ts" />
     <TypeScriptCompile Include="tsScripts\boot.ts" />
+    <TypeScriptCompile Include="tsScripts\components\funds-annual-report.component.ts" />
     <TypeScriptCompile Include="tsScripts\main.ts" />
+    <TypeScriptCompile Include="tsScripts\services\reports.service.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
@@ -438,7 +451,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>15327</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

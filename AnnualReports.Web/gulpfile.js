@@ -10,7 +10,7 @@ gulp.task('clean', function () {
         .pipe(clean());
 });
 
-gulp.task("scriptsNStyles", function() {
+gulp.task("scriptsNStyles", function () {
     gulp.src([
             'core-js/client/*.js',
             'systemjs/dist/*.js',
@@ -18,7 +18,9 @@ gulp.task("scriptsNStyles", function() {
             'rxjs/**',
             'zone.js/dist/*.js',
             '@angular/**/bundles/*.js',
-            'bootstrap/dist/js/*.js'
+            'bootstrap/dist/js/*.js',
+            'primeng/*.js',
+            'primeng/**/components/**/*.js'
     ], {
         cwd: "node_modules/**"
     })
@@ -28,19 +30,30 @@ gulp.task("scriptsNStyles", function() {
 var tsProject = ts.createProject('tsScripts/tsconfig.json', {
     typescript: require('typescript')
 });
+
 gulp.task('ts', function (done) {
     //var tsResult = tsProject.src()
     var tsResult = gulp.src([
-            "tsScripts/*.ts"
+            'tsScripts/*.ts',
+            'tsScripts/**/*.ts'
     ])
         .pipe(tsProject(), undefined, ts.reporter.fullReporter());
     return tsResult.js.pipe(gulp.dest('./Scripts/app/dist'));
 });
 
-gulp.task('watch', ['watch.ts']);
+gulp.task('copy-templates', function () {
+    gulp.src('tsScripts/**/*.html')    
+    .pipe(gulp.dest('./Scripts/app/dist'));
+});
+
+gulp.task('watch', ['watch.ts', 'watch.html']);
 
 gulp.task('watch.ts', ['ts'], function () {
-    return gulp.watch('tsScripts/*.ts', ['ts']);
+    return gulp.watch(['tsScripts/*.ts', 'tsScripts/**/*.ts'], ['ts']);
+});
+
+gulp.task('watch.html', ['copy-templates'], function () {
+    return gulp.watch(['tsScripts/**/*.html'], ['copy-templates']);
 });
 
 gulp.task('default', ['scriptsNStyles', 'watch']);

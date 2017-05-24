@@ -26,13 +26,16 @@ namespace AnnualReports.Web
                         "~/Scripts/moment.js",
                         "~/Scripts/moment-with-locales.js",
                         "~/Scripts/bootstrap-datetimepicker.js",
-                        "~/Scripts/loadingoverlay.js",
-                        "~/Scripts/toastr.js",
+                        //"~/Scripts/loadingoverlay.js",
+                        //"~/Scripts/toastr.js",
                         "~/Scripts/app/common.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/toastr.css",
+                      "~/Content/primeng/resources/themes/bootstrap/theme.css",
+                      "~/Content/primeng/resources/primeng.css",
+                      "~/Content/font-awesome.css",
+                      //"~/Content/toastr.css",
                       "~/Content/bootstrap-datetimepicker.css",
                       "~/Content/site.css"));
         }
