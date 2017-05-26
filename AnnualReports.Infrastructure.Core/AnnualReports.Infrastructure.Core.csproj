@@ -142,7 +142,16 @@
     <Compile Include="Migrations\AnnualReportsDb\201705201035492_AddPeriodColumn.Designer.cs">
       <DependentUpon>201705201035492_AddPeriodColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201705211927021_FundsAnnualReportData.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201705211927021_FundsAnnualReportData.Designer.cs">
+      <DependentUpon>201705211927021_FundsAnnualReportData.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
+    <Compile Include="Migrations\ScriptResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScriptResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbEfRepository.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbFundRepository.cs" />
@@ -171,6 +180,12 @@
       <LastGenOutput>GcDbMappings.cs</LastGenOutput>
     </Content>
     <Content Include="Migrations\Notes.txt" />
+    <Content Include="Migrations\Scripts\Procedures\FundsAnnualReportData\GetDISTFundsReportDataPro_UP.sql" />
+    <Content Include="Migrations\Scripts\Procedures\FundsAnnualReportData\GetDISTFundsReportDataPro_Down.sql" />
+    <Content Include="Migrations\Scripts\Procedures\FundsAnnualReportData\GetFundsReportDataPro_Down.sql" />
+    <Content Include="Migrations\Scripts\Procedures\FundsAnnualReportData\GetFundsReportDataPro_UP.sql" />
+    <Content Include="Migrations\Scripts\Procedures\FundsAnnualReportData\GetGCFundsReportDataPro_Down.sql" />
+    <Content Include="Migrations\Scripts\Procedures\FundsAnnualReportData\GetGCFundsReportDataPro_UP.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -206,9 +221,17 @@
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201705072331407_RemoveFixedLength.resx">
       <DependentUpon>201705072331407_RemoveFixedLength.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705211927021_FundsAnnualReportData.resx">
+      <DependentUpon>201705211927021_FundsAnnualReportData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\ScriptResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ScriptResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201705201035492_AddPeriodColumn.resx">
       <DependentUpon>201705201035492_AddPeriodColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
