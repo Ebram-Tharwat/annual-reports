@@ -1,11 +1,11 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
-using System;
-using System.Linq.Expressions;
+using AnnualReports.Domain.Core.Contracts;
+using System.Collections.Generic;
 
 namespace AnnualReports.Infrastructure.Core.Interfaces
 {
     public interface IAnnualReportsDbFundRepository : IRepository<Fund>
     {
-        //void Delete(Expression<Func<Fund, bool>> filter);
+        IEnumerable<FundsReportDataRow> GetFundsReportDataRows(int year, string fundNumber = null);
     }
 }

@@ -1,9 +1,8 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using AnnualReports.Domain.Core.Contracts;
 using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
-using AnnualReports.Infrastructure.Core.Extensions;
 using AnnualReports.Infrastructure.Core.Interfaces;
-using System;
-using System.Linq.Expressions;
+using System.Collections.Generic;
 
 namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
 {
@@ -11,6 +10,11 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
     {
         public AnnualReportsDbFundRepository(AnnualReportsDbContext dbContext) : base(dbContext)
         {
-        }       
+        }
+
+        public IEnumerable<FundsReportDataRow> GetFundsReportDataRows(int year, string fundNumber = null)
+        {
+            return _dbContext.Database.SqlQuery<FundsReportDataRow>("GetFundsReportDataPro {0},{1}", year, fundNumber);
+        }
     }
 }
