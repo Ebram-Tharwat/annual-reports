@@ -26,7 +26,7 @@ namespace AnnualReports.Web.API
             return Ok();
         }
 
-        [Route("primary/{year}")]
+        [Route("primary/{year:int}")]
         [HttpGet]
         public IHttpActionResult GetPrimaryFunds(int year)
         {
