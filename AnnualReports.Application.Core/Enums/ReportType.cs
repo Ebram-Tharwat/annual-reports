@@ -3,6 +3,7 @@
     public enum ReportType
     {
         FundsTemplate = 1,
-        BarsTemplate = 2
+        BarsTemplate = 2,
+        FundsAnnualReportTemplate = 3
     }
 }

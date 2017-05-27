@@ -83,6 +83,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AnnualReports.Common\AnnualReports.Common.csproj">
+      <Project>{34134df7-e9eb-4c66-84d0-ed5ecad9afdf}</Project>
+      <Name>AnnualReports.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AnnualReports.Domain.Core\AnnualReports.Domain.Core.csproj">
       <Project>{fd7c757d-50b2-40c4-8321-c916c02fc334}</Project>
       <Name>AnnualReports.Domain.Core</Name>

@@ -1,4 +1,5 @@
-﻿using AnnualReports.Application.Core.Enums;
+﻿using AnnualReports.Application.Core.Contracts.Reports;
+using AnnualReports.Application.Core.Enums;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using OfficeOpenXml;
@@ -13,11 +14,13 @@ namespace AnnualReports.Application.Core.Services
     {
         private readonly IFundService _fundService;
         private readonly IBarService _barService;
+        private readonly IReportService _reportService;
 
-        public ExcelExportingService(IFundService fundService, IBarService barService)
+        public ExcelExportingService(IFundService fundService, IBarService barService, IReportService reportService)
         {
             _fundService = fundService;
             _barService = barService;
+            _reportService = reportService;
         }
 
         public MemoryStream GetFundsTemplate(int year)
@@ -32,10 +35,6 @@ namespace AnnualReports.Application.Core.Services
             return stream;
         }
 
-        #region Funds Template
-
-        #region Bars Template
-
         public MemoryStream GetBarsTemplate(int year)
         {
             string excelTemplate = GetExcelTemplate(ReportType.BarsTemplate);
@@ -48,7 +47,19 @@ namespace AnnualReports.Application.Core.Services
             return stream;
         }
 
-        #endregion Bars Template
+        public MemoryStream GetFundsAnnualReportExcel(int year)
+        {
+            string excelTemplate = GetExcelTemplate(ReportType.FundsAnnualReportTemplate);
+            var templateFile = new FileInfo(excelTemplate);
+            ExcelPackage package = new ExcelPackage(templateFile, true);
+
+            GenerateFundsAnnualReportTemplate(package, _reportService.GetFundsReportData(year), year);
+
+            var stream = new MemoryStream(package.GetAsByteArray());
+            return stream;
+        }
+
+        #region Funds Template
 
         private void GenerateFundsTemplate(ExcelPackage excelPackage, IEnumerable<Fund> reportData, int year)
         {
@@ -64,6 +75,26 @@ namespace AnnualReports.Application.Core.Services
             distDataSheet.Cells.AutoFitColumns();
             gcDataSheet.Cells.AutoFitColumns();
         }
+
+        private void FillTemplateWithFunds(IEnumerable<Fund> funds, int year, ExcelWorksheet dataSheet)
+        {
+            var index = 2; // starting index.
+            foreach (var fund in funds)
+            {
+                dataSheet.Cells["A" + index].Value = year;
+                dataSheet.Cells["B" + index].Value = fund.FundNumber;
+                dataSheet.Cells["C" + index].Value = fund.GpDescription;
+                dataSheet.Cells["D" + index].Value = fund.DisplayName;
+                dataSheet.Cells["E" + index].Value = fund.MCAG;
+                dataSheet.Cells["F" + index].Value = fund.MapToFund?.FundNumber;
+                dataSheet.Cells["G" + index].Value = fund.IsActive;
+                index++;
+            }
+        }
+
+        #endregion Funds Template
+
+        #region Bars Template
 
         private void GenerateBarsTemplate(ExcelPackage excelPackage, IEnumerable<Bar> reportData, int year)
         {
@@ -90,23 +121,31 @@ namespace AnnualReports.Application.Core.Services
             }
         }
 
-        private void FillTemplateWithFunds(IEnumerable<Fund> funds, int year, ExcelWorksheet dataSheet)
+        #endregion Bars Template
+
+        #region Funds Annual Report
+
+        private void GenerateFundsAnnualReportTemplate(ExcelPackage excelPackage, IEnumerable<FundsReportDataItemDetails> reportData, int year)
         {
+            var dataSheet = excelPackage.Workbook.Worksheets[1];
             var index = 2; // starting index.
-            foreach (var fund in funds)
+
+            foreach (var item in reportData)
             {
                 dataSheet.Cells["A" + index].Value = year;
-                dataSheet.Cells["B" + index].Value = fund.FundNumber;
-                dataSheet.Cells["C" + index].Value = fund.GpDescription;
-                dataSheet.Cells["D" + index].Value = fund.DisplayName;
-                dataSheet.Cells["E" + index].Value = fund.MCAG;
-                dataSheet.Cells["F" + index].Value = fund.MapToFund?.FundNumber;
-                dataSheet.Cells["G" + index].Value = fund.IsActive;
+                dataSheet.Cells["B" + index].Value = item.MCAG;
+                dataSheet.Cells["C" + index].Value = item.FundNumber;
+                dataSheet.Cells["D" + index].Value = item.FundDisplayName;
+                dataSheet.Cells["E" + index].Value = item.BarNumber;
+                dataSheet.Cells["F" + index].Value = item.BarDisplayName;
+                dataSheet.Cells["G" + index].Value = item.Amount;
                 index++;
             }
+
+            dataSheet.Cells.AutoFitColumns();
         }
 
-        #endregion Funds Template
+        #endregion Funds Annual Report
 
         #region Private Methods
 
@@ -122,6 +161,10 @@ namespace AnnualReports.Application.Core.Services
 
                 case ReportType.BarsTemplate:
                     templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\BarsTemplate.xlsx";
+                    break;
+
+                case ReportType.FundsAnnualReportTemplate:
+                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\FundsAnnualReportTemplate.xlsx";
                     break;
 
                 default:

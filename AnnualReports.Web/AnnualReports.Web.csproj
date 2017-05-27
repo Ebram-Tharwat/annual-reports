@@ -347,6 +347,8 @@
     <Content Include="Content\ui-grid.eot" />
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular-touch.min.js.map" />
+    <Content Include="Content\ExcelTemplates\FundsAnnualReportTemplate.xlsx" />
+    <Content Include="Content\ExcelTemplates\BarsTemplate.xlsx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\app\common.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
