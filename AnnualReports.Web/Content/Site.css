@@ -17,18 +17,31 @@
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    _max-width: 280px;
+
+.grid {    
+    height: 600px;
 }
+
+.ui-grid-contents-wrapper .empty-data {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.25;
+    font-size: 3em;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
+}
+
 /* Helpers */
 .italic {
     font-style: italic;
 }
+
 .margin-top-0 {
     margin-top: 0;
 }
+
 .required {
     color: #d9534f;
 }
