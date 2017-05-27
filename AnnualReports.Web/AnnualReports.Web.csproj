@@ -251,6 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\FundsApiController.cs" />
+    <Compile Include="API\ReportsApiController.cs" />
     <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -264,6 +265,7 @@
     <Compile Include="Controllers\FundsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Extensions\PagedListExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -424,11 +426,13 @@
     <Content Include="Views\Funds\Upload.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\FileUpload.cshtml" />
     <Content Include="Views\Shared\_Alerts.cshtml" />
+    <Content Include="Views\Reports\FundsAnnualReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Uploads\Bars\" />
     <Folder Include="Uploads\Funds\" />
+    <Folder Include="ViewModels\ReportModels\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>

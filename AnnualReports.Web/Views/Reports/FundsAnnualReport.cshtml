@@ -1,0 +1,167 @@
+﻿@{
+    ViewBag.Title = "FundsAnnualReport";
+}
+
+<h2>Funds Annual Report</h2>
+
+<div data-ng-app="app" data-ng-controller="FundsAnnualReportCtrl as vm">
+    <div block-ui="main" class="block-ui-main">
+        <form id="form" name="form" novalidate="">
+            <div class="form-horizontal">
+                <hr />
+                <div class="form-group" ng-class="{ 'has-error': form.year.$dirty && form.year.$invalid }">
+                    <label class="control-label">Please select a year</label>
+                    <span class="required">*</span>
+                    <div class='input-group'>
+                        <input type="text" name="year" data-ng-model="vm.year" class="form-control" readonly=""
+                               data-datetimepicker data-options="vm.yearPickerOptions"
+                               on-change="vm.getFunds()" required="" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error': form.funds.$dirty && form.funds.$invalid}">
+                    <label class="control-label">Please select a fund</label>
+                    <span class="required">*</span>
+                    <ui-select ng-model="vm.selectedFund" name="funds" data-ng-required="vm.year" data-ng-disabled="!vm.year">
+                        <ui-select-match placeholder="Select a fund">
+                            <span ng-bind="$select.selected.displayName + ' (' + $select.selected.fundNumber + ')'"></span>
+                        </ui-select-match>
+                        <ui-select-choices repeat="fund in (vm.funds | filter: $select.search) track by fund.id">
+                            <span ng-bind="fund.displayName + ' (' + fund.fundNumber + ')'"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                    @*<select name="funds" class="form-control" data-ng-disabled="!vm.year" data-ng-model="vm.selectedFund"
+                                ng-options="fund.displayName for fund in vm.funds track by fund.id" data-ng-required="vm.year">
+                            <option value="">Please select...</option>
+                        </select>*@
+                </div>
+
+                <div class="form-group">
+                    <div class="">
+                        <input type="submit" value="View" class="btn btn-success pull-right" data-ng-disabled="form.$invalid"
+                               data-ng-click="vm.getFundsAnnualReportData()" />
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row" ng-if="form.$valid && vm.reportData">
+            <h3>Result:</h3>
+            <div ui-grid="vm.gridOptions" ui-grid-pinning ui-grid-expandable ui-grid-pagination class="grid">
+                <div class="empty-data" ng-show="vm.reportData && vm.gridOptions.data.length == 0">No data available</div>
+            </div>
+        </div>
+        <script type="text/ng-template" id="expandableRowTemplate.html">
+            <div ui-grid="row.entity.subGridOptions" style="height:140px;">
+            </div>
+        </script>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/plugins")
+    @Scripts.Render("~/bundles/angular")
+    <script type="text/javascript">
+        (function () {
+            'use strict';
+
+            angular
+                .module('app', ['ae-datetimepicker', 'ui.select', 'blockUI', 'ngSanitize', 'ui.grid', 'ui.grid.expandable', 'ui.grid.selection', 'ui.grid.pinning', 'ui.grid.pagination'])
+                .config(configure)
+                .run(runBlock)
+                .controller('FundsAnnualReportCtrl', FundsAnnualReportCtrl);;
+
+            configure.$inject = ['$httpProvider', '$locationProvider', 'blockUIConfig'];
+            runBlock.$inject = ['$rootScope'];
+            FundsAnnualReportCtrl.$inject = ['$http', 'blockUI', '$timeout'];
+
+            function configure($httpProvider, $locationProvider, blockUIConfig) {
+                $locationProvider.html5Mode(true);
+
+                //blockUIConfig.autoBlock = true;
+                //blockUIConfig.template = '<pre><code>Delay</code></pre>';
+
+                blockUIConfig.autoInjectBodyBlock = false;
+                //======================================
+                // Routes
+                //======================================
+            }
+
+            function runBlock($rootScope) {
+            };
+
+            function FundsAnnualReportCtrl($http, blockUI, $timeout) {
+                var vm = this;
+                vm.year = undefined;
+                vm.funds = [];
+                vm.reportData = undefined;
+                vm.selectedFund = undefined;
+                vm.yearPickerOptions = {
+                    viewMode: 'years',
+                    format: 'YYYY',
+                    showTodayButton: true,
+                    ignoreReadonly: true,
+                    useCurrent: false
+                };
+                vm.getFunds = getFunds;
+                vm.getFundsAnnualReportData = getFundsAnnualReportData;
+                vm.today = new Date();
+
+                vm.gridOptions = {
+                    paginationPageSizes: [],
+                    paginationPageSize: 20,
+                    expandableRowTemplate: 'expandableRowTemplate.html',
+                    expandableRowHeight: 150,
+                    //subGridVariable will be available in subGrid scope
+                    expandableRowScope: {
+                        subGridVariable: 'subGridScopeVariable'
+                    }
+                }
+
+                vm.gridOptions.columnDefs = [
+                  //{ name: 'Bar Number', field: 'barNumber' }
+                  { displayName: 'MCAG', field: 'mcag' }, { displayName: 'Fund #', field: 'fundNumber' }, { displayName: 'Fund Name', field: 'fundDisplayName' },
+                  { displayName: 'BARs Account', field: 'barNumber' }, { displayName: 'BARs Name', field: 'barDisplayName' },
+                  { displayName: 'Amount', field: 'amount', cellFilter: 'currency' }
+                ];
+
+                activate();
+
+                /////////////////////////////////////
+
+                function activate() {
+
+                }
+                function getFunds() {
+                    vm.selectedFund = undefined;
+                    $timeout(function () {
+                        blockUI.message('Loading funds ...');
+                    }, 0);
+                    var selectedYear = new Date(vm.year).getFullYear();
+                    $http.get('/api/funds/primary/' + selectedYear).then(function (result) {
+                        vm.funds = result.data;
+                    });
+                }
+
+                function getFundsAnnualReportData() {
+                    $timeout(function () {
+                        blockUI.message('Loading data for fund "' + vm.selectedFund.displayName + '"');
+                    }, 0);
+                    var selectedYear = new Date(vm.year).getFullYear();
+                    $http.get('/api/report/funds-annualreport/' + selectedYear + '/' + vm.selectedFund.id).then(function (result) {
+                        vm.reportData = result.data;
+                        angular.forEach(result.data, function (item) {
+                            item.subGridOptions = {
+                                columnDefs: [{ displayName: "Debit", field: "debit" }, { displayName: "Credit", field: "credit" }],
+                                data: item.rows
+                            }
+                        });
+                        vm.gridOptions.data = result.data;
+                    });
+                }
+            }
+        })();
+    </script>
+}

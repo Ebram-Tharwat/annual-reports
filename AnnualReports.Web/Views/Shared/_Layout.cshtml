@@ -23,6 +23,12 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Funds", "Index", "Funds")</li>
                     <li>@Html.ActionLink("Bars", "Index", "Bars")</li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Funds Annual Report", "FundsAnnualReport", "Reports")</li>
+                        </ul>
+                    </li>  
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
