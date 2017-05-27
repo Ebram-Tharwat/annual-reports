@@ -1,28 +1,26 @@
 ﻿using AnnualReports.Application.Core;
 using AnnualReports.Application.Core.Contracts.Paging;
 using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Common.Extensions;
+using AnnualReports.Common.Utils;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Web.Extensions;
 using AnnualReports.Web.ViewModels.BarModels;
 using AnnualReports.Web.ViewModels.CommonModels;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Data;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using AnnualReports.Common.Extensions;
-using AnnualReports.Common.Utils;
-using System.Data;
-using AutoMapper;
 
 namespace AnnualReports.Web.Controllers
 {
     public class BarsController : BaseController
     {
         private IBarService _barService;
-        
+
         private IExportingService _exportingService;
 
         public BarsController(IBarService barService, IExportingService exportingService)
@@ -37,7 +35,7 @@ namespace AnnualReports.Web.Controllers
             var entities = Enumerable.Empty<Bar>();
             if (TryValidateModel(filter))
             {
-                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear)?int.Parse(filter.DateAsYear):-1, pagingInfo);
+                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : -1, pagingInfo);
                 ViewBag.DisplayResults = true;
             }
             else
@@ -60,7 +58,7 @@ namespace AnnualReports.Web.Controllers
             MemoryStream stream = _exportingService.GetBarsTemplate(year);
 
             return File(stream, Constants.ExcelFilesMimeType,
-                string.Format(Constants.BarsTemplateExcelFileName , year));
+                string.Format(Constants.BarsTemplateExcelFileName, year));
         }
 
         public ActionResult Upload()
@@ -86,45 +84,26 @@ namespace AnnualReports.Web.Controllers
                     int numOfEntitiesUpdated = 0;
                     // load existed entities from DB, aka "cache".
                     var existedEntities = GetExistedBars(dtBarsHours).ToList();
-                    List<Tuple<int, string>> barNumberWithMapToBarIdList = new List<Tuple<int, string>>();
                     foreach (var row in dtBarsHours.AsEnumerable().ToList())
                     {
                         var entityViewModel = new BarDetailsViewModel()
                         {
                             Year = int.Parse(row["Year"].ToString()),
-                            BarNumber = int.Parse(row["State BARS Number"].ToString()),
-                            MapToBarId = int.Parse(row["Map to"].ToString()),
+                            BarNumber = row["State BARS Number"].ToString(),
+                            MapToBarNumber = row["Map to"].ToString(),
                             DisplayName = row["Display Name"].ToString(),
+                            Period = string.IsNullOrWhiteSpace(row["Period"].ToString()) ? (int?)null : int.Parse(row["Period"].ToString()),
                             IsActive = string.IsNullOrWhiteSpace(row["Is Active"].ToString()) ? false : row["Is Active"].ToString() == "1" ? true : false
                         };
-                        //var existedBar = _barService.GetByBarNumber(entityViewModel.BarNumber);
-                        //if (existedBar == null)
-                        //{
-                        //    ModelState.AddModelError("", $"Invalid Bar Id with value ={entityViewModel.BarNumber}");
-                        //}
-                        // check if entity already exists.
-                        var existedEntity = existedEntities.FirstOrDefault(t => t.BarNumber == entityViewModel.BarNumber.ToString()
-                         && t.Year == entityViewModel.Year);
+                        var existedEntity = existedEntities.FirstOrDefault(t => t.BarNumber == entityViewModel.BarNumber && t.Year == entityViewModel.Year);
                         if (existedEntity == null)
                         {
                             var entity = Mapper.Map<BarDetailsViewModel, Bar>(entityViewModel);
-                            barNumberWithMapToBarIdList.Add(new Tuple<int, string>(entityViewModel.BarNumber, entityViewModel.MapToBarId.ToString()));
-                            entity.MapToBarId = null;
-                            //entity.Id = existedEntity.Id;
                             addedEntities.Add(entity);
                         }
                         else
                         {
                             entityViewModel.Id = existedEntity.Id;
-                            var mapToBar = _barService.GetByBarNumber(entityViewModel.MapToBarId);
-                            if(mapToBar != null)
-                            {
-                                entityViewModel.MapToBarId = mapToBar.Id;
-                            }
-                            else
-                            {
-                                entityViewModel.MapToBarId = existedEntity.MapToBarId.Value;
-                            }
                             Mapper.Map(entityViewModel, existedEntity);
                             _barService.Update(existedEntity);
                             numOfEntitiesUpdated++;
@@ -133,14 +112,8 @@ namespace AnnualReports.Web.Controllers
                     if (addedEntities.Any())
                     {
                         _barService.Add(addedEntities);
-                        foreach (var item in addedEntities)
-                        {
-                            var addedItem = _barService.GetByBarNumber(int.Parse(barNumberWithMapToBarIdList.Where(t => t.Item1 == int.Parse(item.BarNumber)).FirstOrDefault().Item2));
-                            item.MapToBarId = addedItem.Id;
-                            _barService.Update(item);
-                        }
                     }
-                   
+
                     Success($"<strong>{addedEntities.Count}</strong> records have been successfully added. <br\\>"
                         + $"<strong>{numOfEntitiesUpdated}</strong> records have been successfully updated.");
                 }
@@ -173,7 +146,7 @@ namespace AnnualReports.Web.Controllers
                 }
                 return View(viewmodel);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Danger("An error happened while updating Bars. Please try again.");
                 return View(viewmodel);
@@ -181,6 +154,7 @@ namespace AnnualReports.Web.Controllers
         }
 
         #region Helpers
+
         private IEnumerable<Bar> GetExistedBars(DataTable dtBars)
         {
             var groupByYear = dtBars.AsEnumerable().GroupBy(t => t["Year"]);
@@ -194,6 +168,7 @@ namespace AnnualReports.Web.Controllers
                 }
             }
         }
-        #endregion
+
+        #endregion Helpers
     }
 }

@@ -1,13 +1,10 @@
-﻿using AnnualReports.Application.Core.Interfaces;
-using System;
+﻿using AnnualReports.Application.Core.Contracts.Paging;
+using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
+using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AnnualReports.Application.Core.Contracts.Paging;
-using AnnualReports.Domain.Core.AnnualReportsDbModels;
-using AnnualReports.Infrastructure.Core.Interfaces;
-using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 
 namespace AnnualReports.Application.Core.Services
 {
@@ -15,11 +12,13 @@ namespace AnnualReports.Application.Core.Services
     {
         private readonly IRepository<Bar> _barRepository;
         private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
+
         public BarService(IRepository<Bar> barRepository, IUnitOfWork<AnnualReportsDbContext> uow)
         {
             _barRepository = barRepository;
             _uow = uow;
         }
+
         public void Add(IEnumerable<Bar> entities)
         {
             _barRepository.Add(entities);
@@ -28,45 +27,22 @@ namespace AnnualReports.Application.Core.Services
 
         public List<Bar> CopyBars(int fromYear, int toYear)
         {
-            // 2- remove any existing bars in the year to copy to.
-            var barsNeedToBeUpdated = _barRepository.Get(b => b.Year == toYear);
-            if (barsNeedToBeUpdated != null && barsNeedToBeUpdated.Any())
-            {
-                foreach (var bar in barsNeedToBeUpdated)
-                {
-                    bar.MapToBarId = null;
-                }
-                _uow.Commit();
-                this.RemoveBars(toYear);
-            }
-            // 3- copy bars.
-            var dbFunds = this.GetAllBars(fromYear);
-            var parentBars = dbFunds.Where(t => t.MapToBarId == null || (t.MapToBarId.HasValue && t.MapToBar.BarNumber == t.BarNumber))
-                .ToList();
-            var childFunds = dbFunds.Except(parentBars);
+            // 1- remove any existing bars in the year to copy to.
+            this.RemoveBars(toYear);
 
-            // add all funds which map to themselves.
-            var parentBarsToAdd = parentBars.Select(t =>
+            // 2- copy bars.
+            var dbBars = this.GetAllBars(fromYear);
+
+            // 3- add bars
+            var barsToAdd = dbBars.Select(t =>
             {
                 t.Year = (short)toYear;
-                //t.Id = 0;
-                t.MapToBarId = null;
                 return t;
             }).ToList();
-            _barRepository.Add(parentBarsToAdd);
+            _barRepository.Add(barsToAdd);
             _uow.Commit(); // commit changes to get the Id value.
 
-            var childFundsToAdd = childFunds.Select(t =>
-            {
-                var mapto = parentBars.FirstOrDefault(p => p.BarNumber == t.MapToBar.BarNumber);
-                t.MapToBarId = mapto?.Id;
-                t.Year = (short)toYear;
-                return t;
-            }).ToList();
-            _barRepository.Add(childFundsToAdd);
-            _uow.Commit();
-
-            return parentBarsToAdd.Union(childFundsToAdd).ToList();
+            return barsToAdd;
         }
 
         private void RemoveBars(int year)
@@ -77,13 +53,12 @@ namespace AnnualReports.Application.Core.Services
         public List<Bar> GetAllBars(int year, PagingInfo pagingInfo = null)
         {
             if (pagingInfo == null)
-                return _barRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.BarNumber)), t => t.MapToBar).ToList();
+                return _barRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.BarNumber))).ToList();
             else
             {
                 int total = 0;
                 var result = _barRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.BarNumber))
-                    , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                    t => t.MapToBar).ToList();
+                    , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
                 pagingInfo.Total = total;
                 return result;
             }
@@ -97,7 +72,7 @@ namespace AnnualReports.Application.Core.Services
         public List<Bar> GetByYear(int year)
         {
             var result = _barRepository.Get(b => b.Year == year);
-            if(result == null)
+            if (result == null)
             {
                 return null;
             }

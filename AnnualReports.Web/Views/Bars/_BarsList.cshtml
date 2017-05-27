@@ -10,7 +10,10 @@
             @Html.DisplayNameFor(model => model.DisplayName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.MapToBarId)
+            @Html.DisplayNameFor(model => model.MapToBarNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Period)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Year)
@@ -30,7 +33,10 @@
                     @Html.DisplayFor(modelItem => item.DisplayName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MapToBarId)
+                    @Html.DisplayFor(modelItem => item.MapToBarNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Period)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Year)

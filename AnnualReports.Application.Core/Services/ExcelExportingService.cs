@@ -83,7 +83,7 @@ namespace AnnualReports.Application.Core.Services
             {
                 dataSheet.Cells["A" + index].Value = year;
                 dataSheet.Cells["B" + index].Value = bar.BarNumber;
-                dataSheet.Cells["C" + index].Value = bar.MapToBarId;
+                dataSheet.Cells["C" + index].Value = bar.MapToBarNumber;
                 dataSheet.Cells["D" + index].Value = bar.DisplayName;
                 dataSheet.Cells["G" + index].Value = bar.IsActive;
                 index++;

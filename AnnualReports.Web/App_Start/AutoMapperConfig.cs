@@ -34,9 +34,9 @@ namespace GRis.App_Start
                 #region Bar
 
                 cfg.CreateMap<Bar, BarDetailsViewModel>()
-              .ForMember(dest => dest.MapToBarId, opt => opt.MapFrom(src => src.MapToBarId == null ? src.BarNumber : src.MapToBar.BarNumber));
+                ;
                 cfg.CreateMap<BarDetailsViewModel, Bar>()
-             .ForMember(dest => dest.MapToBarId, opt => opt.MapFrom(src => src.MapToBarId));
+                ;
 
                 #endregion Bar
             });
