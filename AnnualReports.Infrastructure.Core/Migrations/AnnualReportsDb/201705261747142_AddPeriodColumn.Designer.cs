@@ -13,12 +13,12 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
         
         string IMigrationMetadata.Id
         {
-            get { return "201705201035492_AddPeriodColumn"; }
+            get { return "201705261747142_AddPeriodColumn"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return Resources.GetString("Source"); }
+            get { return null; }
         }
         
         string IMigrationMetadata.Target

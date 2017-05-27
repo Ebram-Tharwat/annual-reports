@@ -1,7 +1,8 @@
 namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
 {
+    using System;
     using System.Data.Entity.Migrations;
-
+    
     public partial class FundsAnnualReportData : DbMigration
     {
         public override void Up()

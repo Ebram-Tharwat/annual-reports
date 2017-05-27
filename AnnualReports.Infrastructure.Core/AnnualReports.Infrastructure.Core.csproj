@@ -138,13 +138,21 @@
     <Compile Include="Migrations\AnnualReportsDb\201705072331407_RemoveFixedLength.Designer.cs">
       <DependentUpon>201705072331407_RemoveFixedLength.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\AnnualReportsDb\201705201035492_AddPeriodColumn.cs" />
-    <Compile Include="Migrations\AnnualReportsDb\201705201035492_AddPeriodColumn.Designer.cs">
-      <DependentUpon>201705201035492_AddPeriodColumn.cs</DependentUpon>
+    <Compile Include="Migrations\AnnualReportsDb\201705261747142_AddPeriodColumn.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201705261747142_AddPeriodColumn.Designer.cs">
+      <DependentUpon>201705261747142_AddPeriodColumn.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\AnnualReportsDb\201705211927021_FundsAnnualReportData.cs" />
-    <Compile Include="Migrations\AnnualReportsDb\201705211927021_FundsAnnualReportData.Designer.cs">
-      <DependentUpon>201705211927021_FundsAnnualReportData.cs</DependentUpon>
+    <Compile Include="Migrations\AnnualReportsDb\201705261809418_RemoveBarNumber_FixedLength.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201705261809418_RemoveBarNumber_FixedLength.Designer.cs">
+      <DependentUpon>201705261809418_RemoveBarNumber_FixedLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201705261810353_FundsAnnualReportData.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201705261810353_FundsAnnualReportData.Designer.cs">
+      <DependentUpon>201705261810353_FundsAnnualReportData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201705271020446_RemoveMapToBarFK.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201705271020446_RemoveMapToBarFK.Designer.cs">
+      <DependentUpon>201705271020446_RemoveMapToBarFK.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Migrations\ScriptResources.Designer.cs">
@@ -221,15 +229,21 @@
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201705072331407_RemoveFixedLength.resx">
       <DependentUpon>201705072331407_RemoveFixedLength.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705211927021_FundsAnnualReportData.resx">
-      <DependentUpon>201705211927021_FundsAnnualReportData.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705261747142_AddPeriodColumn.resx">
+      <DependentUpon>201705261747142_AddPeriodColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705261809418_RemoveBarNumber_FixedLength.resx">
+      <DependentUpon>201705261809418_RemoveBarNumber_FixedLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705261810353_FundsAnnualReportData.resx">
+      <DependentUpon>201705261810353_FundsAnnualReportData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705271020446_RemoveMapToBarFK.resx">
+      <DependentUpon>201705271020446_RemoveMapToBarFK.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\ScriptResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ScriptResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\AnnualReportsDb\201705201035492_AddPeriodColumn.resx">
-      <DependentUpon>201705201035492_AddPeriodColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

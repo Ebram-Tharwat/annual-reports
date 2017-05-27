@@ -72,15 +72,15 @@ namespace AnnualReports.Infrastructure.Core.Migrations {
         /// <summary>
         ///   Looks up a localized string similar to CREATE PROCEDURE GetDISTFundsReportDataPro
         ///	@Year INT,
-        ///	@FundNumber NVARCHAR(9)
+        ///	@FundId INT
         ///AS
         ///BEGIN
         ///	-- SET NOCOUNT ON added to prevent extra result sets from
         ///	-- interfering with SELECT statements.
         ///	SET NOCOUNT ON;
         ///
-        ///    SELECT ParentFunds.FundNumber as PrimaryFundNumber, ParentFunds.Year, ParentFunds.DisplayName AS FundDisplayName
-        ///	, ReportView.PERIODID AS View_Period, ReportView.ACTNUMBR_1 AS View_FundNumber, ReportView.ACTNUMBR_3 AS View_BarNumber, ReportView.DEBITAMT AS Debit, ReportView.CRDTAMNT AS Cred [rest of string was truncated]&quot;;.
+        ///    SELECT ParentFunds.FundNumber as PrimaryFundNumber, ParentFunds.Year, ParentFunds.DisplayName AS FundDisplayName, ParentFunds.MCAG
+        ///	, ReportView.PERIODID AS View_Period, ReportView.ACTNUMBR_1 AS View_FundNumber, ReportView.ACTNUMBR_3 AS View_BarNumber, ReportView.DEBITAMT AS Debit, ReportView.CRDTAMNT A [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string GetDISTFundsReportDataPro_UP {
             get {
@@ -107,10 +107,10 @@ namespace AnnualReports.Infrastructure.Core.Migrations {
         ///	-- interfering with SELECT statements.
         ///	SET NOCOUNT ON;
         ///
-        ///    CREATE TABLE #ReportDate (PrimaryFundNumber NVARCHAR(9), Year SMALLINT, FundDisplayName NVARCHAR(100), View_Period SMALLINT, View_FundNumber VARCHAR(9), View_BarNumber VARCHAR(9), Debit NUMERIC(19,5), Credit NUMERIC(19,5))
+        ///    CREATE TABLE #ReportDate (PrimaryFundNumber NVARCHAR(9), Year SMALLINT, FundDisplayName NVARCHAR(100), MCAG NVARCHAR(10), View_Period SMALLINT, View_FundNumber VARCHAR(9), View_BarNumber VARCHAR(9), Debit NUMERIC(19,5), Credit NUMERIC(19,5))
         ///	
         ///	INSERT #ReportDate
-        ///	EXEC GetGCFundsReportDataPro @Year, @FundNumber        /// [rest of string was truncated]&quot;;.
+        ///	EXEC GetGCFundsReportDataPro  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string GetFundsReportDataPro_UP {
             get {
@@ -130,15 +130,15 @@ namespace AnnualReports.Infrastructure.Core.Migrations {
         /// <summary>
         ///   Looks up a localized string similar to CREATE PROCEDURE GetGCFundsReportDataPro
         ///	@Year INT,
-        ///	@FundNumber NVARCHAR(9)
+        ///	@FundId INT
         ///AS
         ///BEGIN
         ///	-- SET NOCOUNT ON added to prevent extra result sets from
         ///	-- interfering with SELECT statements.
         ///	SET NOCOUNT ON;
         ///
-        ///    SELECT ParentFunds.FundNumber as PrimaryFundNumber, ParentFunds.Year, ParentFunds.DisplayName AS FundDisplayName
-        ///	, ReportView.PERIODID AS View_Period, ReportView.ACTNUMBR_1 AS View_FundNumber, ReportView.ACTNUMBR_5 AS View_BarNumber, ReportView.DEBITAMT AS Debit, ReportView.CRDTAMNT AS Credit [rest of string was truncated]&quot;;.
+        ///    SELECT ParentFunds.FundNumber as PrimaryFundNumber, ParentFunds.Year, ParentFunds.DisplayName AS FundDisplayName, ParentFunds.MCAG
+        ///	, ReportView.PERIODID AS View_Period, ReportView.ACTNUMBR_1 AS View_FundNumber, ReportView.ACTNUMBR_5 AS View_BarNumber, ReportView.DEBITAMT AS Debit, ReportView.CRDTAMNT AS  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string GetGCFundsReportDataPro_UP {
             get {

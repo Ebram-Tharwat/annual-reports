@@ -10,7 +10,7 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         [Key]
         public int Id { get; set; }
 
-        [Column(TypeName = "char")]
+        //[Column(TypeName = "char")]
         [Required]
         [MaxLength(9)]
         [StringLength(9)]
@@ -24,15 +24,15 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         [Required]
         public Int16 Year { get; set; }
 
-        public int? MapToBarId { get; set; }
+        [Required]
+        [MaxLength(9)]
+        [StringLength(9)]
+        public string MapToBarNumber { get; set; }
 
         public int? Period { get; set; }
 
         [Required]
         [DefaultValue(true)]
         public bool IsActive { get; set; }
-
-        [ForeignKey("MapToBarId")]
-        public Bar MapToBar { get; set; }
     }
 }

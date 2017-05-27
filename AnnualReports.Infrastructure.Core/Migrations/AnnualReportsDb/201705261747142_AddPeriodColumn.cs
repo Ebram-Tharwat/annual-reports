@@ -7,7 +7,7 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
     {
         public override void Up()
         {
-            AddColumn("dbo.Bars", "Period", c => c.Int(nullable: true));
+            AddColumn("dbo.Bars", "Period", c => c.Int());
         }
         
         public override void Down()

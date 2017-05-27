@@ -11,7 +11,7 @@ namespace AnnualReports.Infrastructure.Core.Mappings.AnnualReportsDb
 
         public BarConfiguration(string schema)
         {
-            Property(x => x.BarNumber).IsFixedLength().IsUnicode(false);
+            //Property(x => x.BarNumber).IsFixedLength().IsUnicode(false);
         }
     }
 }

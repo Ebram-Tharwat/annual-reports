@@ -7,13 +7,13 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class FundsAnnualReportData : IMigrationMetadata
+    public sealed partial class RemoveBarNumber_FixedLength : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(FundsAnnualReportData));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(RemoveBarNumber_FixedLength));
         
         string IMigrationMetadata.Id
         {
-            get { return "201705211927021_FundsAnnualReportData"; }
+            get { return "201705261809418_RemoveBarNumber_FixedLength"; }
         }
         
         string IMigrationMetadata.Source
