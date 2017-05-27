@@ -1,5 +1,6 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Domain.Core.Contracts;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,8 @@ namespace AnnualReports.Application.Core.Services
 {
     public class ReportService : IReportService
     {
-        private IAnnualReportsDbFundRepository _fundsRepository;
-        private IBarService _barService;
+        private readonly IAnnualReportsDbFundRepository _fundsRepository;
+        private readonly IBarService _barService;
 
         public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService)
         {
@@ -17,11 +18,11 @@ namespace AnnualReports.Application.Core.Services
             this._barService = barService;
         }
 
-        public List<FundsReportDataItemDetails> GetFundsReportData(int year, string fundNumber = null, string barNumber = null)
+        public List<FundsReportDataItemDetails> GetFundsReportData(int year, int? fundId = null, string barNumber = null)
         {
             var reportData = new List<FundsReportDataItemDetails>();
             // 1- get all possible combination of funds*bars
-            var fundsReportData = _fundsRepository.GetFundsReportDataRows(year, fundNumber);
+            var fundsReportData = _fundsRepository.GetFundsReportDataRows(year, fundId);
             // 2- get all possible/valid bars
             var bars = _barService.GetAllBars(year);
             // 3- generate report item detail.
@@ -29,26 +30,34 @@ namespace AnnualReports.Application.Core.Services
             foreach (var fundGroup in groupByFundNumber)
             {
                 foreach (var bar in bars)
-                {                    
-                    var fundRows = fundGroup.Where(t => t.View_BarNumber.StartsWith(bar.BarNumber)).ToList();
-                    decimal total;
-                    var barNumberToValidate = (bar.MapToBarId == null) ? bar.BarNumber : bar.MapToBar.BarNumber;
-                    if (barNumberToValidate.StartsWith("5") || barNumberToValidate.StartsWith("1"))
-                        total = fundRows.Sum(t => t.Debit - t.Credit);
+                {
+                    List<FundsReportDataRow> fundRows;
+                    if (bar.Period.HasValue)
+                        fundRows = fundGroup.Where(t => t.View_BarNumber.StartsWith(bar.BarNumber) && t.View_Period == bar.Period.Value).ToList();
                     else
-                        total = fundRows.Sum(t => t.Credit - t.Debit);
+                        fundRows = fundGroup.Where(t => t.View_BarNumber.StartsWith(bar.BarNumber)).ToList();
 
-                    reportData.Add(new FundsReportDataItemDetails()
+                    if (fundRows.Count > 0)
                     {
-                        FundNumber = fundGroup.Key.PrimaryFundNumber,
-                        FundDisplayName = fundGroup.Key.FundDisplayName,
-                        BarNumber = bar.BarNumber,
-                        BarDisplayName = bar.DisplayName,
-                        Year = year,
-                        MCAG = fundGroup.Key.MCAG,
-                        Rows = fundRows,
-                        Total = total
-                    });
+                        decimal total;
+                        var barNumberToValidate = (string.IsNullOrEmpty(bar.MapToBarNumber)) ? bar.BarNumber : bar.MapToBarNumber;
+                        if (barNumberToValidate.StartsWith("5") || barNumberToValidate.StartsWith("1"))
+                            total = fundRows.Sum(t => t.Debit - t.Credit);
+                        else
+                            total = fundRows.Sum(t => t.Credit - t.Debit);
+
+                        reportData.Add(new FundsReportDataItemDetails()
+                        {
+                            FundNumber = fundGroup.Key.PrimaryFundNumber,
+                            FundDisplayName = fundGroup.Key.FundDisplayName,
+                            BarNumber = bar.BarNumber,
+                            BarDisplayName = bar.DisplayName,
+                            Year = year,
+                            MCAG = fundGroup.Key.MCAG,
+                            Rows = fundRows,
+                            Amount = total
+                        });
+                    }
                 }
             }
             return reportData;

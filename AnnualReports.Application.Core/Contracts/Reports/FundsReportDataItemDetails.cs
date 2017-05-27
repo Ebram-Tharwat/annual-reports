@@ -19,6 +19,6 @@ namespace AnnualReports.Application.Core.Contracts.Reports
 
         public List<FundsReportDataRow> Rows { get; set; }
 
-        public decimal Total { get; set; }
+        public decimal Amount { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace AnnualReports.Application.Core.Services
             var newFunds = fundsToAdd.Select(fund => new Fund()
             {
                 FundNumber = fund.Number,
-                GpDescription = fund.Description,
+                GpDescription = fund.Description.Trim(),
                 DbSource = fund.DbSource,
                 IsActive = true,
                 DisplayName = fund.Description,

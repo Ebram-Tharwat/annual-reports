@@ -12,9 +12,9 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
         {
         }
 
-        public IEnumerable<FundsReportDataRow> GetFundsReportDataRows(int year, string fundNumber = null)
+        public IEnumerable<FundsReportDataRow> GetFundsReportDataRows(int year, int? fundId = null)
         {
-            return _dbContext.Database.SqlQuery<FundsReportDataRow>("GetFundsReportDataPro {0},{1}", year, fundNumber);
+            return _dbContext.Database.SqlQuery<FundsReportDataRow>("GetFundsReportDataPro {0},{1}", year, fundId);
         }
     }
 }
