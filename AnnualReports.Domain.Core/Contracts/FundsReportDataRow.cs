@@ -21,5 +21,17 @@ namespace AnnualReports.Domain.Core.Contracts
         public decimal Debit { get; set; }
 
         public decimal Credit { get; set; }
+
+        public string ACTNUMBR_1 { get; set; }
+
+        public string ACTNUMBR_2 { get; set; }
+
+        public string ACTNUMBR_3 { get; set; }
+
+        public string ACTNUMBR_4 { get; set; }
+
+        public string ACTNUMBR_5 { get; set; }
+
+        public string AccountDescription { get; set; }
     }
 }

@@ -60,7 +60,7 @@
                             <div class='input-group'>
                                 <input type="text" name="year" data-ng-model="vm.exportModel.year" class="form-control" readonly=""
                                        data-datetimepicker data-options="vm.yearPickerOptions"
-                                       required=""/>
+                                       required="" />
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -88,7 +88,7 @@
         </script>
     </div>
 </div>
-        </div>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/plugins")
@@ -152,8 +152,8 @@
                 }
 
                 vm.gridOptions.columnDefs = [
-                  { displayName: 'MCAG', field: 'mcag' }, { displayName: 'Fund #', field: 'fundNumber' }, { displayName: 'Fund Name', field: 'fundDisplayName' },
-                  { displayName: 'BARs Account', field: 'barNumber' }, { displayName: 'BARs Name', field: 'barDisplayName' },
+                  { displayName: 'MCAG', field: 'mcag' }, { displayName: 'Fund #', field: 'fundNumber' }, { displayName: 'Fund Name', field: 'fundDisplayName', cellTooltip: true },
+                  { displayName: 'BARs Account', field: 'barNumber' }, { displayName: 'BARs Name', field: 'barDisplayName', cellTooltip: true },
                   { displayName: 'Amount', field: 'amount', cellFilter: 'currency' }
                 ];
 
@@ -184,7 +184,11 @@
                         vm.reportData = result.data;
                         angular.forEach(result.data, function (item) {
                             item.subGridOptions = {
-                                columnDefs: [{ displayName: "Debit", field: "debit" }, { displayName: "Credit", field: "credit" }],
+                                columnDefs: [{ displayName: "Debit", field: "debit" }, { displayName: "Credit", field: "credit" }
+                                , { displayName: "Period", field: "view_Period" }, { displayName: "Act Desc", field: "accountDescription", width: '*', cellTooltip: true }
+                                , { displayName: "Act #1", field: "actnumbR_1" }, { displayName: "Act #2", field: "actnumbR_2" }
+                                , { displayName: "Act #3", field: "actnumbR_3" }, { displayName: "Act #4", field: "actnumbR_4" }
+                                , { displayName: "Act #5", field: "actnumbR_5" }],
                                 data: item.rows
                             }
                         });

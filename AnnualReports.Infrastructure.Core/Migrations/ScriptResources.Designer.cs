@@ -107,10 +107,9 @@ namespace AnnualReports.Infrastructure.Core.Migrations {
         ///	-- interfering with SELECT statements.
         ///	SET NOCOUNT ON;
         ///
-        ///    CREATE TABLE #ReportDate (PrimaryFundNumber NVARCHAR(9), Year SMALLINT, FundDisplayName NVARCHAR(100), MCAG NVARCHAR(10), View_Period SMALLINT, View_FundNumber VARCHAR(9), View_BarNumber VARCHAR(9), Debit NUMERIC(19,5), Credit NUMERIC(19,5))
-        ///	
-        ///	INSERT #ReportDate
-        ///	EXEC GetGCFundsReportDataPro  [rest of string was truncated]&quot;;.
+        ///    CREATE TABLE #ReportDate (PrimaryFundNumber NVARCHAR(9), Year SMALLINT, FundDisplayName NVARCHAR(100), MCAG NVARCHAR(10), View_Period SMALLINT
+        ///    , View_FundNumber VARCHAR(9), View_BarNumber VARCHAR(9), Debit NUMERIC(19,5), Credit NUMERIC(19,5)
+        ///    , ACTNUMBR_1 VARCHAR(9), ACTNUMBR_2 VARCHAR(9 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string GetFundsReportDataPro_UP {
             get {
