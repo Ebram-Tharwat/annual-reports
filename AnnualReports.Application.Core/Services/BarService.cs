@@ -45,6 +45,11 @@ namespace AnnualReports.Application.Core.Services
             return barsToAdd;
         }
 
+        public Bar GetById(int id)
+        {
+            return _barRepository.GetById(id);
+        }
+
         private void RemoveBars(int year)
         {
             _barRepository.BatchDelete(t => t.Year == year);

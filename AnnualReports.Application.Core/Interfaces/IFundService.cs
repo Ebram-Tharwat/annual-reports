@@ -24,5 +24,9 @@ namespace AnnualReports.Application.Core.Interfaces
         void RemoveFunds(int year, DbSource dbSource);
 
         List<FundBasicInfo> GetPrimaryFunds(int year, DbSource dbSource, PagingInfo pagingInfo = null);
+
+        Fund GetById(int id);
+
+        void Update(Fund fund);
     }
 }

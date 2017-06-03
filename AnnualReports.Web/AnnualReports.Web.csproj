@@ -276,6 +276,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Validations\AllowedFileExtensionAttribute.cs" />
+    <Compile Include="ViewModels\BarModels\BarEditViewModel.cs" />
     <Compile Include="ViewModels\BarModels\BarDetailsViewModel.cs" />
     <Compile Include="ViewModels\BarModels\BarsCopyViewModel.cs" />
     <Compile Include="ViewModels\BarModels\BarsListViewModel.cs" />
@@ -283,6 +284,7 @@
     <Compile Include="ViewModels\CommonModels\Alert.cs" />
     <Compile Include="ViewModels\CommonModels\YearFilterViewModel.cs" />
     <Compile Include="ViewModels\FundModels\FundDetailsViewModel.cs" />
+    <Compile Include="ViewModels\FundModels\FundEditViewModel.cs" />
     <Compile Include="ViewModels\FundModels\FundsCopyViewModel.cs" />
     <Compile Include="ViewModels\FundModels\FundsUploadViewModel.cs" />
   </ItemGroup>
@@ -422,6 +424,8 @@
     <Content Include="Views\Bars\Copy.cshtml" />
     <Content Include="Scripts\ng-table.min.js.map" />
     <Content Include="Scripts\ng-table.js.map" />
+    <Content Include="Views\Funds\Edit.cshtml" />
+    <Content Include="Views\Bars\Edit.cshtml" />
     <None Include="Views\Funds\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\YearDatePicker.cshtml" />
     <Content Include="Views\Funds\_fundsList.cshtml" />

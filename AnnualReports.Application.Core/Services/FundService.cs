@@ -205,5 +205,16 @@ namespace AnnualReports.Application.Core.Services
 
             return primaryFunds;
         }
+
+        public Fund GetById(int id)
+        {
+            return _fundsRepository.GetById(id);
+        }
+
+        public void Update(Fund fund)
+        {
+            _fundsRepository.Update(fund);
+            _uow.Commit();
+        }
     }
 }

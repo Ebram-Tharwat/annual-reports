@@ -8,11 +8,13 @@ using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Web.Extensions;
 using AnnualReports.Web.ViewModels.CommonModels;
 using AnnualReports.Web.ViewModels.FundModels;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 
 namespace AnnualReports.Web.Controllers
@@ -143,6 +145,60 @@ namespace AnnualReports.Web.Controllers
                 Danger("An error happened while updating Funds. Please try again.");
                 return View(viewmodel);
             }
+        }
+
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Fund entity = _fundService.GetById(id.Value);
+            if (entity == null)
+            {
+                return HttpNotFound();
+            }
+            var viewmodel = Mapper.Map<Fund, FundEditViewModel>(entity);
+            viewmodel.PrimaryFunds = _fundService.GetPrimaryFunds(entity.Year, entity.DbSource)
+                .Select(t => new SelectListItem()
+                {
+                    Text = t.DisplayName + " - " + t.FundNumber,
+                    Value = t.Id.ToString()
+                });
+            return View(viewmodel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(FundEditViewModel viewmodel)
+        {
+            Fund entity = null;
+            if (ModelState.IsValid)
+            {
+                entity = _fundService.GetById(viewmodel.Id);
+                if (entity == null)
+                {
+                    return HttpNotFound();
+                }
+                Mapper.Map(viewmodel, entity);
+
+                _fundService.Update(entity);
+                Success($"<strong>{entity.DisplayName} - {entity.FundNumber}</strong> was successfully updated.");
+                return RedirectToAction("Index");
+            }
+            entity = _fundService.GetById(viewmodel.Id);
+            if (entity == null)
+            {
+                return HttpNotFound();
+            }
+            viewmodel.PrimaryFunds = _fundService.GetPrimaryFunds(entity.Year, entity.DbSource)
+                .Select(t => new SelectListItem()
+                {
+                    Text = t.DisplayName + " - " + t.FundNumber,
+                    Value = t.Id.ToString()
+                });
+            return View(viewmodel);
         }
     }
 }

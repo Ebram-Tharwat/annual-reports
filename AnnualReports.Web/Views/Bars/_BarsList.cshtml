@@ -18,7 +18,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Year)
         </th>
-        @*<th></th>*@
+        <th></th>
     </tr>
     @if (Model.Any())
     {
@@ -41,11 +41,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Year)
                 </td>
-                @*<td>
-                        @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                        @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                        @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-                    </td>*@
+                <td>
+                        @Html.ActionLink("Edit", "Edit", new { id=item.Id })
+                        @*@Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                    </td>
             </tr>
         }
     }

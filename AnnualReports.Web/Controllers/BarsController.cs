@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 
 namespace AnnualReports.Web.Controllers
@@ -151,6 +152,43 @@ namespace AnnualReports.Web.Controllers
                 Danger("An error happened while updating Bars. Please try again.");
                 return View(viewmodel);
             }
+        }
+
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var entity = _barService.GetById(id.Value);
+            if (entity == null)
+            {
+                return HttpNotFound();
+            }
+            var viewmodel = Mapper.Map<Bar, BarEditViewModel>(entity);
+            return View(viewmodel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(BarEditViewModel viewmodel)
+        {
+            Bar entity = null;
+            if (ModelState.IsValid)
+            {
+                entity = _barService.GetById(viewmodel.Id);
+                if (entity == null)
+                {
+                    return HttpNotFound();
+                }
+                Mapper.Map(viewmodel, entity);
+
+                _barService.Update(entity);
+                Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully updated.");
+                return RedirectToAction("Index");
+            }
+            return View(viewmodel);
         }
 
         #region Helpers
