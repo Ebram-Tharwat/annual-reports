@@ -19,6 +19,7 @@ namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
             : base("Name=AnnualReportsDbContext")
         {
             this.Configuration.LazyLoadingEnabled = false;
+            this.Database.CommandTimeout = 180;
         }
 
         public AnnualReportsDbContext(string connectionString)
