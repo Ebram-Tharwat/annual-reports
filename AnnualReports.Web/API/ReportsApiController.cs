@@ -15,11 +15,11 @@ namespace AnnualReports.Web.API
             _fundService = fundService;
         }
 
-        [Route("funds-annualreport/{year:int}/{fundId?}")]
+        [Route("annualreport/{year:int}/{fundId?}")]
         [HttpGet]
-        public IHttpActionResult GetFundsReportData(int year, int? fundId = null)
+        public IHttpActionResult GetReportData(int year, int? fundId = null)
         {
-            return Ok(_reportService.GetFundsReportData(year, fundId));
+            return Ok(_reportService.GetAnnualReportData(year, fundId));
         }
     }
 }

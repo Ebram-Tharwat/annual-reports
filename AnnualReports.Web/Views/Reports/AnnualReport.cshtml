@@ -1,10 +1,10 @@
 ﻿@{
-    ViewBag.Title = "FundsAnnualReport";
+    ViewBag.Title = "AnnualReport";
 }
 
-<h2>Funds Annual Report</h2>
+<h2>Annual Report</h2>
 
-<div data-ng-app="app" data-ng-controller="FundsAnnualReportCtrl as vm">
+<div data-ng-app="app" data-ng-controller="AnnualReportCtrl as vm">
     <div block-ui="main" class="block-ui-main row" ng-cloak>
         <div class="col-md-6 col-xs-12">
             <div class="panel panel-default">
@@ -43,7 +43,7 @@
 
                         <div class="form-group">
                             <input type="submit" value="Display Data" class="btn btn-success pull-right" data-ng-disabled="form.$invalid"
-                                   data-ng-click="vm.getFundsAnnualReportData()" />
+                                   data-ng-click="vm.getAnnualReportData()" />
                         </div>
                     </form>
                 </div>
@@ -68,7 +68,7 @@
                         </div>
                         <div class="form-group">
                             <input value="Download Report" class="btn btn-success pull-right" data-ng-disabled="exportForm.$invalid"
-                                   data-ng-click="vm.downloadFundsAnnualReportData()" />
+                                   data-ng-click="vm.downloadAnnualReportData()" />
                         </div>
                     </form>
                 </div>
@@ -101,11 +101,11 @@
                 .module('app', ['ae-datetimepicker', 'ui.select', 'blockUI', 'ngSanitize', 'ui.grid', 'ui.grid.expandable', 'ui.grid.selection', 'ui.grid.pinning', 'ui.grid.pagination'])
                 .config(configure)
                 .run(runBlock)
-                .controller('FundsAnnualReportCtrl', FundsAnnualReportCtrl);;
+                .controller('AnnualReportCtrl', AnnualReportCtrl);;
 
             configure.$inject = ['$httpProvider', '$locationProvider', 'blockUIConfig'];
             runBlock.$inject = ['$rootScope'];
-            FundsAnnualReportCtrl.$inject = ['$http', 'blockUI', '$timeout'];
+            AnnualReportCtrl.$inject = ['$http', 'blockUI', '$timeout'];
 
             function configure($httpProvider, $locationProvider, blockUIConfig) {
                 $locationProvider.html5Mode(true);
@@ -122,7 +122,7 @@
             function runBlock($rootScope) {
             };
 
-            function FundsAnnualReportCtrl($http, blockUI, $timeout) {
+            function AnnualReportCtrl($http, blockUI, $timeout) {
                 var vm = this;
                 vm.exportModel = {};
                 vm.year = undefined;
@@ -137,8 +137,8 @@
                     useCurrent: false
                 };
                 vm.getFunds = getFunds;
-                vm.getFundsAnnualReportData = getFundsAnnualReportData;
-                vm.downloadFundsAnnualReportData = downloadFundsAnnualReportData;
+                vm.getAnnualReportData = getAnnualReportData;
+                vm.downloadAnnualReportData = downloadAnnualReportData;
 
                 vm.gridOptions = {
                     paginationPageSizes: [],
@@ -175,12 +175,12 @@
                     });
                 }
 
-                function getFundsAnnualReportData() {
+                function getAnnualReportData() {
                     $timeout(function () {
                         blockUI.message('Loading data for fund "' + vm.selectedFund.displayName + '"');
                     }, 0);
                     var selectedYear = new Date(vm.year).getFullYear();
-                    $http.get('/api/report/funds-annualreport/' + selectedYear + '/' + vm.selectedFund.id).then(function (result) {
+                    $http.get('/api/report/annualreport/' + selectedYear + '/' + vm.selectedFund.id).then(function (result) {
                         vm.reportData = result.data;
                         angular.forEach(result.data, function (item) {
                             item.subGridOptions = {
@@ -196,9 +196,9 @@
                     });
                 }
 
-                function downloadFundsAnnualReportData() {
+                function downloadAnnualReportData() {
                     var selectedYear = new Date(vm.exportModel.year).getFullYear();
-                    window.open('/reports/ExportFundsAnnualReportToExcel/' + selectedYear, '_blank', '');
+                    window.open('/reports/ExportAnnualReportToExcel/' + selectedYear, '_blank', '');
                 }
             }
         })();

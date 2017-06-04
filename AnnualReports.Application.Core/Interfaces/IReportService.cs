@@ -5,6 +5,6 @@ namespace AnnualReports.Application.Core.Interfaces
 {
     public interface IReportService
     {
-        List<FundsReportDataItemDetails> GetFundsReportData(int year, int? fundId = null, string barNumber = null);
+        List<AnnualReportDataItemDetails> GetAnnualReportData(int year, int? fundId = null, string barNumber = null);
     }
 }

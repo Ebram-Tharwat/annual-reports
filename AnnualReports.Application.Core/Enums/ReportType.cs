@@ -4,6 +4,6 @@
     {
         FundsTemplate = 1,
         BarsTemplate = 2,
-        FundsAnnualReportTemplate = 3
+        AnnualReportTemplate = 3
     }
 }

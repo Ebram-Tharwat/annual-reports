@@ -47,13 +47,13 @@ namespace AnnualReports.Application.Core.Services
             return stream;
         }
 
-        public MemoryStream GetFundsAnnualReportExcel(int year)
+        public MemoryStream GetAnnualReportExcel(int year)
         {
-            string excelTemplate = GetExcelTemplate(ReportType.FundsAnnualReportTemplate);
+            string excelTemplate = GetExcelTemplate(ReportType.AnnualReportTemplate);
             var templateFile = new FileInfo(excelTemplate);
             ExcelPackage package = new ExcelPackage(templateFile, true);
 
-            GenerateFundsAnnualReportTemplate(package, _reportService.GetFundsReportData(year), year);
+            GenerateAnnualReportTemplate(package, _reportService.GetAnnualReportData(year), year);
 
             var stream = new MemoryStream(package.GetAsByteArray());
             return stream;
@@ -123,9 +123,9 @@ namespace AnnualReports.Application.Core.Services
 
         #endregion Bars Template
 
-        #region Funds Annual Report
+        #region Annual Report
 
-        private void GenerateFundsAnnualReportTemplate(ExcelPackage excelPackage, IEnumerable<FundsReportDataItemDetails> reportData, int year)
+        private void GenerateAnnualReportTemplate(ExcelPackage excelPackage, IEnumerable<AnnualReportDataItemDetails> reportData, int year)
         {
             var dataSheet = excelPackage.Workbook.Worksheets[1];
             var index = 2; // starting index.
@@ -145,7 +145,7 @@ namespace AnnualReports.Application.Core.Services
             dataSheet.Cells.AutoFitColumns();
         }
 
-        #endregion Funds Annual Report
+        #endregion Annual Report
 
         #region Private Methods
 
@@ -163,8 +163,8 @@ namespace AnnualReports.Application.Core.Services
                     templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\BarsTemplate.xlsx";
                     break;
 
-                case ReportType.FundsAnnualReportTemplate:
-                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\FundsAnnualReportTemplate.xlsx";
+                case ReportType.AnnualReportTemplate:
+                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\AnnualReportTemplate.xlsx";
                     break;
 
                 default:

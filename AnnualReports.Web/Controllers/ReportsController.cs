@@ -17,18 +17,18 @@ namespace AnnualReports.Web.Controllers
             _exportingService = exportingService;
         }
 
-        public ActionResult FundsAnnualReport()
+        public ActionResult AnnualReport()
         {
             return View();
         }
 
         [HttpGet]
-        [Route("ExportFundsAnnualReportToExcel/{year:int}")]
-        public ActionResult ExportFundsAnnualReportToExcel(int year)
+        [Route("ExportAnnualReportToExcel/{year:int}")]
+        public ActionResult ExportAnnualReportToExcel(int year)
         {
-            MemoryStream stream = _exportingService.GetFundsAnnualReportExcel(year);
+            MemoryStream stream = _exportingService.GetAnnualReportExcel(year);
 
-            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.FundsAnnualReportExcelFileName, year));
+            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.AnnualReportExcelFileName, year));
         }
     }
 }

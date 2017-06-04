@@ -6,6 +6,6 @@ namespace AnnualReports.Infrastructure.Core.Interfaces
 {
     public interface IAnnualReportsDbFundRepository : IRepository<Fund>
     {
-        IEnumerable<FundsReportDataRow> GetFundsReportDataRows(int year, int? fundId = null);
+        IEnumerable<AnnualReportDataRow> GetAnnualReportDataRows(int year, int? fundId = null);
     }
 }

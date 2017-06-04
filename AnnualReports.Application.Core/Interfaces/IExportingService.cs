@@ -9,6 +9,6 @@ namespace AnnualReports.Application.Core.Interfaces
 
         MemoryStream GetBarsTemplate(int year);
 
-        MemoryStream GetFundsAnnualReportExcel(int year);
+        MemoryStream GetAnnualReportExcel(int year);
     }
 }

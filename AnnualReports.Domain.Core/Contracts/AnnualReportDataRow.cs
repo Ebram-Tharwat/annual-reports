@@ -2,7 +2,7 @@
 
 namespace AnnualReports.Domain.Core.Contracts
 {
-    public class FundsReportDataRow
+    public class AnnualReportDataRow
     {
         public string PrimaryFundNumber { get; set; }
 

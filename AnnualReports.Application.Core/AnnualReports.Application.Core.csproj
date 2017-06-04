@@ -64,7 +64,7 @@
     <Compile Include="Contracts\FundEntities\FundAddEntity.cs" />
     <Compile Include="Contracts\FundEntities\FundBasicInfo.cs" />
     <Compile Include="Contracts\Paging\PagingInfo.cs" />
-    <Compile Include="Contracts\Reports\FundsReportDataItemDetails.cs" />
+    <Compile Include="Contracts\Reports\AnnualReportDataItemDetails.cs" />
     <Compile Include="Enums\ReportType.cs" />
     <Compile Include="Interfaces\IBarService.cs" />
     <Compile Include="Interfaces\IExportingService.cs" />

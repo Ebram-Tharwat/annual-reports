@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AnnualReports.Application.Core.Contracts.Reports
 {
-    public class FundsReportDataItemDetails
+    public class AnnualReportDataItemDetails
     {
         public string FundNumber { get; set; }
 
@@ -17,7 +17,7 @@ namespace AnnualReports.Application.Core.Contracts.Reports
 
         public string MCAG { get; set; }
 
-        public List<FundsReportDataRow> Rows { get; set; }
+        public List<AnnualReportDataRow> Rows { get; set; }
 
         public decimal Amount { get; set; }
     }

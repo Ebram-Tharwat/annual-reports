@@ -18,20 +18,20 @@ namespace AnnualReports.Application.Core.Services
             this._barService = barService;
         }
 
-        public List<FundsReportDataItemDetails> GetFundsReportData(int year, int? fundId = null, string barNumber = null)
+        public List<AnnualReportDataItemDetails> GetAnnualReportData(int year, int? fundId = null, string barNumber = null)
         {
-            var reportData = new List<FundsReportDataItemDetails>();
+            var reportData = new List<AnnualReportDataItemDetails>();
             // 1- get all possible combination of funds*bars
-            var fundsReportData = _fundsRepository.GetFundsReportDataRows(year, fundId);
+            var annualReportData = _fundsRepository.GetAnnualReportDataRows(year, fundId);
             // 2- get all possible/valid bars
             var bars = _barService.GetAllBars(year);
             // 3- generate report item detail.
-            var groupByFundNumber = fundsReportData.GroupBy(t => new { t.PrimaryFundNumber, t.FundDisplayName, t.MCAG });
+            var groupByFundNumber = annualReportData.GroupBy(t => new { t.PrimaryFundNumber, t.FundDisplayName, t.MCAG });
             foreach (var fundGroup in groupByFundNumber)
             {
                 foreach (var bar in bars)
                 {
-                    List<FundsReportDataRow> fundRows;
+                    List<AnnualReportDataRow> fundRows;
                     if (bar.Period.HasValue)
                         fundRows = fundGroup.Where(t => t.View_BarNumber.StartsWith(bar.BarNumber) && t.View_Period == bar.Period.Value).ToList();
                     else
@@ -46,7 +46,7 @@ namespace AnnualReports.Application.Core.Services
                         else
                             total = fundRows.Sum(t => t.Credit - t.Debit);
 
-                        reportData.Add(new FundsReportDataItemDetails()
+                        reportData.Add(new AnnualReportDataItemDetails()
                         {
                             FundNumber = fundGroup.Key.PrimaryFundNumber,
                             FundDisplayName = fundGroup.Key.FundDisplayName,
