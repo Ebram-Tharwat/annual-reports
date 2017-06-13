@@ -13,6 +13,8 @@ namespace AnnualReports.Application.Core.Contracts.Reports
 
         public string BarDisplayName { get; set; }
 
+        public string MapToBarNumber { get; set; }
+
         public int Year { get; set; }
 
         public string MCAG { get; set; }

@@ -127,22 +127,47 @@ namespace AnnualReports.Application.Core.Services
 
         private void GenerateAnnualReportTemplate(ExcelPackage excelPackage, IEnumerable<AnnualReportDataItemDetails> reportData, int year)
         {
-            var dataSheet = excelPackage.Workbook.Worksheets[1];
-            var index = 2; // starting index.
+            var summerySheet = excelPackage.Workbook.Worksheets[1];
+            var detailsSheet = excelPackage.Workbook.Worksheets[2];
+            var summeryIndex = 2; // starting index.
+            var detailsIndex = 2; // starting index.
 
-            foreach (var item in reportData)
+            foreach (var summeryItem in reportData)
             {
-                dataSheet.Cells["A" + index].Value = year;
-                dataSheet.Cells["B" + index].Value = item.MCAG;
-                dataSheet.Cells["C" + index].Value = item.FundNumber;
-                dataSheet.Cells["D" + index].Value = item.FundDisplayName;
-                dataSheet.Cells["E" + index].Value = item.BarNumber;
-                dataSheet.Cells["F" + index].Value = item.BarDisplayName;
-                dataSheet.Cells["G" + index].Value = item.Amount;
-                index++;
+                summerySheet.Cells["A" + summeryIndex].Value = year;
+                summerySheet.Cells["B" + summeryIndex].Value = summeryItem.MCAG;
+                summerySheet.Cells["C" + summeryIndex].Value = summeryItem.FundNumber;
+                summerySheet.Cells["D" + summeryIndex].Value = summeryItem.FundDisplayName;
+                summerySheet.Cells["E" + summeryIndex].Value = summeryItem.BarNumber;
+                summerySheet.Cells["F" + summeryIndex].Value = summeryItem.BarDisplayName;
+                //summerySheet.Cells["H" + summeryIndex].Value = summeryItem.Amount;
+                summerySheet.Cells["G" + summeryIndex].Style.Font.Bold = true;
+                summerySheet.Cells["G" + summeryIndex].Formula = $"=SUM(Details!$K{detailsIndex}:Details!$K{detailsIndex + summeryItem.Rows.Count - 1 })";
+                summeryIndex++;
+
+                foreach (var detailsItem in summeryItem.Rows)
+                {
+                    detailsSheet.Cells["A" + detailsIndex].Value = year;
+                    detailsSheet.Cells["B" + detailsIndex].Value = detailsItem.AccountDescription;
+                    detailsSheet.Cells["C" + detailsIndex].Value = detailsItem.ACTNUMBR_1;
+                    detailsSheet.Cells["D" + detailsIndex].Value = detailsItem.ACTNUMBR_2;
+                    detailsSheet.Cells["E" + detailsIndex].Value = detailsItem.ACTNUMBR_3;
+                    detailsSheet.Cells["F" + detailsIndex].Value = detailsItem.ACTNUMBR_4;
+                    detailsSheet.Cells["G" + detailsIndex].Value = detailsItem.ACTNUMBR_5;
+                    detailsSheet.Cells["H" + detailsIndex].Value = detailsItem.View_Period;
+                    detailsSheet.Cells["I" + detailsIndex].Value = detailsItem.Debit;
+                    detailsSheet.Cells["J" + detailsIndex].Value = detailsItem.Credit;
+                    detailsSheet.Cells["K" + detailsIndex].Style.Font.Bold = true;
+                    if (summeryItem.MapToBarNumber.StartsWith("5") || summeryItem.MapToBarNumber.StartsWith("1"))
+                        detailsSheet.Cells["K" + detailsIndex].Formula = $"=I{detailsIndex}-J{detailsIndex}";
+                    else
+                        detailsSheet.Cells["K" + detailsIndex].Formula = $"=J{detailsIndex}-I{detailsIndex}";
+                    detailsIndex++;
+                }
             }
 
-            dataSheet.Cells.AutoFitColumns();
+            summerySheet.Cells.AutoFitColumns();
+            detailsSheet.Cells.AutoFitColumns();
         }
 
         #endregion Annual Report

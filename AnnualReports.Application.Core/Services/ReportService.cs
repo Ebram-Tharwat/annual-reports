@@ -52,6 +52,7 @@ namespace AnnualReports.Application.Core.Services
                             FundDisplayName = fundGroup.Key.FundDisplayName,
                             BarNumber = bar.BarNumber,
                             BarDisplayName = bar.DisplayName,
+                            MapToBarNumber = barNumberToValidate,
                             Year = year,
                             MCAG = fundGroup.Key.MCAG,
                             Rows = fundRows,
