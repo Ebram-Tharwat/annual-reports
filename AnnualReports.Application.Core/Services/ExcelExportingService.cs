@@ -142,7 +142,7 @@ namespace AnnualReports.Application.Core.Services
                 summerySheet.Cells["F" + summeryIndex].Value = summeryItem.BarDisplayName;
                 //summerySheet.Cells["H" + summeryIndex].Value = summeryItem.Amount;
                 summerySheet.Cells["G" + summeryIndex].Style.Font.Bold = true;
-                summerySheet.Cells["G" + summeryIndex].Formula = $"=SUM(Details!$K{detailsIndex}:Details!$K{detailsIndex + summeryItem.Rows.Count - 1 })";
+                summerySheet.Cells["G" + summeryIndex].Formula = $"=SUM(Details!$J{detailsIndex}:Details!$J{detailsIndex + summeryItem.Rows.Count - 1 })";
                 summeryIndex++;
 
                 foreach (var detailsItem in summeryItem.Rows)
@@ -154,14 +154,14 @@ namespace AnnualReports.Application.Core.Services
                     detailsSheet.Cells["E" + detailsIndex].Value = detailsItem.ACTNUMBR_3;
                     detailsSheet.Cells["F" + detailsIndex].Value = detailsItem.ACTNUMBR_4;
                     detailsSheet.Cells["G" + detailsIndex].Value = detailsItem.ACTNUMBR_5;
-                    detailsSheet.Cells["H" + detailsIndex].Value = detailsItem.View_Period;
-                    detailsSheet.Cells["I" + detailsIndex].Value = detailsItem.Debit;
-                    detailsSheet.Cells["J" + detailsIndex].Value = detailsItem.Credit;
-                    detailsSheet.Cells["K" + detailsIndex].Style.Font.Bold = true;
+                    //detailsSheet.Cells["H" + detailsIndex].Value = detailsItem.View_Period;
+                    detailsSheet.Cells["H" + detailsIndex].Value = detailsItem.Debit;
+                    detailsSheet.Cells["I" + detailsIndex].Value = detailsItem.Credit;
+                    detailsSheet.Cells["J" + detailsIndex].Style.Font.Bold = true;
                     if (summeryItem.MapToBarNumber.StartsWith("5") || summeryItem.MapToBarNumber.StartsWith("1"))
-                        detailsSheet.Cells["K" + detailsIndex].Formula = $"=I{detailsIndex}-J{detailsIndex}";
+                        detailsSheet.Cells["J" + detailsIndex].Formula = $"=H{detailsIndex}-I{detailsIndex}";
                     else
-                        detailsSheet.Cells["K" + detailsIndex].Formula = $"=J{detailsIndex}-I{detailsIndex}";
+                        detailsSheet.Cells["J" + detailsIndex].Formula = $"=I{detailsIndex}-H{detailsIndex}";
                     detailsIndex++;
                 }
             }
