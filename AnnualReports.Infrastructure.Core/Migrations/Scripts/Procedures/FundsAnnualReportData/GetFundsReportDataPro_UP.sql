@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE GetFundsReportDataPro
 	@Year INT,
-	@FundNumber NVARCHAR(9)
+	@FundId NVARCHAR(9)
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
