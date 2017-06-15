@@ -426,7 +426,7 @@
     <Content Include="Scripts\ng-table.js.map" />
     <Content Include="Views\Funds\Edit.cshtml" />
     <Content Include="Views\Bars\Edit.cshtml" />
-    <None Include="Views\Funds\Index.cshtml" />
+    <Content Include="Views\Funds\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\YearDatePicker.cshtml" />
     <Content Include="Views\Funds\_fundsList.cshtml" />
     <Content Include="Views\Funds\Upload.cshtml" />
