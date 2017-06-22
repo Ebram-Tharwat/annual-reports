@@ -64,16 +64,19 @@ namespace AnnualReports.Application.Core.Services
             return newFunds.Union(fundsToUpdate).Union(fundsToSkip).ToList();
         }
 
-        public List<Fund> GetAllFunds(int year, DbSource dbSource, PagingInfo pagingInfo = null)
+        public List<Fund> GetAllFunds(int year, DbSource dbSource, string displayName = null, PagingInfo pagingInfo = null)
         {
+            if (string.IsNullOrWhiteSpace(displayName))
+                displayName = "";
+
             if (dbSource == DbSource.ALL)
             {
                 if (pagingInfo == null)
-                    return _fundsRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.FundNumber)), t => t.MapToFund).ToList();
+                    return _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.FundNumber)), t => t.MapToFund).ToList();
                 else
                 {
                     int total = 0;
-                    var result = _fundsRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.FundNumber))
+                    var result = _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.FundNumber))
                         , out total, pagingInfo.PageIndex, AppSettings.PageSize,
                         t => t.MapToFund).ToList();
                     pagingInfo.Total = total;
@@ -83,12 +86,12 @@ namespace AnnualReports.Application.Core.Services
             else
             {
                 if (pagingInfo == null)
-                    return _fundsRepository.Get(t => t.Year == year && t.DbSource == dbSource
+                    return _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName) && t.DbSource == dbSource
                             , (list => list.OrderBy(t => t.FundNumber))).ToList();
                 else
                 {
                     int total = 0;
-                    var result = _fundsRepository.Get(t => t.Year == year && t.DbSource == dbSource
+                    var result = _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName) && t.DbSource == dbSource
                         , (list => list.OrderBy(t => t.FundNumber))
                         , out total, pagingInfo.PageIndex, AppSettings.PageSize,
                         t => t.MapToFund).ToList();
@@ -196,7 +199,7 @@ namespace AnnualReports.Application.Core.Services
 
         public List<FundBasicInfo> GetPrimaryFunds(int year, DbSource dbSource, PagingInfo pagingInfo = null)
         {
-            var funds = this.GetAllFunds(year, dbSource, pagingInfo);
+            var funds = this.GetAllFunds(year, dbSource, null, pagingInfo);
             var primaryFunds = Mapper.Map<List<Fund>, List<FundBasicInfo>>(funds.Where(t => t.MapToFundId == null).ToList());
             primaryFunds.ForEach(primary =>
             {

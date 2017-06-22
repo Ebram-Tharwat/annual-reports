@@ -10,7 +10,7 @@ namespace AnnualReports.Application.Core.Interfaces
 
         void Update(Bar entity);
 
-        List<Bar> GetAllBars(int year, PagingInfo pagingInfo = null);
+        List<Bar> GetAllBars(int year, string displayName = null, PagingInfo pagingInfo = null);
 
         Bar GetByBarNumber(int barNumber);
 

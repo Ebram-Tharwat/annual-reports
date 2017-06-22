@@ -36,7 +36,7 @@ namespace AnnualReports.Web.Controllers
             var entities = Enumerable.Empty<Bar>();
             if (TryValidateModel(filter))
             {
-                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : -1, pagingInfo);
+                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : -1, filter.DisplayName, pagingInfo);
                 ViewBag.DisplayResults = true;
             }
             else
@@ -120,7 +120,7 @@ namespace AnnualReports.Web.Controllers
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { year = viewmodel.BarsYear.Value });
         }
 
         public ActionResult Copy()
@@ -186,7 +186,7 @@ namespace AnnualReports.Web.Controllers
 
                 _barService.Update(entity);
                 Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully updated.");
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { year = entity.Year });
             }
             return View(viewmodel);
         }

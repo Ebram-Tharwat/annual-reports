@@ -13,38 +13,48 @@
 <h2>Funds</h2>
 
 <p>
-    @Html.ActionLink("Upload excel sheet", "Upload")
-    | @Html.ActionLink("Copy funds from year", "Copy")
+    @Html.ActionLink("Upload excel sheet", "Upload") |
+    @Html.ActionLink("Copy funds from year", "Copy")
 </p>
 
 <div>
-    @using (Html.BeginForm("Index", "Funds", FormMethod.Get))
-    {
-        <div class="form-horizontal">
-            <hr />
+    <div class="panel panel-default">
+        <div class="panel-heading bold">Filters:</div>
+        <div class="panel-body">
+            @using (Html.BeginForm("Index", "Funds", FormMethod.Get))
+            {
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(model => filterViewModel.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => filterViewModel.Year, new { fieldName = "year" })
+                            @Html.ValidationMessageFor(model => filterViewModel.Year, "", new { @class = "text-danger", data_valmsg_for = "year" })
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => filterViewModel.Year, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => filterViewModel.Year, new { fieldName = "year" })
-                    @Html.ValidationMessageFor(model => filterViewModel.Year, "", new { @class = "text-danger", data_valmsg_for = "year" })
-                </div>
-            </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => filterViewModel.DisplayName, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => filterViewModel.DisplayName, null, "displayname", new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Filter" class="btn btn-default" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Filter" class="btn btn-default" />
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
-    }
+    </div>
 </div>
 
 @if (displayResults)
 {
     Html.RenderPartial("_fundsList", Model);
     <div>
-        @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page, year = filterViewModel.DateAsYear }))
+        @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page, year = filterViewModel.DateAsYear, displayname = filterViewModel.DisplayName }))
     </div>
 }
 

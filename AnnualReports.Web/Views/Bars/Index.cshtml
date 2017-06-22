@@ -9,22 +9,21 @@
     var displayResults = (bool)ViewBag.DisplayResults;
 }
 
-<h2>Index</h2>
+<h2>Bars</h2>
 
 <p>
     @Html.ActionLink("Upload excel sheet", "Upload") |
-    @Html.ActionLink("Copy funds from year", "Copy")
+    @Html.ActionLink("Copy bars from year", "Copy")
 </p>
 
 <div class="row">
-    <div class="col-md-6 col-xs-12">
+    <div class="col-xs-12">
         <div class="panel panel-default">
-            <div class="panel-heading bold">Data:</div>
+            <div class="panel-heading bold">Filters:</div>
             <div class="panel-body">
                 @using (Html.BeginForm("Index", "Bars", FormMethod.Get))
                 {
                     <div class="form-horizontal">
-                        <br />
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                         <div class="form-group">
@@ -32,6 +31,13 @@
                             <div class="col-md-10">
                                 @Html.EditorFor(model => model.Filters.Year, new { fieldName = "year" })
                                 @Html.ValidationMessageFor(model => model.Filters.Year, "", new { @class = "text-danger", data_valmsg_for = "year" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Filters.DisplayName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Filters.DisplayName, null, "displayname", new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </div>
 
@@ -45,64 +51,11 @@
             </div>
         </div>
     </div>
-    @*<div class="col-md-6 col-xs-12">
-        <div class="panel panel-default">
-            <div class="panel-heading bold">Upload Bars:</div>
-            <div class="panel-body">
-                <div id="step-1">
-                    <h4>Step 1:</h4>
-                    <p class="help-block">
-                       select year then click <strong><i>"export to excel"</i></strong> button
-                    </p>
-
-                    @using (Html.BeginForm("ExportBarsTemplate", "Bars", FormMethod.Get))
-                    {
-                        <div class="row">
-                            <div class="col-xs-8">
-                                @Html.EditorFor(model => model.UploadViewModel.Date, new { fieldName = "year" })
-                            </div>
-                            <div class="col-xs-4">
-                                <button type="submit" class="btn btn-labeled btn-success pull-right">
-                                    <span><i class="glyphicon glyphicon-download-alt"></i></span> Export To Excel
-                                </button>
-                            </div>
-                        </div>
-                    }
-                    <hr />
-                </div>
-                <div id="step-2">
-                    <h4>Step 2:</h4>
-                    <p class="help-block">
-                        Upload Bars
-                    </p>
-                    @using (Html.BeginForm("Upload", "Bars", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <div class="form-horizontal">
-                            <br />
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                            <div class="form-group">
-                                @Html.EditorFor(model => model.UploadViewModel.ExcelFile, new { fieldName = "ExcelFile" })
-                                @Html.ValidationMessageFor(model => model.UploadViewModel.ExcelFile, "", new { @class = "text-danger", data_valmsg_for = "ExcelFile" })
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-md-offset-2 col-md-10">
-                                    <input type="submit" value="Upload" class="btn btn-default" />
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>*@
     @if (displayResults)
     {
         Html.RenderPartial("_BarsList", Model.Data);
         <div>
-            @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page, year = Model.Filters.DateAsYear }))
+            @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page, year = Model.Filters.DateAsYear, displayname = Model.Filters.DisplayName }))
         </div>
     }
 

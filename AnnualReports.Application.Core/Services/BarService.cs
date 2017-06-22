@@ -55,14 +55,17 @@ namespace AnnualReports.Application.Core.Services
             _barRepository.BatchDelete(t => t.Year == year);
         }
 
-        public List<Bar> GetAllBars(int year, PagingInfo pagingInfo = null)
+        public List<Bar> GetAllBars(int year, string displayName = null, PagingInfo pagingInfo = null)
         {
+            if (string.IsNullOrWhiteSpace(displayName))
+                displayName = "";
+
             if (pagingInfo == null)
-                return _barRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.BarNumber))).ToList();
+                return _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))).ToList();
             else
             {
                 int total = 0;
-                var result = _barRepository.Get(t => t.Year == year, (list => list.OrderBy(t => t.BarNumber))
+                var result = _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))
                     , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
                 pagingInfo.Total = total;
                 return result;

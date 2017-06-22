@@ -35,7 +35,7 @@ namespace AnnualReports.Web.Controllers
             var pagingInfo = new PagingInfo() { PageNumber = page };
             var entities = Enumerable.Empty<Fund>();
             if (filters.Year.HasValue)
-                entities = _fundService.GetAllFunds((short)filters.Year.Value, DbSource.ALL, pagingInfo);
+                entities = _fundService.GetAllFunds((short)filters.Year.Value, DbSource.ALL, filters.DisplayName, pagingInfo);
             var viewmodel = entities.ToMappedPagedList<Fund, FundDetailsViewModel>(pagingInfo);
 
             ViewBag.FilterViewModel = filters;
@@ -185,7 +185,7 @@ namespace AnnualReports.Web.Controllers
 
                 _fundService.Update(entity);
                 Success($"<strong>{entity.DisplayName} - {entity.FundNumber}</strong> was successfully updated.");
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { year = entity.Year });
             }
             entity = _fundService.GetById(viewmodel.Id);
             if (entity == null)
