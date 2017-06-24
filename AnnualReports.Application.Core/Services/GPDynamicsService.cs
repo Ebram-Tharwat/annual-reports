@@ -24,7 +24,7 @@ namespace AnnualReports.Application.Core.Services
             _gcDbFundRepo = gcDbFundRepo;
         }
 
-        public List<GPDynamicsFundDetails> GetAllFunds(DbSource dbSource)
+        public List<GPDynamicsFundDetails> GetAllFunds(DbSource dbSource = DbSource.ALL)
         {
             var distFunds = _distDbFundRepo.GetFundDetails();
             var gcFunds = _gcDbFundRepo.GetFundDetails();

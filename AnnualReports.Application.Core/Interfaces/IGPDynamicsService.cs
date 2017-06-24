@@ -6,6 +6,6 @@ namespace AnnualReports.Application.Core.Interfaces
 {
     public interface IGPDynamicsService
     {
-        List<GPDynamicsFundDetails> GetAllFunds(DbSource dbSource);
+        List<GPDynamicsFundDetails> GetAllFunds(DbSource dbSource = DbSource.ALL);
     }
 }

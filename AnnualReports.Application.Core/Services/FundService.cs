@@ -219,5 +219,16 @@ namespace AnnualReports.Application.Core.Services
             _fundsRepository.Update(fund);
             _uow.Commit();
         }
+
+        public Fund GetByFundNumberAndYear(string fundNumber, int year)
+        {
+            return _fundsRepository.OneOrDefault(f => f.Year == year && f.FundNumber == fundNumber);
+        }
+
+        public void Add(IEnumerable<Fund> entities)
+        {
+            _fundsRepository.Add(entities);
+            _uow.Commit();
+        }
     }
 }

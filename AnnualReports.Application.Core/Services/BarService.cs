@@ -72,9 +72,9 @@ namespace AnnualReports.Application.Core.Services
             }
         }
 
-        public Bar GetByBarNumber(int barNumber)
+        public Bar GetByBarNumberAndYear(string barNumber, int year)
         {
-            return _barRepository.OneOrDefault(b => b.BarNumber == barNumber.ToString());
+            return _barRepository.OneOrDefault(b => b.Year == year&& b.BarNumber == barNumber);
         }
 
         public List<Bar> GetByYear(int year)

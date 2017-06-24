@@ -62,6 +62,34 @@ namespace AnnualReports.Web.Controllers
                 string.Format(Constants.BarsTemplateExcelFileName, year));
         }
 
+        public ActionResult Create()
+        {
+            var viewmodel = new BarAddViewModel();
+            return View(viewmodel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(BarAddViewModel viewmodel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_barService.GetByBarNumberAndYear(viewmodel.BarNumber, viewmodel.Year.Value) == null)
+                {
+                    var entity = Mapper.Map<BarAddViewModel, Bar>(viewmodel);
+                    _barService.Add(new List<Bar>() { entity });
+
+                    Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully saved.");
+                    return RedirectToAction("Index", new { year = entity.Year });
+                }
+                else
+                {
+                    Danger($"A bar with same Number <strong>{viewmodel.BarNumber}</strong> already exists within the same year <strong>{viewmodel.Year.Value}</strong>.");
+                }
+            }
+            return View(viewmodel);
+        }
+
         public ActionResult Upload()
         {
             var viewmodel = new BarsUploadViewModel();

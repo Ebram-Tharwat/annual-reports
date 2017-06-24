@@ -27,6 +27,10 @@ namespace AnnualReports.Application.Core.Interfaces
 
         Fund GetById(int id);
 
+        Fund GetByFundNumberAndYear(string fundNumber, int year);
+
         void Update(Fund fund);
+
+        void Add(IEnumerable<Fund> entities);
     }
 }

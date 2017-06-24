@@ -23,11 +23,13 @@ namespace AnnualReports.Web.Controllers
     {
         private readonly IFundService _fundService;
         private readonly IExportingService _exportingService;
+        private readonly IGPDynamicsService _gpDynamicsService;
 
-        public FundsController(IFundService fundService, IExportingService exportingService)
+        public FundsController(IFundService fundService, IExportingService exportingService, IGPDynamicsService gpDynamicsService)
         {
             _fundService = fundService;
             _exportingService = exportingService;
+            _gpDynamicsService = gpDynamicsService;
         }
 
         public ActionResult Index(YearFilterViewModel filters, int page = 1)
@@ -50,6 +52,46 @@ namespace AnnualReports.Web.Controllers
             // 2- generate template.
             MemoryStream stream = _exportingService.GetFundsTemplate(year);
             return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.FundsTemplateExcelFileName, year));
+        }
+
+        public ActionResult Create()
+        {
+            var viewmodel = new FundAddViewModel();
+            viewmodel.AvailableDbSources = new List<SelectListItem>() {
+                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
+            return View(viewmodel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(FundAddViewModel viewmodel)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_gpDynamicsService.GetAllFunds().FirstOrDefault(t => t.Number.Trim() == viewmodel.FundNumber) == null)
+                {
+                    Danger($"This fund number <strong>{viewmodel.FundNumber}</strong>, does not exist in GP Databse");
+                }
+                else if (_fundService.GetByFundNumberAndYear(viewmodel.FundNumber, viewmodel.Year.Value) != null)
+                {
+                    Danger($"A Fund with same Number <strong>{viewmodel.FundNumber}</strong> already exists within the same year <strong>{viewmodel.Year.Value}</strong>.");
+                }
+                else
+                {
+                    var entity = Mapper.Map<FundAddViewModel, Fund>(viewmodel);
+                    _fundService.Add(new List<Fund>() { entity });
+
+                    Success($"<strong>{entity.DisplayName} - {entity.FundNumber}</strong> was successfully saved.");
+                    return RedirectToAction("Index", new { year = entity.Year });
+                }
+            }
+            viewmodel.AvailableDbSources = new List<SelectListItem>() {
+                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
+            return View(viewmodel);
         }
 
         public ActionResult Upload()

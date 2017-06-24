@@ -35,6 +35,11 @@ namespace GRis.App_Start
                 .ForMember(dest => dest.FundNumber, opt => opt.Ignore())
                 ;
 
+                cfg.CreateMap<FundAddViewModel, Fund>()
+                .ForMember(dest => dest.MapToFund, opt => opt.Ignore())
+                .ForMember(dest => dest.GpDescription, opt => opt.MapFrom(src => src.DisplayName))
+                ;
+
                 #endregion Fund
 
                 #region Bar
@@ -47,6 +52,9 @@ namespace GRis.App_Start
                 cfg.CreateMap<Bar, BarEditViewModel>()
                 .ReverseMap()
                 .ForMember(dest => dest.BarNumber, opt => opt.Ignore())
+                ;
+
+                cfg.CreateMap<BarAddViewModel, Bar>()
                 ;
 
                 #endregion Bar

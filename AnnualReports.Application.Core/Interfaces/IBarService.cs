@@ -12,7 +12,7 @@ namespace AnnualReports.Application.Core.Interfaces
 
         List<Bar> GetAllBars(int year, string displayName = null, PagingInfo pagingInfo = null);
 
-        Bar GetByBarNumber(int barNumber);
+        Bar GetByBarNumberAndYear(string barNumber, int year);
 
         List<Bar> GetByYear(int year);
 
