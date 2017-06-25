@@ -38,6 +38,7 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.MapToBarNumber, new {htmlAttributes = new {@class = "form-control"}})
                 @Html.ValidationMessageFor(model => model.MapToBarNumber, "", new {@class = "text-danger"})
+                <label class="label label-warning">You can enter multiple values, seperated by comma ( , )</label>
             </div>
         </div>
 

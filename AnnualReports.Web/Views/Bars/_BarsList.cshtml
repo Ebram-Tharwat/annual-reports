@@ -36,7 +36,10 @@
                         @Html.DisplayFor(modelItem => item.DisplayName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.MapToBarNumber)
+                        @foreach (var mapToBar in item.MapToBarNumber.Split(new char[] { ',' },StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            @mapToBar<br />
+                        }
                     </td>
                     @*<td>
                             @Html.DisplayFor(modelItem => item.Period)

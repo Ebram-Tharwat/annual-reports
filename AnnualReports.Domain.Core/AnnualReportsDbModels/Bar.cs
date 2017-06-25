@@ -24,9 +24,6 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         [Required]
         public Int16 Year { get; set; }
 
-        [Required]
-        [MaxLength(9)]
-        [StringLength(9)]
         public string MapToBarNumber { get; set; }
 
         public int? Period { get; set; }

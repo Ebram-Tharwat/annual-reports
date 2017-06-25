@@ -13,7 +13,6 @@ namespace AnnualReports.Web.ViewModels.BarModels
         public string DisplayName { get; set; }
 
         [Display(Name = "Map to Bar number")]
-        [MaxLength(9)]
         public string MapToBarNumber { get; set; }
 
         [Display(Name = "Is Active")]

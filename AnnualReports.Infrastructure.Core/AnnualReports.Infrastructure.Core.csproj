@@ -69,6 +69,7 @@
       <DependentUpon>GcDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Extensions\DbContextExtensions.cs" />
+    <Compile Include="Extensions\MigrationExtensions.cs" />
     <Compile Include="Interfaces\IAnnualReportsDbFundRepository.cs" />
     <Compile Include="Interfaces\IGcDbFundRepository.cs" />
     <Compile Include="Interfaces\IDistDbFundRepository.cs" />
@@ -153,6 +154,10 @@
     <Compile Include="Migrations\AnnualReportsDb\201705271020446_RemoveMapToBarFK.cs" />
     <Compile Include="Migrations\AnnualReportsDb\201705271020446_RemoveMapToBarFK.Designer.cs">
       <DependentUpon>201705271020446_RemoveMapToBarFK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201706252001298_RemoveMapToBarMaxLength.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201706252001298_RemoveMapToBarMaxLength.Designer.cs">
+      <DependentUpon>201706252001298_RemoveMapToBarMaxLength.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Migrations\ScriptResources.Designer.cs">
@@ -240,6 +245,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201705271020446_RemoveMapToBarFK.resx">
       <DependentUpon>201705271020446_RemoveMapToBarFK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201706252001298_RemoveMapToBarMaxLength.resx">
+      <DependentUpon>201706252001298_RemoveMapToBarMaxLength.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\ScriptResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

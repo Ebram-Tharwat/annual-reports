@@ -17,7 +17,6 @@ namespace AnnualReports.Web.ViewModels.BarModels
         [UIHint("YearDatePicker")]
         public int? Year { get; set; }
 
-        [Required]
         [Display(Name = "Map to Bar number")]
         public string MapToBarNumber { get; set; }
 

@@ -2,6 +2,7 @@
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.Contracts;
 using AnnualReports.Infrastructure.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,31 +32,39 @@ namespace AnnualReports.Application.Core.Services
             {
                 foreach (var bar in bars)
                 {
-                    List<AnnualReportDataRow> fundRows;
+                    IEnumerable<AnnualReportDataRow> fundRows = new List<AnnualReportDataRow>();
                     if (bar.Period.HasValue)
-                        fundRows = fundGroup.Where(t => t.View_BarNumber.StartsWith(bar.BarNumber) && t.View_Period == bar.Period.Value).ToList();
+                        fundRows = fundGroup.Where(t => t.View_Period == bar.Period.Value);
                     else
-                        fundRows = fundGroup.Where(t => t.View_BarNumber.StartsWith(bar.BarNumber)).ToList();
+                        fundRows = fundGroup;
 
-                    if (fundRows.Count > 0)
+                    var mapToBarList = new List<string>();
+                    if (string.IsNullOrWhiteSpace(bar.MapToBarNumber))
+                        mapToBarList.Add(bar.BarNumber);
+                    else
+                        mapToBarList = bar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                    fundRows = fundRows.Where(t => mapToBarList.Any(mapToItem => t.View_BarNumber.StartsWith(mapToItem))).ToList();
+                    if (fundRows.Any())
                     {
-                        decimal total;
-                        var barNumberToValidate = (string.IsNullOrEmpty(bar.MapToBarNumber)) ? bar.BarNumber : bar.MapToBarNumber;
-                        if (barNumberToValidate.StartsWith("5") || barNumberToValidate.StartsWith("1"))
-                            total = fundRows.Sum(t => t.Debit - t.Credit);
-                        else
-                            total = fundRows.Sum(t => t.Credit - t.Debit);
-
+                        decimal total = 0;
+                        foreach (var mapToItem in mapToBarList)
+                        {
+                            if (mapToItem.StartsWith("5") || mapToItem.StartsWith("1"))
+                                total += fundRows.Sum(t => t.Debit - t.Credit);
+                            else
+                                total += fundRows.Sum(t => t.Credit - t.Debit);
+                        }
                         reportData.Add(new AnnualReportDataItemDetails()
                         {
                             FundNumber = fundGroup.Key.PrimaryFundNumber,
                             FundDisplayName = fundGroup.Key.FundDisplayName,
                             BarNumber = bar.BarNumber,
                             BarDisplayName = bar.DisplayName,
-                            MapToBarNumber = barNumberToValidate,
+                            MapToBarNumber = bar.MapToBarNumber,
                             Year = year,
                             MCAG = fundGroup.Key.MCAG,
-                            Rows = fundRows,
+                            Rows = fundRows.ToList(),
                             Amount = total
                         });
                     }
