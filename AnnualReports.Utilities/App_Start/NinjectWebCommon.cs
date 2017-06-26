@@ -42,6 +42,20 @@ namespace AnnualReports.Utilities.App_Start
             bootstrapper.ShutDown();
         }
 
+        public static object CurrentDbContext
+        {
+            get
+            {
+                if (currentKernal == null)
+                {
+                    return null;
+                }
+                return currentKernal.Get(typeof(AnnualReportsDbContext));
+            }
+        }
+
+        private static StandardKernel currentKernal = null;
+
         /// <summary>
         /// Creates the kernel that will manage your application.
         /// </summary>
@@ -55,6 +69,7 @@ namespace AnnualReports.Utilities.App_Start
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
 
                 RegisterServices(kernel);
+                currentKernal = kernel;
                 return kernel;
             }
             catch

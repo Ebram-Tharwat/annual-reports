@@ -1,10 +1,13 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.Mappings.AnnualReportsDb;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration;
 
 namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
 {
-    public class AnnualReportsDbContext : DbContext
+    public class AnnualReportsDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Fund> Funds { get; set; }
 
@@ -29,7 +32,36 @@ namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
 
         protected override void OnModelCreating(System.Data.Entity.DbModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            //base.OnModelCreating(modelBuilder);
+
+            if (modelBuilder == null)
+            {
+                throw new ArgumentNullException("modelBuilder");
+            }
+
+            // Keep this:
+            modelBuilder.Entity<IdentityUser>().ToTable("AspNetUsers");
+            modelBuilder.Entity<IdentityUser>().HasMany<IdentityUserRole>((IdentityUser u) => u.Roles);
+            modelBuilder.Entity<IdentityUserRole>().HasKey((IdentityUserRole r) =>
+                new { UserId = r.UserId, RoleId = r.RoleId }).ToTable("AspNetUserRoles");
+
+            // Leave this alone:
+            EntityTypeConfiguration<IdentityUserLogin> entityTypeConfiguration =
+                modelBuilder.Entity<IdentityUserLogin>().HasKey((IdentityUserLogin l) =>
+                    new
+                    {
+                        UserId = l.UserId,
+                        LoginProvider = l.LoginProvider,
+                        ProviderKey
+                            = l.ProviderKey
+                    }).ToTable("AspNetUserLogins");
+
+
+            EntityTypeConfiguration<IdentityUserClaim> table1 =
+                modelBuilder.Entity<IdentityUserClaim>().ToTable("AspNetUserClaims");
+
+            // Add this, so that IdentityRole can share a table with ApplicationRole:
+            modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles");
 
             modelBuilder.Configurations.Add(new BarConfiguration());
             modelBuilder.Configurations.Add(new FundConfiguration());

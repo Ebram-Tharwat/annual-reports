@@ -1,0 +1,82 @@
+﻿@model AnnualReports.Web.ViewModels.Admin.EditUserViewModel
+
+@{
+    ViewBag.Title = "Edit user";
+
+}
+
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.UserName)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.FullName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FullName)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PhoneNumber, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PhoneNumber)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Roles", new { @class = "control-label col-md-2" })
+            <span class=" col-md-10">
+                @foreach (var item in Model.RolesList)
+                {
+                    <input type="checkbox" name="SelectedRole" value="@item.Value" checked="@item.Selected" class="checkbox-inline" disabled="disabled" />
+                    @Html.Label(item.Value, new { @class = "control-label" })
+                }
+            </span>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.LockedOut, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(m => m.LockedOut, new { @class = "checkbox-inline" })
+                @Html.ValidationMessageFor(model => model.LockedOut)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-2">
+                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+                <input type="submit" value="Save" class="btn btn-default" />
+
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to index", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

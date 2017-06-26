@@ -11,6 +11,11 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using AnnualReports.Web.Models;
+using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using AnnualReports.Utilities.App_Start;
+using System.Net.Mail;
+using System.Configuration;
+using System.Net;
 
 namespace AnnualReports.Web
 {
@@ -18,8 +23,23 @@ namespace AnnualReports.Web
     {
         public Task SendAsync(IdentityMessage message)
         {
+            MailMessage msg = new MailMessage();
+            msg.To.Add(new MailAddress(message.Destination, message.Subject));
+            msg.From = new MailAddress(ConfigurationManager.AppSettings["supportEmail"], ConfigurationManager.AppSettings["supportEmailpassword"]);
+            msg.Subject = "Reset password request";
+            msg.Body = message.Body;
+            msg.IsBodyHtml = true;
             // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            SmtpClient client = new SmtpClient();
+            client.Port = 587;
+            client.Host = "smtp.gmail.com";
+            client.EnableSsl = true;
+            //client.Timeout = 10000;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["supportEmail"], ConfigurationManager.AppSettings["supportEmailpassword"]);
+            return client.SendMailAsync(msg);
+            //return Task.FromResult(0);
         }
     }
 
@@ -40,9 +60,15 @@ namespace AnnualReports.Web
         {
         }
 
-        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            dynamic currentDbContext = NinjectWebCommon.CurrentDbContext;
+            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(currentDbContext));
+            manager.UserLockoutEnabledByDefault = Convert.ToBoolean(ConfigurationManager.AppSettings["UserLockoutEnabledByDefault"].ToString());
+            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(Double.Parse(ConfigurationManager.AppSettings["DefaultAccountLockoutTimeSpan"].ToString()));
+            manager.MaxFailedAccessAttemptsBeforeLockout = Convert.ToInt32(ConfigurationManager.AppSettings["MaxFailedAccessAttemptsBeforeLockout"].ToString());
+
+
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
@@ -54,10 +80,10 @@ namespace AnnualReports.Web
             manager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
+                RequireNonLetterOrDigit = false,
+                RequireDigit = false,
+                RequireLowercase = false,
+                RequireUppercase = false,
             };
 
             // Configure user lockout defaults
@@ -81,7 +107,7 @@ namespace AnnualReports.Web
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
-                manager.UserTokenProvider = 
+                manager.UserTokenProvider =
                     new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;
@@ -104,6 +130,21 @@ namespace AnnualReports.Web
         public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
         {
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+        }
+    }
+
+    // Configure the RoleManager used in the application. RoleManager is defined in the ASP.NET Identity core assembly
+    public class ApplicationRoleManager : RoleManager<IdentityRole>
+    {
+        public ApplicationRoleManager(IRoleStore<IdentityRole, string> roleStore)
+            : base(roleStore)
+        {
+        }
+
+        public static ApplicationRoleManager Create(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context)
+        {
+            dynamic currentDbContext = NinjectWebCommon.CurrentDbContext;
+            return new ApplicationRoleManager(new RoleStore<IdentityRole>(currentDbContext));
         }
     }
 }

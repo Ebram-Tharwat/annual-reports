@@ -1,0 +1,55 @@
+﻿@model X.PagedList.IPagedList<AnnualReports.Domain.Core.AnnualReportsDbModels.ApplicationUser>
+@using X.PagedList.Mvc;
+
+<div id="userList">
+
+    <table class="table">
+        <tr>
+            <td>
+                User name
+            </td>
+            <td>
+                Email
+            </td>
+            <td>
+                Full name
+            </td>
+            <td>
+                Mobile number
+            </td>
+
+            <td></td>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+
+                <td>
+                    <a href="@Url.Action("Edit", "UserAdmin", new { item.Id })" class="btn btn-info"> <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit </span></a>
+                    <a href="@Url.Action("Details", "UserAdmin", new { item.Id })" class="btn btn-info"> <span class="fa fa-clipboard"></span><span class="hidden-xs"> Details </span> </a>
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <div>
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+        @Html.PagedListPager(Model, page => Url.Action("GetUsers", new { page, searchVal = ViewBag.searchVal }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { UpdateTargetId = "userList" }))
+        <input type="hidden" name="currentPage" id="currentPage" value="@Model.PageNumber" />
+    </div>
+
+</div>

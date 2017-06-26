@@ -20,28 +20,35 @@
                 @Html.ActionLink("Annual Reports", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Funds", "Index", "Funds")</li>
-                    <li>@Html.ActionLink("Bars", "Index", "Bars")</li>
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Annual Report", "AnnualReport", "Reports")</li>
-                        </ul>
-                    </li>  
-                </ul>
-                @*@Html.Partial("_LoginPartial")*@
+                @if (User.IsInRole("Admin") || User.IsInRole("Clerk"))
+                {
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Funds", "Index", "Funds")</li>
+                        <li>@Html.ActionLink("Bars", "Index", "Bars")</li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Annual Report", "AnnualReport", "Reports")</li>
+                            </ul>
+                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("Users", "Index", "UserAdmin")</li>
+                        }
+                    </ul>
+                }
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
-<div class="container body-content">
-    @{ Html.RenderPartial("_Alerts"); }
-    @RenderBody()
-    <hr/>
-    <footer>
-        <p>&copy; @DateTime.Now.Year - Annual Reports</p>
-    </footer>
-</div>
+    <div class="container body-content">
+        @{ Html.RenderPartial("_Alerts"); }
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Annual Reports</p>
+        </footer>
+    </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

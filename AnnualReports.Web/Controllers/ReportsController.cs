@@ -6,6 +6,7 @@ using System.Web.Mvc;
 namespace AnnualReports.Web.Controllers
 {
     [RoutePrefix("reports")]
+    [Authorize]
     public class ReportsController : Controller
     {
         private readonly IFundService _fundService;

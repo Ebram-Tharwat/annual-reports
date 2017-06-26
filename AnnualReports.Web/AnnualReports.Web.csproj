@@ -266,16 +266,17 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\UserAdminController.cs" />
     <Compile Include="Extensions\PagedListExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="ViewModels\Account\AccountViewModels.cs" />
+    <Compile Include="ViewModels\Account\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Validations\AllowedFileExtensionAttribute.cs" />
+    <Compile Include="ViewModels\Admin\AdminViewModel.cs" />
     <Compile Include="ViewModels\BarModels\BarAddViewModel.cs" />
     <Compile Include="ViewModels\BarModels\BarEditViewModel.cs" />
     <Compile Include="ViewModels\BarModels\BarDetailsViewModel.cs" />
@@ -439,9 +440,16 @@
     <Content Include="Views\Reports\AnnualReport.cshtml" />
     <Content Include="Views\Bars\Create.cshtml" />
     <Content Include="Views\Funds\Create.cshtml" />
+    <Content Include="Views\UserAdmin\Create.cshtml" />
+    <Content Include="Views\UserAdmin\Delete.cshtml" />
+    <Content Include="Views\UserAdmin\Details.cshtml" />
+    <Content Include="Views\UserAdmin\Edit.cshtml" />
+    <Content Include="Views\UserAdmin\GetUsers.cshtml" />
+    <Content Include="Views\UserAdmin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
     <Folder Include="Uploads\Bars\" />
     <Folder Include="Uploads\Funds\" />
     <Folder Include="ViewModels\ReportModels\" />

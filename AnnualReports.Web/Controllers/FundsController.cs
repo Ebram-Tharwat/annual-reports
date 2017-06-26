@@ -19,6 +19,7 @@ using System.Web.Mvc;
 
 namespace AnnualReports.Web.Controllers
 {
+    [Authorize]
     public class FundsController : BaseController
     {
         private readonly IFundService _fundService;

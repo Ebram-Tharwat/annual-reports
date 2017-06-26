@@ -9,9 +9,13 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using AnnualReports.Web.Models;
+using AnnualReports.Domain.Core.AnnualReportsDbModels;
 
 namespace AnnualReports.Web.Controllers
 {
+    /// <summary>
+    /// account controller have all actions related to account user account
+    /// </summary>
     [Authorize]
     public class AccountController : Controller
     {
@@ -22,7 +26,7 @@ namespace AnnualReports.Web.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +38,9 @@ namespace AnnualReports.Web.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -75,12 +79,19 @@ namespace AnnualReports.Web.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: true);
             switch (result)
             {
                 case SignInStatus.Success:
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
+                    var user = UserManager.FindByName(model.UserName);
+                    if (UserManager.IsInRole(user.Id, "Admin"))
+                    {
+                        string code = UserManager.GenerateUserToken("AcctiveAccount", user.Id);
+                        var callbackUrl = Url.Action("AcctiveAccount", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                        UserManager.SendEmail(user.Id, "Reactivate account", "To reactivate your account click  <a href=\"" + callbackUrl + "\">here</a>");
+                    }
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
@@ -91,8 +102,57 @@ namespace AnnualReports.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// active user account page
+        /// </summary>
+        /// <param name="code">activation code sent to user mail</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        public ActionResult AcctiveAccount(string code)
+        {
+
+            if (string.IsNullOrWhiteSpace(code))
+                return View("Error");
+
+            return View();
+        }
+
+        /// <summary>
+        /// activation process after user enter user name and click on submit button
+        /// </summary>
+        /// <param name="model">acctive account information</param>
+        /// <returns>if there is error or verifying not correct show error view else show acctive account confirmation success view</returns>
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult AcctiveAccount(AcctiveAccountModel model)
+        {
+
+            var user = UserManager.FindByName(model.UserName);
+
+            if (user == null)
+                return View("Error");
+
+            if (!UserManager.VerifyUserToken(user.Id, "AcctiveAccount", model.Code))
+            {
+                return View("Error");
+            }
+
+            user.AccessFailedCount = 0;
+            user.LockoutEndDateUtc = null;
+            UserManager.Update(user);
+            return View("AcctiveAccountConfirmation");
+        }
+
         //
         // GET: /Account/VerifyCode
+        /// <summary>
+        /// this function used in two factor authentication which is not enabled in this application
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="returnUrl"></param>
+        /// <param name="rememberMe"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
@@ -106,6 +166,11 @@ namespace AnnualReports.Web.Controllers
 
         //
         // POST: /Account/VerifyCode
+        /// <summary>
+        /// this function used in two factor authentication which is not enabled in this application
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -120,7 +185,7 @@ namespace AnnualReports.Web.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -134,6 +199,7 @@ namespace AnnualReports.Web.Controllers
             }
         }
 
+
         //
         // GET: /Account/Register
         [AllowAnonymous]
@@ -144,6 +210,11 @@ namespace AnnualReports.Web.Controllers
 
         //
         // POST: /Account/Register
+        /// <summary>
+        /// register process when user enter registration information and click submit
+        /// </summary>
+        /// <param name="model">registration information</param>
+        /// <returns>if success redirect to index page and login , if not success show error</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -151,13 +222,13 @@ namespace AnnualReports.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, FullName = model.FullName };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
@@ -174,6 +245,12 @@ namespace AnnualReports.Web.Controllers
 
         //
         // GET: /Account/ConfirmEmail
+        /// <summary>
+        /// confirm email 
+        /// </summary>
+        /// <param name="userId">user id to confirm</param>
+        /// <param name="code">confirm code sent to user mail</param>
+        /// <returns>if confirm success show ConfirmEmail view other show error view</returns>
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
@@ -195,6 +272,11 @@ namespace AnnualReports.Web.Controllers
 
         //
         // POST: /Account/ForgotPassword
+        /// <summary>
+        /// forgot password 
+        /// </summary>
+        /// <param name="model">forgot password information</param>
+        /// <returns>redirect to forgot password confirmation </returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -202,19 +284,23 @@ namespace AnnualReports.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                var user = await UserManager.FindByEmailAsync(model.Email);
+
+                // don't check if mail is confirmed
+                //|| !(await UserManager.IsEmailConfirmedAsync(user.Id))
+
+                if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
                 }
 
-                // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Forget password", "To reset your password kindly press on <a href=\"" + callbackUrl + "\">here</a>");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
@@ -239,6 +325,11 @@ namespace AnnualReports.Web.Controllers
 
         //
         // POST: /Account/ResetPassword
+        /// <summary>
+        /// reset password proccess after user enter reset password information and click submit
+        /// </summary>
+        /// <param name="model">reset password information</param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -248,7 +339,7 @@ namespace AnnualReports.Web.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
@@ -284,21 +375,13 @@ namespace AnnualReports.Web.Controllers
 
         //
         // GET: /Account/SendCode
-        [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
-        {
-            var userId = await SignInManager.GetVerifiedUserIdAsync();
-            if (userId == null)
-            {
-                return View("Error");
-            }
-            var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
-            var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
-            return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
-        }
-
         //
         // POST: /Account/SendCode
+        /// <summary>
+        /// used in two factor providers not used in this application
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -317,8 +400,14 @@ namespace AnnualReports.Web.Controllers
             return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
+
         //
         // GET: /Account/ExternalLoginCallback
+        /// <summary>
+        /// external login not used in this application
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
@@ -349,6 +438,12 @@ namespace AnnualReports.Web.Controllers
 
         //
         // POST: /Account/ExternalLoginConfirmation
+        /// <summary>
+        /// external login not used in this application
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -387,12 +482,16 @@ namespace AnnualReports.Web.Controllers
 
         //
         // POST: /Account/LogOff
+        /// <summary>
+        /// log of
+        /// </summary>
+        /// <returns> redirect admin index page</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index", "Home", new { Area = "Admin" });
         }
 
         //

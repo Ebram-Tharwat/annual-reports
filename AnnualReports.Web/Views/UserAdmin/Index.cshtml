@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Users";
+}
+
+
+<script type="text/javascript">
+
+
+    var refreshUrl = "@Url.Action("GetUsers")";
+
+</script>
+
+<div class="mar-top3">
+    <br>
+    <div class="col-md-10">
+        <span id="Label1">User Name</span>
+        <input onkeyup="enterSearch(event)" type="text" id="searchText" name="searchText" />
+        <a onclick="Search()" style="display:inline-block;color:#DE9F14;border-color:Transparent;border-width:0px;border-style:Solid;font-size:11px;" href="javascript:__doPostBack('searchbtn','')" class="btn2 f-none to-1" id="searchbtn"><span class="glyphicon glyphicon-search"></span> Search  </a>
+        &nbsp;<br>
+        <br>
+    </div>
+</div>
+<p>
+    <a class="btn btn-default" href="@Url.Action("Create")">Add new user</a>
+</p>
+
+
+@Html.Action("GetUsers")
+
+@section scripts{
+    <script src=@Url.Content("~/Scripts/App/usersAdmin.js") type="text/javascript"></script>
+}

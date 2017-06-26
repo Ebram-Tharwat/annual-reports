@@ -3,10 +3,12 @@ using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Text;
+using Microsoft.AspNet.Identity.EntityFramework;
+using AnnualReports.Domain.Core.AnnualReportsDbModels;
 
 namespace AnnualReports.Infrastructure.Core
 {
-    public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
+    public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : IdentityDbContext<ApplicationUser>
     {
         #region Fields
 

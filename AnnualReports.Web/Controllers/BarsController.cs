@@ -18,6 +18,7 @@ using System.Web.Mvc;
 
 namespace AnnualReports.Web.Controllers
 {
+    [Authorize]
     public class BarsController : BaseController
     {
         private IBarService _barService;
