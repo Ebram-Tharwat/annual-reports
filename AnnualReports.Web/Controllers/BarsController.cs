@@ -114,17 +114,18 @@ namespace AnnualReports.Web.Controllers
                     int numOfEntitiesUpdated = 0;
                     // load existed entities from DB, aka "cache".
                     var existedEntities = GetExistedBars(dtBarsHours).ToList();
-                    foreach (var row in dtBarsHours.AsEnumerable().ToList())
+                    var excelData = dtBarsHours.AsEnumerable().Select(row => new BarDetailsViewModel()
                     {
-                        var entityViewModel = new BarDetailsViewModel()
-                        {
-                            Year = int.Parse(row["Year"].ToString()),
-                            BarNumber = row["State BARS Number"].ToString(),
-                            MapToBarNumber = row["Map to"].ToString(),
-                            DisplayName = row["Display Name"].ToString(),
-                            Period = string.IsNullOrWhiteSpace(row["Period"].ToString()) ? (int?)null : int.Parse(row["Period"].ToString()),
-                            IsActive = string.IsNullOrWhiteSpace(row["Is Active"].ToString()) ? false : row["Is Active"].ToString() == "1" ? true : false
-                        };
+                        Year = int.Parse(row["Year"].ToString()),
+                        BarNumber = row["State BARS Number"].ToString(),
+                        MapToBarNumber = row["Map to"].ToString(),
+                        DisplayName = row["Display Name"].ToString(),
+                        Period = string.IsNullOrWhiteSpace(row["Period"].ToString()) ? (int?)null : int.Parse(row["Period"].ToString()),
+                        IsActive = string.IsNullOrWhiteSpace(row["Is Active"].ToString()) ? false : row["Is Active"].ToString() == "1" ? true : false
+                    }).ToList();
+                    excelData = excelData.GroupBy(x => x.BarNumber).Select(y => y.First()).ToList();
+                    foreach (var entityViewModel in excelData)
+                    {
                         var existedEntity = existedEntities.FirstOrDefault(t => t.BarNumber == entityViewModel.BarNumber && t.Year == entityViewModel.Year);
                         if (existedEntity == null)
                         {
@@ -149,7 +150,10 @@ namespace AnnualReports.Web.Controllers
                 }
             }
 
-            return RedirectToAction("Index", new { year = viewmodel.BarsYear.Value });
+            return RedirectToAction("Index", new
+            {
+                year = viewmodel.BarsYear.Value
+            });
         }
 
         public ActionResult Copy()
