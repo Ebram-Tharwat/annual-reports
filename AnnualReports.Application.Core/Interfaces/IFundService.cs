@@ -15,7 +15,7 @@ namespace AnnualReports.Application.Core.Interfaces
 
         List<Fund> SyncFunds(int year, DbSource dbSource);
 
-        List<Fund> GetAllFunds(int year, DbSource dbSource, string displayName = null, PagingInfo pagingInfo = null);
+        List<Fund> GetAllFunds(int year, DbSource dbSource, string displayName = null,string fundNumber = null, PagingInfo pagingInfo = null);
 
         List<Fund> AddUploadedFunds(int year, List<FundAddEntity> uploadedFunds, out List<FundAddEntity> rejectedFunds);
 

@@ -55,18 +55,39 @@ namespace AnnualReports.Application.Core.Services
             _barRepository.BatchDelete(t => t.Year == year);
         }
 
-        public List<Bar> GetAllBars(int year, string displayName = null, PagingInfo pagingInfo = null)
+        public List<Bar> GetAllBars(int year, string displayName = null,string barNumber = null, PagingInfo pagingInfo = null)
         {
             if (string.IsNullOrWhiteSpace(displayName))
                 displayName = "";
+            if (string.IsNullOrWhiteSpace(barNumber))
+                barNumber = "";
 
             if (pagingInfo == null)
                 return _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))).ToList();
             else
             {
                 int total = 0;
-                var result = _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))
-                    , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
+                List<Bar> result = null;
+                if (!string.IsNullOrWhiteSpace(displayName) && !string.IsNullOrWhiteSpace(barNumber))
+                {
+                     result = _barRepository.Get(t => t.Year == year && (t.DisplayName.Contains(displayName) && t.BarNumber.Contains(barNumber)), (list => list.OrderBy(t => t.BarNumber))
+                        , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
+                }
+                else if (!string.IsNullOrWhiteSpace(displayName))
+                {
+                     result = _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))
+                      , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
+                }
+                else if(!string.IsNullOrWhiteSpace(barNumber))
+                {
+                     result = _barRepository.Get(t => t.Year == year && t.BarNumber.Contains(barNumber), (list => list.OrderBy(t => t.BarNumber))
+                     , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
+                }
+                else
+                {
+                    result = _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))
+                        , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
+                }
                 pagingInfo.Total = total;
                 return result;
             }
