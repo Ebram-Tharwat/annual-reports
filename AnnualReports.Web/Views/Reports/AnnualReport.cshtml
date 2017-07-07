@@ -74,7 +74,12 @@
         <div class="col-xs-12" ng-if="form.$valid && vm.reportData">
             <hr />
             <h3>Result:</h3>
-            <div ui-grid="vm.gridOptions" ui-grid-pinning ui-grid-expandable ui-grid-pagination class="grid">
+            <div class="" ng-hide="vm.reportData && vm.gridOptions.data.length == 0">
+                <button type="button" class="btn-success btn pull-right" data-ng-click="vm.downloadAnnualReportDataByFund()">Export To Excel</button>
+                <br />
+                <br />
+            </div>
+            <div ui-grid="vm.gridOptions" ui-grid-pinning ui-grid-expandable ui-grid-pagination class="grid clearfix">
                 <div class="empty-data" ng-show="vm.reportData && vm.gridOptions.data.length == 0">No data available</div>
             </div>
         </div>
@@ -135,6 +140,7 @@
                 vm.getFunds = getFunds;
                 vm.getAnnualReportData = getAnnualReportData;
                 vm.downloadAnnualReportData = downloadAnnualReportData;
+                vm.downloadAnnualReportDataByFund = downloadAnnualReportDataByFund;
 
                 vm.gridOptions = {
                     paginationPageSizes: [],
@@ -148,9 +154,9 @@
                 }
 
                 vm.gridOptions.columnDefs = [
-                  { displayName: 'MCAG', field: 'mcag' }, { displayName: 'Fund #', field: 'fundNumber' }, { displayName: 'Fund Name', field: 'fundDisplayName', cellTooltip: true },
-                  { displayName: 'BARs Account', field: 'barNumber' }, { displayName: 'BARs Name', field: 'barDisplayName', cellTooltip: true },
-                  { displayName: 'Amount', field: 'amount', cellFilter: 'currency' }
+                    { displayName: 'MCAG', field: 'mcag' }, { displayName: 'Fund #', field: 'fundNumber' }, { displayName: 'Fund Name', field: 'fundDisplayName', cellTooltip: true },
+                    { displayName: 'BARs Account', field: 'barNumber' }, { displayName: 'BARs Name', field: 'barDisplayName', cellTooltip: true },
+                    { displayName: 'Amount', field: 'amount', cellFilter: 'currency' }
                 ];
 
                 activate();
@@ -182,9 +188,9 @@
                             item.subGridOptions = {
                                 columnDefs: [{ displayName: "Debit", field: "debit", cellFilter: 'currency' }, { displayName: "Credit", field: "credit", cellFilter: 'currency' }
                                 /*, { displayName: "Period", field: "view_Period" }*/, { displayName: "Act Desc", field: "accountDescription", width: '*', cellTooltip: true }
-                                , { displayName: "Act #1", field: "actnumbR_1" }, { displayName: "Act #2", field: "actnumbR_2" }
-                                , { displayName: "Act #3", field: "actnumbR_3" }, { displayName: "Act #4", field: "actnumbR_4" }
-                                , { displayName: "Act #5", field: "actnumbR_5" }],
+                                    , { displayName: "Act #1", field: "actnumbR_1" }, { displayName: "Act #2", field: "actnumbR_2" }
+                                    , { displayName: "Act #3", field: "actnumbR_3" }, { displayName: "Act #4", field: "actnumbR_4" }
+                                    , { displayName: "Act #5", field: "actnumbR_5" }],
                                 data: item.rows
                             }
                         });
@@ -195,6 +201,11 @@
                 function downloadAnnualReportData() {
                     var selectedYear = new Date(vm.exportModel.year).getFullYear();
                     window.open('/reports/ExportAnnualReportToExcel/' + selectedYear, '_blank', '');
+                }
+
+                function downloadAnnualReportDataByFund() {
+                    var selectedYear = new Date(vm.year).getFullYear();
+                    window.open('/reports/ExportAnnualReportToExcel/' + selectedYear + '/' + vm.selectedFund.id, '_blank', '');
                 }
             }
         })();

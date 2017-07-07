@@ -64,92 +64,18 @@ namespace AnnualReports.Application.Core.Services
             return newFunds.Union(fundsToUpdate).Union(fundsToSkip).ToList();
         }
 
-        public List<Fund> GetAllFunds(int year, DbSource dbSource, string displayName = null, string fundNumber = null, PagingInfo pagingInfo = null)
+        public List<Fund> GetAllFunds(int? year, DbSource? dbSource = DbSource.ALL, string displayName = null, string fundNumber = null, bool? isActive = null, PagingInfo pagingInfo = null)
         {
-            if (string.IsNullOrWhiteSpace(displayName))
-                displayName = "";
+            int total = 0;
 
-            if (string.IsNullOrWhiteSpace(fundNumber))
-                fundNumber = "";
-
-            if (dbSource == DbSource.ALL)
-            {
-                if (pagingInfo == null)
-                    return _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.FundNumber)), t => t.MapToFund).ToList();
-                else
-                {
-                    int total = 0;
-                    List<Fund> result = null;
-                    if (!string.IsNullOrWhiteSpace(displayName) && !string.IsNullOrWhiteSpace(fundNumber))
-                    {
-                        result = _fundsRepository.Get(t => t.Year == year && (t.DisplayName.Contains(displayName) && t.FundNumber.Contains(fundNumber)), (list => list.OrderBy(t => t.FundNumber))
-                        , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                        t => t.MapToFund).ToList();
-                    }
-                    else if (!string.IsNullOrWhiteSpace(displayName))
-                    {
-                        result = _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.FundNumber))
-                       , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                       t => t.MapToFund).ToList();
-                    }
-                    else if (!string.IsNullOrWhiteSpace(fundNumber))
-                    {
-                        result = _fundsRepository.Get(t => t.Year == year && t.FundNumber.Contains(fundNumber), (list => list.OrderBy(t => t.FundNumber))
-                      , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                      t => t.MapToFund).ToList();
-                    }
-                    else
-                    {
-                        result = _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.FundNumber))
-                       , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                       t => t.MapToFund).ToList();
-                    }
-                    pagingInfo.Total = total;
-                    return result;
-                }
-            }
+            if (pagingInfo == null)
+                return _fundsRepository.SearchForFunds(year, dbSource, displayName, fundNumber, isActive, out total, 0, int.MaxValue).ToList();
             else
             {
-                if (pagingInfo == null)
-                    return _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName) && t.DbSource == dbSource
-                            , (list => list.OrderBy(t => t.FundNumber))).ToList();
-                else
-                {
-                    int total = 0;
-                    List<Fund> result = null;
-                    if (!string.IsNullOrWhiteSpace(displayName) && !string.IsNullOrWhiteSpace(fundNumber))
-                    {
-                        result = _fundsRepository.Get(t => t.Year == year && (t.DisplayName.Contains(displayName) && t.FundNumber.Contains(fundNumber)) && t.DbSource == dbSource
-                       , (list => list.OrderBy(t => t.FundNumber))
-                       , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                       t => t.MapToFund).ToList();
-                    }
-                    else if (!string.IsNullOrWhiteSpace(displayName))
-                    {
-                        result = _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName) && t.DbSource == dbSource
-                        , (list => list.OrderBy(t => t.FundNumber))
-                        , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                        t => t.MapToFund).ToList();
-                    }
-                    else if (!string.IsNullOrWhiteSpace(fundNumber))
-                    {
-                        result = _fundsRepository.Get(t => t.Year == year && t.FundNumber.Contains(fundNumber) && t.DbSource == dbSource
-                      , (list => list.OrderBy(t => t.FundNumber))
-                      , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                      t => t.MapToFund).ToList();
-                    }
-
-                    else
-                    {
-                        result = _fundsRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName) && t.DbSource == dbSource
-                        , (list => list.OrderBy(t => t.FundNumber))
-                        , out total, pagingInfo.PageIndex, AppSettings.PageSize,
-                        t => t.MapToFund).ToList();
-                    }
-
-                    pagingInfo.Total = total;
-                    return result;
-                }
+                List<Fund> result = null;
+                result = _fundsRepository.SearchForFunds(year, dbSource, displayName, fundNumber, isActive, out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
+                pagingInfo.Total = total;
+                return result;
             }
         }
 
@@ -251,7 +177,7 @@ namespace AnnualReports.Application.Core.Services
 
         public List<FundBasicInfo> GetPrimaryFunds(int year, DbSource dbSource, PagingInfo pagingInfo = null)
         {
-            var funds = this.GetAllFunds(year, dbSource, null,null, pagingInfo);
+            var funds = this.GetAllFunds(year, dbSource, null, null, null, pagingInfo);
             var primaryFunds = Mapper.Map<List<Fund>, List<FundBasicInfo>>(funds.Where(t => t.MapToFundId == null).ToList());
             primaryFunds.ForEach(primary =>
             {

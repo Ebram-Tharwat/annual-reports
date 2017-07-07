@@ -37,7 +37,7 @@ namespace AnnualReports.Web.Controllers
             var entities = Enumerable.Empty<Bar>();
             if (TryValidateModel(filter))
             {
-                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : -1, filter.DisplayName,filter.BarNumber, pagingInfo);
+                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : (int?)null, filter.DisplayName, filter.BarNumber, null, pagingInfo);
                 ViewBag.DisplayResults = true;
             }
             else

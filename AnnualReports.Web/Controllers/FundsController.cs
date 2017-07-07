@@ -38,7 +38,7 @@ namespace AnnualReports.Web.Controllers
             var pagingInfo = new PagingInfo() { PageNumber = page };
             var entities = Enumerable.Empty<Fund>();
             if (filters.Year.HasValue)
-                entities = _fundService.GetAllFunds((short)filters.Year.Value, DbSource.ALL, filters.DisplayName,filters.FundNumber, pagingInfo);
+                entities = _fundService.GetAllFunds(filters.Year.Value, DbSource.ALL, filters.DisplayName, filters.FundNumber, null, pagingInfo);
             var viewmodel = entities.ToMappedPagedList<Fund, FundDetailsViewModel>(pagingInfo);
 
             ViewBag.FilterViewModel = filters;

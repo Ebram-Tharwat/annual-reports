@@ -1,5 +1,4 @@
-﻿using AnnualReports.Infrastructure.Core.Extensions;
-using AnnualReports.Infrastructure.Core.Interfaces;
+﻿using AnnualReports.Infrastructure.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -90,7 +89,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             int skipCount = index * size;
             var query = this.Get(filter, orderBy, includes);
             total = query.Count();
-            query = skipCount == 0 ? query.Take(size) : query.Skip(skipCount).Take(size);            
+            query = skipCount == 0 ? query.Take(size) : query.Skip(skipCount).Take(size);
             return query;
         }
 
@@ -232,7 +231,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories
             if (_dbContext != null)
                 _dbContext.Dispose();
         }
-        
+
         #endregion IDisposable
     }
 }

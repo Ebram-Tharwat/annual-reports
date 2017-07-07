@@ -25,7 +25,7 @@ namespace AnnualReports.Application.Core.Services
             // 1- get all possible combination of funds*bars
             var annualReportData = _fundsRepository.GetAnnualReportDataRows(year, fundId);
             // 2- get all possible/valid bars
-            var bars = _barService.GetAllBars(year);
+            var bars = _barService.GetAllBars(year, null, null, true);
             // 3- generate report item detail.
             var groupByFundNumber = annualReportData.GroupBy(t => new { t.PrimaryFundNumber, t.FundDisplayName, t.MCAG });
             foreach (var fundGroup in groupByFundNumber)

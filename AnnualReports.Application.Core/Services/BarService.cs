@@ -10,10 +10,10 @@ namespace AnnualReports.Application.Core.Services
 {
     public class BarService : IBarService
     {
-        private readonly IRepository<Bar> _barRepository;
+        private readonly IAnnualReportsDbBarRepository _barRepository;
         private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
 
-        public BarService(IRepository<Bar> barRepository, IUnitOfWork<AnnualReportsDbContext> uow)
+        public BarService(IAnnualReportsDbBarRepository barRepository, IUnitOfWork<AnnualReportsDbContext> uow)
         {
             _barRepository = barRepository;
             _uow = uow;
@@ -55,39 +55,16 @@ namespace AnnualReports.Application.Core.Services
             _barRepository.BatchDelete(t => t.Year == year);
         }
 
-        public List<Bar> GetAllBars(int year, string displayName = null,string barNumber = null, PagingInfo pagingInfo = null)
+        public List<Bar> GetAllBars(int? year = null, string displayName = null, string barNumber = null, bool? isActive = null, PagingInfo pagingInfo = null)
         {
-            if (string.IsNullOrWhiteSpace(displayName))
-                displayName = "";
-            if (string.IsNullOrWhiteSpace(barNumber))
-                barNumber = "";
+            int total = 0;
 
             if (pagingInfo == null)
-                return _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))).ToList();
+                return _barRepository.SearchForBars(year, displayName, barNumber, isActive, out total, 0, int.MaxValue).ToList();
             else
             {
-                int total = 0;
                 List<Bar> result = null;
-                if (!string.IsNullOrWhiteSpace(displayName) && !string.IsNullOrWhiteSpace(barNumber))
-                {
-                     result = _barRepository.Get(t => t.Year == year && (t.DisplayName.Contains(displayName) && t.BarNumber.Contains(barNumber)), (list => list.OrderBy(t => t.BarNumber))
-                        , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
-                }
-                else if (!string.IsNullOrWhiteSpace(displayName))
-                {
-                     result = _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))
-                      , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
-                }
-                else if(!string.IsNullOrWhiteSpace(barNumber))
-                {
-                     result = _barRepository.Get(t => t.Year == year && t.BarNumber.Contains(barNumber), (list => list.OrderBy(t => t.BarNumber))
-                     , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
-                }
-                else
-                {
-                    result = _barRepository.Get(t => t.Year == year && t.DisplayName.Contains(displayName), (list => list.OrderBy(t => t.BarNumber))
-                        , out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
-                }
+                result = _barRepository.SearchForBars(year, displayName, barNumber, isActive, out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
                 pagingInfo.Total = total;
                 return result;
             }
@@ -95,7 +72,7 @@ namespace AnnualReports.Application.Core.Services
 
         public Bar GetByBarNumberAndYear(string barNumber, int year)
         {
-            return _barRepository.OneOrDefault(b => b.Year == year&& b.BarNumber == barNumber);
+            return _barRepository.OneOrDefault(b => b.Year == year && b.BarNumber == barNumber);
         }
 
         public List<Bar> GetByYear(int year)

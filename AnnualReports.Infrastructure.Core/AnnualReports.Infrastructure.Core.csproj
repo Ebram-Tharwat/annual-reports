@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="Extensions\DbContextExtensions.cs" />
     <Compile Include="Extensions\MigrationExtensions.cs" />
+    <Compile Include="Interfaces\IAnnualReportsDbBarRepository.cs" />
     <Compile Include="Interfaces\IAnnualReportsDbFundRepository.cs" />
     <Compile Include="Interfaces\IGcDbFundRepository.cs" />
     <Compile Include="Interfaces\IDistDbFundRepository.cs" />
@@ -178,6 +179,7 @@
       <DependentUpon>ScriptResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbBarRepository.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbEfRepository.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbFundRepository.cs" />
     <Compile Include="Repositories\DistDb\DistDbEfRepository.cs" />

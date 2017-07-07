@@ -47,13 +47,13 @@ namespace AnnualReports.Application.Core.Services
             return stream;
         }
 
-        public MemoryStream GetAnnualReportExcel(int year)
+        public MemoryStream GetAnnualReportExcel(int year, int? fundId)
         {
             string excelTemplate = GetExcelTemplate(ReportType.AnnualReportTemplate);
             var templateFile = new FileInfo(excelTemplate);
             ExcelPackage package = new ExcelPackage(templateFile, true);
 
-            GenerateAnnualReportTemplate(package, _reportService.GetAnnualReportData(year), year);
+            GenerateAnnualReportTemplate(package, _reportService.GetAnnualReportData(year, fundId), year);
 
             var stream = new MemoryStream(package.GetAsByteArray());
             return stream;

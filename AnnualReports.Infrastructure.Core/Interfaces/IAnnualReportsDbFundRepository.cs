@@ -7,5 +7,7 @@ namespace AnnualReports.Infrastructure.Core.Interfaces
     public interface IAnnualReportsDbFundRepository : IRepository<Fund>
     {
         IEnumerable<AnnualReportDataRow> GetAnnualReportDataRows(int year, int? fundId = null);
+
+        List<Fund> SearchForFunds(int? year, DbSource? dbSource, string displayName, string fundNumber, bool? isActive, out int total, int index = 0, int size = 50);
     }
 }

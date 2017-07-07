@@ -24,10 +24,10 @@ namespace AnnualReports.Web.Controllers
         }
 
         [HttpGet]
-        [Route("ExportAnnualReportToExcel/{year:int}")]
-        public ActionResult ExportAnnualReportToExcel(int year)
+        [Route("ExportAnnualReportToExcel/{year:int}/{fundId:int?}")]
+        public ActionResult ExportAnnualReportToExcel(int year, int? fundId)
         {
-            MemoryStream stream = _exportingService.GetAnnualReportExcel(year);
+            MemoryStream stream = _exportingService.GetAnnualReportExcel(year, fundId);
 
             return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.AnnualReportExcelFileName, year));
         }
