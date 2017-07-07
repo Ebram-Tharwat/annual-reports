@@ -78,6 +78,9 @@ namespace AnnualReports.Web.Controllers
                 if (_barService.GetByBarNumberAndYear(viewmodel.BarNumber, viewmodel.Year.Value) == null)
                 {
                     var entity = Mapper.Map<BarAddViewModel, Bar>(viewmodel);
+                    if (string.IsNullOrWhiteSpace(entity.MapToBarNumber))
+                        entity.MapToBarNumber = entity.BarNumber;
+
                     _barService.Add(new List<Bar>() { entity });
 
                     Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully saved.");

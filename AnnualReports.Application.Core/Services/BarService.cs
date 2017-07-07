@@ -1,5 +1,6 @@
 ﻿using AnnualReports.Application.Core.Contracts.Paging;
 using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Common.Extensions;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
@@ -21,7 +22,18 @@ namespace AnnualReports.Application.Core.Services
 
         public void Add(IEnumerable<Bar> entities)
         {
-            _barRepository.Add(entities);
+            var finalBars = new List<Bar>(entities);
+            foreach (var entity in entities)
+            {
+                if (entity.BarNumber.Length == 5 && entity.BarNumber.StartsWith("5")) // if BarNumber length is 5 and starts with 5
+                {
+                    var sourceBarObj = finalBars.FirstOrDefault(t => t.BarNumber == entity.BarNumber);
+                    finalBars.AddRange(HandleTrickyBarNumbers(sourceBarObj));
+                    // update the orginal bar to be inactive.
+                    sourceBarObj.IsActive = false;
+                }
+            }
+            _barRepository.Add(finalBars);
             _uow.Commit();
         }
 
@@ -89,6 +101,33 @@ namespace AnnualReports.Application.Core.Services
         {
             _barRepository.Update(entity);
             _uow.Commit();
+        }
+
+        /// <summary>
+        /// Tricky bars are the the bars that starts with 5 and have length of 5
+        /// </summary>
+        /// <returns></returns>
+        private List<Bar> HandleTrickyBarNumbers(Bar sourceBarObj)
+        {
+            var result = new List<Bar>();
+            // define the extra bars to add
+            var extraBars = new List<string>() { "10", "20", "30", "40", "50", "60", "70", "80", "90" };
+            foreach (var item in extraBars)
+            {
+                var extraEntity = sourceBarObj.CloneJson<Bar>();
+                extraEntity.BarNumber = extraEntity.BarNumber + item;
+                if (sourceBarObj.MapToBarNumber.EndsWith("*"))
+                {
+                    extraEntity.MapToBarNumber = "";
+                    for (int i = 0; i < 10; i++)
+                    {
+                        extraEntity.MapToBarNumber = extraEntity.MapToBarNumber + (int.Parse(extraEntity.BarNumber) + i).ToString() + ",";
+                    }
+                }
+                result.Add(extraEntity);
+            }
+
+            return result;
         }
     }
 }
