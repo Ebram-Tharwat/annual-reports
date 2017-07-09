@@ -33,7 +33,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
                 query = query.Where(t => t.DisplayName.Contains(displayName.Trim()));
 
             if (!string.IsNullOrWhiteSpace(fundNumber))
-                query = query.Where(t => t.FundNumber.Contains(fundNumber.Trim()));
+                query = query.Where(t => t.FundNumber.StartsWith(fundNumber.Trim()));
 
             if (isActive.HasValue)
                 query = query.Where(t => t.IsActive == isActive);

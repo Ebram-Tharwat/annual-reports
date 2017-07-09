@@ -25,7 +25,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
                 query = query.Where(t => t.DisplayName.Contains(displayName.Trim()));
 
             if (!string.IsNullOrWhiteSpace(barNumber))
-                query = query.Where(t => t.BarNumber.Contains(barNumber.Trim()));
+                query = query.Where(t => t.BarNumber.StartsWith(barNumber.Trim()));
 
             if (isActive.HasValue)
                 query = query.Where(t => t.IsActive == isActive);
