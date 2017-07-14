@@ -1,9 +1,11 @@
-﻿using AnnualReports.Application.Core.Contracts.Paging;
+﻿using AnnualReports.Application.Core.Contracts.BarEntities;
+using AnnualReports.Application.Core.Contracts.Paging;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Common.Extensions;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
+using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -100,7 +102,72 @@ namespace AnnualReports.Application.Core.Services
         public void Update(Bar entity)
         {
             _barRepository.Update(entity);
+            if (entity.BarNumber.Length == 5 && entity.BarNumber.StartsWith("5")) // if BarNumber length is 5 and starts with 5
+            {
+                var trickyBars = HandleTrickyBarNumbers(entity);
+                // load tricky bars from DB. Note that bar number lenght is equal to 5 + XX ; where XX is (10,20 ... 90)
+                var dbTrickyBars = _barRepository.Get(t => t.Year == entity.Year && t.BarNumber.StartsWith(entity.BarNumber) && t.BarNumber.Length == 7).ToList();
+                if (dbTrickyBars.Any())
+                {
+                    dbTrickyBars.ForEach(t =>
+                    {
+                        t.DisplayName = entity.DisplayName;
+                        t.Period = entity.Period;
+                        _barRepository.Update(t);
+                    });
+                }
+                else
+                {
+                    this.Add(trickyBars);
+                }
+            }
             _uow.Commit();
+        }
+
+        public void UploadBars(int year, List<BarUploadEntity> excelData, out int numOfAddedEntities, out int numOfUpdatedEntities)
+        {
+            var existedEntities = this.GetByYear(year);
+            var entitiesToAdd = new List<Bar>();
+            var entitiesToUpdate = new List<Bar>();
+            foreach (var entityViewModel in excelData)
+            {
+                var existedEntity = existedEntities.FirstOrDefault(t => t.BarNumber == entityViewModel.BarNumber && t.Year == entityViewModel.Year);
+                if (existedEntity == null)
+                {
+                    var entity = Mapper.Map<BarUploadEntity, Bar>(entityViewModel);
+                    entitiesToAdd.Add(entity);
+                }
+                else
+                {
+                    Mapper.Map(entityViewModel, existedEntity);
+                    entitiesToUpdate.Add(existedEntity);
+
+                    if (existedEntity.BarNumber.Length == 5 && existedEntity.BarNumber.StartsWith("5")) // if BarNumber length is 5 and starts with 5
+                    {
+                        var trickyBars = HandleTrickyBarNumbers(existedEntity);
+                        trickyBars.ForEach(trickybar =>
+                        {
+                            var existedTrickyBar = existedEntities.FirstOrDefault(t => t.BarNumber == trickybar.BarNumber && t.Year == trickybar.Year);
+                            if (existedTrickyBar == null)
+                            {
+                                entitiesToAdd.Add(trickybar);
+                            }
+                            else
+                            {
+                                Mapper.Map(trickybar, existedTrickyBar);
+                                entitiesToUpdate.Add(existedTrickyBar);
+                            }
+                        });
+                    }
+                }
+            }
+
+            this.Add(entitiesToAdd);
+            entitiesToUpdate.ForEach(t => _barRepository.Update(t));
+            _uow.Commit();
+
+            numOfAddedEntities = entitiesToAdd.Count;
+            numOfUpdatedEntities = entitiesToUpdate.Count;
         }
 
         /// <summary>
@@ -116,14 +183,14 @@ namespace AnnualReports.Application.Core.Services
             {
                 var extraEntity = sourceBarObj.CloneJson<Bar>();
                 extraEntity.BarNumber = extraEntity.BarNumber + item;
-                if (sourceBarObj.MapToBarNumber.EndsWith("*"))
+                //if (sourceBarObj.MapToBarNumber.EndsWith("*"))
+                //{
+                extraEntity.MapToBarNumber = "";
+                for (int i = 0; i < 10; i++)
                 {
-                    extraEntity.MapToBarNumber = "";
-                    for (int i = 0; i < 10; i++)
-                    {
-                        extraEntity.MapToBarNumber = extraEntity.MapToBarNumber + (int.Parse(extraEntity.BarNumber) + i).ToString() + ",";
-                    }
+                    extraEntity.MapToBarNumber = extraEntity.MapToBarNumber + (int.Parse(extraEntity.BarNumber) + i).ToString() + ",";
                 }
+                //}
                 result.Add(extraEntity);
             }
 

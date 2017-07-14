@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Contracts\BarEntities\BarUploadEntity.cs" />
     <Compile Include="Contracts\FundEntities\FundAddEntity.cs" />
     <Compile Include="Contracts\FundEntities\FundBasicInfo.cs" />
     <Compile Include="Contracts\Paging\PagingInfo.cs" />

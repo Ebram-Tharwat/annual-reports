@@ -1,4 +1,5 @@
-﻿using AnnualReports.Application.Core.Contracts.FundEntities;
+﻿using AnnualReports.Application.Core.Contracts.BarEntities;
+using AnnualReports.Application.Core.Contracts.FundEntities;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Web.ViewModels.BarModels;
 using AnnualReports.Web.ViewModels.FundModels;
@@ -45,8 +46,13 @@ namespace GRis.App_Start
                 #region Bar
 
                 cfg.CreateMap<Bar, BarDetailsViewModel>()
+                .ReverseMap()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
                 ;
-                cfg.CreateMap<BarDetailsViewModel, Bar>()
+
+                cfg.CreateMap<Bar, BarUploadEntity>()
+                .ReverseMap()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
                 ;
 
                 cfg.CreateMap<Bar, BarEditViewModel>()

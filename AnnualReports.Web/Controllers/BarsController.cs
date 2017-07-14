@@ -1,4 +1,5 @@
 ﻿using AnnualReports.Application.Core;
+using AnnualReports.Application.Core.Contracts.BarEntities;
 using AnnualReports.Application.Core.Contracts.Paging;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Common.Extensions;
@@ -114,10 +115,7 @@ namespace AnnualReports.Web.Controllers
                     viewmodel.ExcelFile.SaveAs(path); // save a copy of the uploaded file.
                     // convert the uploaded file into datatable, then add/update db entities.
                     var dtBarsHours = ImportUtils.ImportXlsxToDataTable(viewmodel.ExcelFile.InputStream, true);
-                    int numOfEntitiesUpdated = 0;
-                    // load existed entities from DB, aka "cache".
-                    var existedEntities = GetExistedBars(dtBarsHours).ToList();
-                    var excelData = dtBarsHours.AsEnumerable().Select(row => new BarDetailsViewModel()
+                    var excelData = dtBarsHours.AsEnumerable().Select(row => new BarUploadEntity()
                     {
                         Year = int.Parse(row["Year"].ToString()),
                         BarNumber = row["State BARS Number"].ToString(),
@@ -127,29 +125,12 @@ namespace AnnualReports.Web.Controllers
                         IsActive = string.IsNullOrWhiteSpace(row["Is Active"].ToString()) ? false : row["Is Active"].ToString() == "1" ? true : false
                     }).ToList();
                     excelData = excelData.GroupBy(x => x.BarNumber).Select(y => y.First()).ToList();
-                    foreach (var entityViewModel in excelData)
-                    {
-                        var existedEntity = existedEntities.FirstOrDefault(t => t.BarNumber == entityViewModel.BarNumber && t.Year == entityViewModel.Year);
-                        if (existedEntity == null)
-                        {
-                            var entity = Mapper.Map<BarDetailsViewModel, Bar>(entityViewModel);
-                            addedEntities.Add(entity);
-                        }
-                        else
-                        {
-                            entityViewModel.Id = existedEntity.Id;
-                            Mapper.Map(entityViewModel, existedEntity);
-                            _barService.Update(existedEntity);
-                            numOfEntitiesUpdated++;
-                        }
-                    }
-                    if (addedEntities.Any())
-                    {
-                        _barService.Add(addedEntities);
-                    }
 
-                    Success($"<strong>{addedEntities.Count}</strong> records have been successfully added. <br\\>"
-                        + $"<strong>{numOfEntitiesUpdated}</strong> records have been successfully updated.");
+                    int numOfAddedEntities = 0, numOfUpdatedEntities = 0;
+                    _barService.UploadBars(viewmodel.BarsYear.Value, excelData, out numOfAddedEntities, out numOfUpdatedEntities);
+
+                    Success($"<strong>{numOfAddedEntities}</strong> records have been successfully added. <br\\>"
+                        + $"<strong>{numOfUpdatedEntities}</strong> records have been successfully updated.");
                 }
             }
 

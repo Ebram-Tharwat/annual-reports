@@ -1,4 +1,5 @@
-﻿using AnnualReports.Application.Core.Contracts.Paging;
+﻿using AnnualReports.Application.Core.Contracts.BarEntities;
+using AnnualReports.Application.Core.Contracts.Paging;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using System.Collections.Generic;
 
@@ -19,5 +20,7 @@ namespace AnnualReports.Application.Core.Interfaces
         List<Bar> CopyBars(int fromYear, int toYear);
 
         Bar GetById(int id);
+
+        void UploadBars(int year, List<BarUploadEntity> excelData, out int numOfAddedEntities, out int numOfUpdatedEntities);
     }
 }
