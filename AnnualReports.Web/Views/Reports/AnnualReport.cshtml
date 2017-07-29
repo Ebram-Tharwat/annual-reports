@@ -179,7 +179,7 @@
 
                 function getAnnualReportData() {
                     $timeout(function () {
-                        blockUI.message('Loading data for fund "' + vm.selectedFund.displayName + '"');
+                        blockUI.message('Loading data for fund "' + vm.selectedFund.displayName.trim() + '"');
                     }, 0);
                     var selectedYear = new Date(vm.year).getFullYear();
                     $http.get('/api/report/annualreport/' + selectedYear + '/' + vm.selectedFund.id).then(function (result) {

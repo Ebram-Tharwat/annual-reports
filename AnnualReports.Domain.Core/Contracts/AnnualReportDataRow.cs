@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using System;
 
 namespace AnnualReports.Domain.Core.Contracts
 {
@@ -11,6 +12,8 @@ namespace AnnualReports.Domain.Core.Contracts
         public string FundDisplayName { get; set; }
 
         public string MCAG { get; set; }
+
+        //public DbSource DbSource { get; set; }
 
         public Int16 View_Period { get; set; }
 
