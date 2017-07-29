@@ -289,6 +289,7 @@
     <Compile Include="ViewModels\FundModels\FundEditViewModel.cs" />
     <Compile Include="ViewModels\FundModels\FundsCopyViewModel.cs" />
     <Compile Include="ViewModels\FundModels\FundsUploadViewModel.cs" />
+    <Compile Include="ViewModels\ReportModels\MonthlyReportFiltersViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\angular-block-ui.css" />
@@ -446,13 +447,14 @@
     <Content Include="Views\UserAdmin\Edit.cshtml" />
     <Content Include="Views\UserAdmin\GetUsers.cshtml" />
     <Content Include="Views\UserAdmin\Index.cshtml" />
+    <Content Include="Views\Reports\MonthlyReport.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\YearMonthDatePicker.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="Uploads\Bars\" />
     <Folder Include="Uploads\Funds\" />
-    <Folder Include="ViewModels\ReportModels\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>

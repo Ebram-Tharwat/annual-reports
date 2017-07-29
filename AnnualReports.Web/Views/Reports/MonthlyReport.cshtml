@@ -1,0 +1,59 @@
+﻿@model AnnualReports.Web.ViewModels.ReportModels.MonthlyReportGenerateViewModel
+
+@{
+    ViewBag.Title = "Monthly Report";
+}
+
+<h2>Monthly Report</h2>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading bold">Generate Monthly Report:</div>
+            <div class="panel-body">
+                @using (Html.BeginForm("Upload", "Funds", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div id="step-1">
+                        <h3 class="margin-top-0">Step 1:</h3>
+                        <p class="help-block">
+                            Please select the year and month of this Monthly Report
+                        </p>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label" })
+                            <span class="text-danger">*</span>
+                            <div class="">
+                                @Html.EditorFor(model => model.Date)
+                                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div id="step-2">
+                        <h3>Step 2</h3>
+                        <p class="help-block">
+                            Upload Montyly Report amounts excel sheet
+                        </p>
+                        <div class="form-group clearfix">
+                            @Html.EditorFor(model => model.ExcelFile)
+                            @Html.ValidationMessageFor(model => model.ExcelFile, "", new { @class = "text-danger" })
+                        </div>
+                        <hr />
+                    </div>
+                    <div id="step-3">
+                        <h3>Step 3:</h3>
+                        <p class="help-block">
+                            Click on <strong><i>"Export to Excel"</i></strong> button to download the Monthly Report based on the selected year and month.
+                        </p>
+                        <div class="form-group">
+                            <a href="/Funds/ExportFundsTemplate" target="_self" class="btn btn-labeled btn-success" id="btn-download-funds">
+                                <span><i class="glyphicon glyphicon-download-alt"></i></span> Export To Excel
+                            </a>
+                        </div>
+                        <hr />
+                    </div>                    
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

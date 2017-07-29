@@ -1,5 +1,6 @@
 ﻿using AnnualReports.Application.Core;
 using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Web.ViewModels.ReportModels;
 using System.IO;
 using System.Web.Mvc;
 
@@ -18,9 +19,17 @@ namespace AnnualReports.Web.Controllers
             _exportingService = exportingService;
         }
 
+        [HttpGet]
         public ActionResult AnnualReport()
         {
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult MonthlyReport()
+        {
+            var viewmodel = new MonthlyReportGenerateViewModel();
+            return View(viewmodel);
         }
 
         [HttpGet]
