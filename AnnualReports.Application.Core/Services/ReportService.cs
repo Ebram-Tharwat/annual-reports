@@ -51,9 +51,9 @@ namespace AnnualReports.Application.Core.Services
                         foreach (var mapToItem in mapToBarList)
                         {
                             if (mapToItem.StartsWith("5") || mapToItem.StartsWith("1"))
-                                total += fundRows.Sum(t => t.Debit - t.Credit);
+                                total += fundRows.Where(t=> t.View_BarNumber.StartsWith(mapToItem)).Sum(t => t.Debit - t.Credit);
                             else
-                                total += fundRows.Sum(t => t.Credit - t.Debit);
+                                total += fundRows.Where(t => t.View_BarNumber.StartsWith(mapToItem)).Sum(t => t.Credit - t.Debit);
                         }
                         reportData.Add(new AnnualReportDataItemDetails()
                         {

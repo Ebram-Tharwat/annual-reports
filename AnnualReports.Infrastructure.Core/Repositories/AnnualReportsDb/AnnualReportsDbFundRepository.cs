@@ -15,7 +15,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
 
         public IEnumerable<AnnualReportDataRow> GetAnnualReportDataRows(int year, int? fundId = null)
         {
-            return _dbContext.Database.SqlQuery<AnnualReportDataRow>("GetFundsReportDataPro {0},{1}", year, fundId);
+            return _dbContext.Database.SqlQuery<AnnualReportDataRow>("GetFundsReportDataPro {0},{1}", year, fundId).ToList();
         }
 
         public List<Fund> SearchForFunds(int? year, DbSource? dbSource, string displayName, string fundNumber, bool? isActive, out int total, int index = 0, int size = 50)
