@@ -172,6 +172,10 @@
     <Compile Include="Migrations\AnnualReportsDb\201706261055195_AddAuthorizationTables.Designer.cs">
       <DependentUpon>201706261055195_AddAuthorizationTables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201707312013061_AddInvestmentTypesLookup.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201707312013061_AddInvestmentTypesLookup.Designer.cs">
+      <DependentUpon>201707312013061_AddInvestmentTypesLookup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Migrations\ScriptResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -265,6 +269,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201706261055195_AddAuthorizationTables.resx">
       <DependentUpon>201706261055195_AddAuthorizationTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201707312013061_AddInvestmentTypesLookup.resx">
+      <DependentUpon>201707312013061_AddInvestmentTypesLookup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\ScriptResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

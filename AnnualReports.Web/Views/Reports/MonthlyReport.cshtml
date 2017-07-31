@@ -22,7 +22,7 @@
                             @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label" })
                             <span class="text-danger">*</span>
                             <div class="">
-                                @Html.EditorFor(model => model.Date)
+                                @Html.EditorFor(model => model.Date, new { fieldName = "date" })
                                 @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -31,7 +31,7 @@
                     <div id="step-2">
                         <h3>Step 2</h3>
                         <p class="help-block">
-                            Upload Montyly Report amounts excel sheet
+                            Upload Monthly Report amounts excel sheet
                         </p>
                         <div class="form-group clearfix">
                             @Html.EditorFor(model => model.ExcelFile)
@@ -56,4 +56,9 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/plugins")
+}
 

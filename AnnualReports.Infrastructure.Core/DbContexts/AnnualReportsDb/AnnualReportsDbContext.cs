@@ -13,6 +13,8 @@ namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
 
         public DbSet<Bar> Bars { get; set; }
 
+        public DbSet<InvestmentTypes> InvestmentTypes { get; set; }
+
         static AnnualReportsDbContext()
         {
             System.Data.Entity.Database.SetInitializer<AnnualReportsDbContext>(null);

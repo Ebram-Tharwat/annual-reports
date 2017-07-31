@@ -10,7 +10,7 @@ namespace AnnualReports.Web.ViewModels.ReportModels
         [Required(ErrorMessage = "Date is required.")]
         [UIHint("YearMonthDatePicker")]
         [Display(Name = "Please select date")]
-        public DateTime? Date { get; set; }
+        public DateTime? Date { get; set; } =  DateTime.Now;
 
         [AllowedFileExtension(".xlsx")]
         [Required(ErrorMessage = "Please select file to process")]

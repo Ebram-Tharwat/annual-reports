@@ -41,7 +41,7 @@ namespace AnnualReports.Web
                         //"~/Scripts/loadingoverlay.js",
                         //"~/Scripts/toastr.js",
                         "~/Scripts/select2.js",
-                        "~/Scripts/app/common.js"));
+                        "~/Scripts/app/app.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",

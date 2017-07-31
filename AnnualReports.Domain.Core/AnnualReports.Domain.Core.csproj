@@ -62,6 +62,7 @@
     <Compile Include="AnnualReportsDbModels\DbSource.cs" />
     <Compile Include="AnnualReportsDbModels\Fund.cs" />
     <Compile Include="AnnualReportsDbModels\IdentityModels.cs" />
+    <Compile Include="AnnualReportsDbModels\InvestmentTypes.cs" />
     <Compile Include="Contracts\AnnualReportDataRow.cs" />
     <Compile Include="Contracts\GPDynamicsFundDetails.cs" />
     <Compile Include="DistDbModels\DistDbModels.cs">

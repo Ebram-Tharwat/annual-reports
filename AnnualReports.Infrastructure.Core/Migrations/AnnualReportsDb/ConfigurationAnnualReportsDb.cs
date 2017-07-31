@@ -28,6 +28,15 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
             var UserStore = new UserStore<ApplicationUser>(context);
             var UserManager = new UserManager<ApplicationUser>(UserStore);
 
+            context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 1, Name = "General Receipts" });
+            context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 2, Name = "Investment Interest" });
+            context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 3, Name = "Investment Purchases" });
+            context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 4, Name = "Investment Sales" });
+            context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 5, Name = "Taxes" });
+            context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 6, Name = "Warrants Canceled" });
+            context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 7, Name = "Warrants Issued" });
+            context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 8, Name = "Warrants Presented" });
+
             string[] systemRoles = new string[] { "Admin", "Clerk" };
             List<string> names = new List<string>();
             names.Add("Admin");
