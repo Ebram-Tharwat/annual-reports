@@ -17,7 +17,7 @@ namespace AnnualReports.Common.Utils
         /// <param name="workSheetIndex">Index of worksheet, 1-base</param>
         /// <param name="skipEmptyRow">Should skip adding a row, in case the whole row values are NullOrEmpty().</param>
         /// <returns>A Datatable represents the excel sheet</returns>
-        public static DataTable ImportXlsxToDataTable(Stream inputStream, bool hasHeader, int workSheetIndex = 1, bool skipEmptyRow = true)
+        public static DataTable ImportXlsxToDataTable(Stream inputStream, bool hasHeader, int workSheetIndex, bool skipEmptyRow = true)
         {
             var dt = new DataTable();
             using (var excel = new ExcelPackage(inputStream))

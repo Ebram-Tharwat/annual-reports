@@ -1,5 +1,6 @@
 ﻿using AnnualReports.Web.Validations;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 
@@ -10,7 +11,7 @@ namespace AnnualReports.Web.ViewModels.ReportModels
         [Required(ErrorMessage = "Date is required.")]
         [UIHint("YearMonthDatePicker")]
         [Display(Name = "Please select date")]
-        public DateTime? Date { get; set; } =  DateTime.Now;
+        public DateTime? Date { get; set; } = DateTime.Now;
 
         [AllowedFileExtension(".xlsx")]
         [Required(ErrorMessage = "Please select file to process")]
@@ -22,5 +23,7 @@ namespace AnnualReports.Web.ViewModels.ReportModels
         {
             get { return Date.HasValue ? Date.Value.ToString("MM/yyyy") : ""; }
         }
+
+        public List<MonthlyReportDataViewModel> Data { get; set; }
     }
 }

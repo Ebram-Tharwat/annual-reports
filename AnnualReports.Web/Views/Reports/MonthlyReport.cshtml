@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Monthly Report";
+    var displayResults = (bool)ViewBag.DisplayResults;
 }
 
 <h2>Monthly Report</h2>
@@ -10,7 +11,7 @@
         <div class="panel panel-default">
             <div class="panel-heading bold">Generate Monthly Report:</div>
             <div class="panel-body">
-                @using (Html.BeginForm("Upload", "Funds", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("MonthlyReport", "Reports", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
                     <div id="step-1">
@@ -45,12 +46,19 @@
                             Click on <strong><i>"Export to Excel"</i></strong> button to download the Monthly Report based on the selected year and month.
                         </p>
                         <div class="form-group">
-                            <a href="/Funds/ExportFundsTemplate" target="_self" class="btn btn-labeled btn-success" id="btn-download-funds">
-                                <span><i class="glyphicon glyphicon-download-alt"></i></span> Export To Excel
-                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <span class="glyphicon glyphicon-download-alt"></span> Export To Excel
+                            </button>
                         </div>
                         <hr />
-                    </div>                    
+                    </div>
+                    if (displayResults)
+                    {
+                        <div id="step-4">
+                            <h3>Results:</h3>
+                            @{Html.RenderPartial("_MonthlyReportDataList", Model.Data);}
+                        </div>
+                    }
                 }
             </div>
         </div>
@@ -61,4 +69,3 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/plugins")
 }
-

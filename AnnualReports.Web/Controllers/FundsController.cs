@@ -116,8 +116,7 @@ namespace AnnualReports.Web.Controllers
                             DateTime.Now.GetTimeStamp() + "_" + fileName);
                         viewmodel.ExcelFile.SaveAs(path); // save a copy of the uploaded file.
                         // convert the uploaded file into datatable, then add/update db entities.
-                        var dtDistFunds = ImportUtils.ImportXlsxToDataTable(viewmodel.ExcelFile.InputStream, true, 1,
-                            true);
+                        var dtDistFunds = ImportUtils.ImportXlsxToDataTable(viewmodel.ExcelFile.InputStream, true, 1, true);
                         var dtGcFunds = ImportUtils.ImportXlsxToDataTable(viewmodel.ExcelFile.InputStream, true, 2, true);
 
                         var distFundAddEntities = dtDistFunds.AsEnumerable().Select(row => new FundAddEntity()

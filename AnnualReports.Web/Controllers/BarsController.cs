@@ -114,7 +114,7 @@ namespace AnnualReports.Web.Controllers
                     List<Bar> addedEntities = new List<Bar>();
                     viewmodel.ExcelFile.SaveAs(path); // save a copy of the uploaded file.
                     // convert the uploaded file into datatable, then add/update db entities.
-                    var dtBarsHours = ImportUtils.ImportXlsxToDataTable(viewmodel.ExcelFile.InputStream, true);
+                    var dtBarsHours = ImportUtils.ImportXlsxToDataTable(viewmodel.ExcelFile.InputStream, true, 1);
                     var excelData = dtBarsHours.AsEnumerable().Select(row => new BarUploadEntity()
                     {
                         Year = int.Parse(row["Year"].ToString()),
