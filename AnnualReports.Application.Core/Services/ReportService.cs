@@ -72,5 +72,16 @@ namespace AnnualReports.Application.Core.Services
             }
             return reportData;
         }
+
+       public  List<DistOrGcReportDataItemDetails> GetDistExceptionReportData(int year)
+        {
+            var distExceptionBarByYear = _barService.GetDistExceptionByYear(year);
+            return distExceptionBarByYear;
+        }
+        public List<DistOrGcReportDataItemDetails> GetGcExceptionReportData(int year)
+        {
+            var distExceptionBarByYear = _barService.GetGcExceptionByYear(year);
+            return distExceptionBarByYear;
+        }
     }
 }

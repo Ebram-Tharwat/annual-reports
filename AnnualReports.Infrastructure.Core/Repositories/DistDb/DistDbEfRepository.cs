@@ -21,5 +21,6 @@ namespace AnnualReports.Infrastructure.Core.Repositories.DistDb
         protected new DistDbContext _dbContext;
 
         #endregion Properties
+
     }
 }

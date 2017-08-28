@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "GcExceptionReport";
+}
+
+<h2>GcExceptionReport</h2>
+<div class="col-md-6 col-xs-12" data-ng-app="GcApp" data-ng-controller="GcExceptionReportCtrl as vm">
+<div class="panel panel-default">
+    <div class="panel-heading bold">Export report to excel:</div>
+    <div class="panel-body">
+        <form id="exportForm" name="exportForm" novalidate="">
+            <div class="form-group" ng-class="{ 'has-error': exportForm.year.$dirty && exportForm.year.$invalid }">
+                <label class="control-label">Please select a year</label>
+                <span class="required">*</span>
+                <div class='input-group'>
+                    <input type="text" name="year" data-ng-model="vm.exportModel.year" class="form-control" readonly=""
+                           data-datetimepicker data-options="vm.yearPickerOptions"
+                           required="" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="button" value="Download Report" class="btn btn-success pull-right" data-ng-disabled="exportForm.$invalid"
+                       data-ng-click="vm.downloadGcExceptionReportData()" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/plugins")
+    @Scripts.Render("~/bundles/angular")
+    <script type="text/javascript">
+        (function () {
+            'use strict';
+
+            angular
+                .module('GcApp', ['ae-datetimepicker', 'ui.select', 'blockUI', 'ngSanitize', 'ui.grid', 'ui.grid.expandable', 'ui.grid.selection', 'ui.grid.pinning', 'ui.grid.pagination'])
+                .config(configure)
+                .run(runBlock)
+                .controller('GcExceptionReportCtrl', GcExceptionReportCtrl);;
+
+            configure.$inject = ['$httpProvider', '$locationProvider', 'blockUIConfig'];
+            runBlock.$inject = ['$rootScope'];
+            GcExceptionReportCtrl.$inject = ['$http', 'blockUI', '$timeout'];
+
+            function configure($httpProvider, $locationProvider, blockUIConfig) {
+                $locationProvider.html5Mode(true);
+
+                //blockUIConfig.autoBlock = true;
+                //blockUIConfig.template = '<pre><code>Delay</code></pre>';
+
+                blockUIConfig.autoInjectBodyBlock = false;
+                //======================================
+                // Routes
+                //======================================
+            }
+
+            function runBlock($rootScope) {
+            };
+
+            function GcExceptionReportCtrl($http, blockUI, $timeout) {
+
+                var vm = this;
+                vm.exportModel = {};
+                vm.year = undefined;
+                vm.reportData = undefined;
+                vm.downloadGcExceptionReportData = downloadGcExceptionReportData;
+                vm.yearPickerOptions = {
+                    viewMode: 'years',
+                    format: 'YYYY',
+                    showTodayButton: true,
+                    ignoreReadonly: true,
+                    useCurrent: false
+                };
+
+                function downloadGcExceptionReportData() {
+                    var selectedYear = new Date(vm.exportModel.year).getFullYear();
+                    window.open('/reports/ExportGcExceptionReportToExcel/' + selectedYear, '_blank', '');
+                }
+            }
+        })();
+    </script>
+}
+

@@ -14,6 +14,7 @@ using AnnualReports.Infrastructure.Core.Repositories.GcDb;
 
 namespace AnnualReports.Utilities.App_Start
 {
+    using Domain.Core.DistDbModels;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;
     using Ninject.Web.Common;
@@ -102,7 +103,8 @@ namespace AnnualReports.Utilities.App_Start
             #endregion UOWs
 
             #region Repositories
-
+            kernel.Bind<DistDbEfRepository<Gl00100>>().ToSelf().InRequestScope();
+            kernel.Bind<GcDbEfRepository<AnnualReports.Domain.Core.GcDbModels.Gl00100>>().ToSelf().InRequestScope();
             kernel.Bind<IDistDbFundRepository>().To<DistDbFundRepository>();
             kernel.Bind<IGcDbFundRepository>().To<GcDbFundRepository>();
 

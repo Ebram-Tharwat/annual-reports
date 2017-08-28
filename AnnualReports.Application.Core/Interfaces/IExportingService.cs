@@ -10,5 +10,8 @@ namespace AnnualReports.Application.Core.Interfaces
         MemoryStream GetBarsTemplate(int year);
 
         MemoryStream GetAnnualReportExcel(int year, int? fundId);
+
+        MemoryStream GetDistExceptionReportExcel(int year);
+        MemoryStream GetGcExceptionReportExcel(int year);
     }
 }

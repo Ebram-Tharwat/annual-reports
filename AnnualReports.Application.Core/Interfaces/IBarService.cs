@@ -1,5 +1,6 @@
 ﻿using AnnualReports.Application.Core.Contracts.BarEntities;
 using AnnualReports.Application.Core.Contracts.Paging;
+using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using System.Collections.Generic;
 
@@ -7,6 +8,8 @@ namespace AnnualReports.Application.Core.Interfaces
 {
     public interface IBarService
     {
+        List<DistOrGcReportDataItemDetails> GetDistExceptionByYear(int year);
+        List<DistOrGcReportDataItemDetails> GetGcExceptionByYear(int year);
         void Add(IEnumerable<Bar> entities);
 
         void Update(Bar entity);

@@ -38,6 +38,18 @@ namespace AnnualReports.Web.Controllers
             return View(viewmodel);
         }
 
+        [HttpGet]
+        public ActionResult DistExceptionReport()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GcExceptionReport()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult MonthlyReport(MonthlyReportGenerateViewModel viewmodel)
@@ -85,6 +97,22 @@ namespace AnnualReports.Web.Controllers
             MemoryStream stream = _exportingService.GetAnnualReportExcel(year, fundId);
 
             return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.AnnualReportExcelFileName, year));
+        }
+
+        [HttpGet]
+        [Route("ExportDistExceptionReportToExcel/{year:int}")]
+        public ActionResult ExportDistExceptionReportToExcel(int year)
+        {
+            MemoryStream stream = _exportingService.GetDistExceptionReportExcel(year);
+            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.DistExceptionReportExcelFileName, year));
+        }
+
+        [HttpGet]
+        [Route("ExportGcExceptionReportToExcel/{year:int}")]
+        public ActionResult ExportGcExceptionReportToExcel(int year)
+        {
+            MemoryStream stream = _exportingService.GetGcExceptionReportExcel(year);
+            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.GcExceptionReportExcelFileName, year));
         }
     }
 }

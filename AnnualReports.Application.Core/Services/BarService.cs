@@ -1,10 +1,14 @@
 ﻿using AnnualReports.Application.Core.Contracts.BarEntities;
 using AnnualReports.Application.Core.Contracts.Paging;
+using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Common.Extensions;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using AnnualReports.Domain.Core.DistDbModels;
 using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
+using AnnualReports.Infrastructure.Core.Repositories.DistDb;
+using AnnualReports.Infrastructure.Core.Repositories.GcDb;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +18,102 @@ namespace AnnualReports.Application.Core.Services
     public class BarService : IBarService
     {
         private readonly IAnnualReportsDbBarRepository _barRepository;
+        private readonly DistDbEfRepository<Gl00100> _distDbRepository;
+        private readonly GcDbEfRepository<AnnualReports.Domain.Core.GcDbModels.Gl00100> _gcDbRepository;
         private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
 
-        public BarService(IAnnualReportsDbBarRepository barRepository, IUnitOfWork<AnnualReportsDbContext> uow)
+        public BarService(IAnnualReportsDbBarRepository barRepository, DistDbEfRepository<Gl00100> distDbRepository, GcDbEfRepository<AnnualReports.Domain.Core.GcDbModels.Gl00100> gcDbRepository, IUnitOfWork<AnnualReportsDbContext> uow)
         {
             _barRepository = barRepository;
             _uow = uow;
+            _distDbRepository = distDbRepository;
+            _gcDbRepository = gcDbRepository;
+        }
+
+
+        public List<DistOrGcReportDataItemDetails> GetDistExceptionByYear(int year)
+        {
+            //step 1 get all bars in the selected year from Dist DB
+            var distBars = _distDbRepository.Get(dist => dist.Active == 1 && dist.Creatddt.Year == year).ToList();
+            if (distBars == null)
+            {
+                return null;
+            }
+            //step 2 get all bars in the selected year from Annual report Db
+            var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
+            if(annualReportBars == null)
+            {
+                return null;
+            }
+            List<DistOrGcReportDataItemDetails> results = new List<DistOrGcReportDataItemDetails>();
+            //step 3 compare between two lists to find difference that found in dist and was not fount in Annual report
+            foreach (var dist in distBars)
+            {
+                if(annualReportBars.FirstOrDefault(bar => bar.MapToBarNumber != null && dist.Actnumbr3!=null && 
+                                                          (bar.MapToBarNumber == dist.Actnumbr3.Substring(0,4) || 
+                                                           bar.MapToBarNumber == dist.Actnumbr3.Substring(0,6))) != null)
+                {
+                    continue;
+                }
+                else
+                {
+                    results.Add(new DistOrGcReportDataItemDetails
+                    {
+                        AccountIndex = dist.Actindx,
+                        ActDesc = dist.Actdescr,
+                        ActNum1 = dist.FundNumber,
+                        ActNum2 = dist.Actnumbr2,
+                        ActNum3 = dist.Actnumbr3,
+                        ActNum4 = dist.Actnumbr4,
+                        ActNum5 = dist.Actnumbr5,
+                        ActType = dist.Accttype
+                    });
+                }
+            }
+            return results;
+
+        }
+
+        public List<DistOrGcReportDataItemDetails> GetGcExceptionByYear(int year)
+        {
+            //step 1 get all bars in the selected year from Dist DB
+            var distBars = _gcDbRepository.Get(dist => dist.Active == 1 && dist.Creatddt.Year == year).ToList();
+            if (distBars == null)
+            {
+                return null;
+            }
+            //step 2 get all bars in the selected year from Annual report Db
+            var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
+            if (annualReportBars == null)
+            {
+                return null;
+            }
+            List<DistOrGcReportDataItemDetails> results = new List<DistOrGcReportDataItemDetails>();
+            //step 3 compare between two lists to find difference that found in dist and was not fount in Annual report
+            foreach (var dist in distBars)
+            {
+                if (annualReportBars.FirstOrDefault(bar => bar.MapToBarNumber != null && dist.Actnumbr5 != null &&
+                                                           (bar.MapToBarNumber == dist.Actnumbr5.Substring(0, 5) ||
+                                                            bar.MapToBarNumber == dist.Actnumbr5.Substring(0, 7))) != null)
+                {
+                    continue;
+                }
+                else
+                {
+                    results.Add(new DistOrGcReportDataItemDetails
+                    {
+                        AccountIndex = dist.Actindx,
+                        ActDesc = dist.Actdescr,
+                        ActNum1 = dist.FundNumber,
+                        ActNum2 = dist.Actnumbr2,
+                        ActNum3 = dist.Actnumbr3,
+                        ActNum4 = dist.Actnumbr4,
+                        ActNum5 = dist.Actnumbr5,
+                        ActType = dist.Accttype
+                    });
+                }
+            }
+            return results;
         }
 
         public void Add(IEnumerable<Bar> entities)

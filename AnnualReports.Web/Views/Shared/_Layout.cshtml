@@ -30,6 +30,8 @@
                             <ul class="dropdown-menu">
                                 <li>@Html.ActionLink("Annual Report", "AnnualReport", "Reports")</li>
                                 <li>@Html.ActionLink("Monthly Report", "MonthlyReport", "Reports")</li>
+                                <li>@Html.ActionLink("Dist Exception Report","DistExceptionReport","Reports")</li>
+                                <li>@Html.ActionLink("GC Exception Report", "GcExceptionReport", "Reports")</li>
                             </ul>
                         </li>
                         @if (User.IsInRole("Admin"))

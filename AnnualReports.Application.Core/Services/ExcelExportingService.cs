@@ -59,6 +59,30 @@ namespace AnnualReports.Application.Core.Services
             return stream;
         }
 
+        public MemoryStream GetDistExceptionReportExcel(int year)
+        {
+            string excelTemplate = GetExcelTemplate(ReportType.DistTemplate);
+            var templateFile = new FileInfo(excelTemplate);
+            ExcelPackage package = new ExcelPackage(templateFile, true);
+
+            GenerateDistExceptionReportTemplate(package, _reportService.GetDistExceptionReportData(year), year);
+
+            var stream = new MemoryStream(package.GetAsByteArray());
+            return stream;
+        }
+
+        public MemoryStream GetGcExceptionReportExcel(int year)
+        {
+            string excelTemplate = GetExcelTemplate(ReportType.GcTemplate);
+            var templateFile = new FileInfo(excelTemplate);
+            ExcelPackage package = new ExcelPackage(templateFile, true);
+
+            GenerateGcExceptionReportTemplate(package, _reportService.GetGcExceptionReportData(year), year);
+
+            var stream = new MemoryStream(package.GetAsByteArray());
+            return stream;
+        }
+
         #region Funds Template
 
         private void GenerateFundsTemplate(ExcelPackage excelPackage, IEnumerable<Fund> reportData, int year)
@@ -122,6 +146,49 @@ namespace AnnualReports.Application.Core.Services
         }
 
         #endregion Bars Template
+
+        #region Exception Report
+        private void GenerateDistExceptionReportTemplate(ExcelPackage excelPackage, IEnumerable<DistOrGcReportDataItemDetails> reportData, int year)
+        {
+            var firstSheet = excelPackage.Workbook.Worksheets[1];
+            var firstSheetIndex = 2; // starting index.
+            if (reportData != null)
+            {
+                foreach (var summeryItem in reportData)
+                {
+                    firstSheet.Cells["A" + firstSheetIndex].Value = summeryItem.AccountIndex;
+                    firstSheet.Cells["B" + firstSheetIndex].Value = summeryItem.ActNum1;
+                    firstSheet.Cells["C" + firstSheetIndex].Value = summeryItem.ActNum2;
+                    firstSheet.Cells["D" + firstSheetIndex].Value = summeryItem.ActNum3;
+                    firstSheet.Cells["E" + firstSheetIndex].Value = summeryItem.ActNum4;
+                    firstSheet.Cells["F" + firstSheetIndex].Value = summeryItem.ActNum5;
+                    firstSheet.Cells["G" + firstSheetIndex].Value = summeryItem.ActType;
+                    firstSheet.Cells["H" + firstSheetIndex].Value = summeryItem.ActDesc;
+                    firstSheetIndex++;
+                }
+            }
+        }
+        private void GenerateGcExceptionReportTemplate(ExcelPackage excelPackage, IEnumerable<DistOrGcReportDataItemDetails> reportData, int year)
+        {
+            var firstSheet = excelPackage.Workbook.Worksheets[1];
+            var firstSheetIndex = 2; // starting index.
+            if (reportData != null)
+            {
+                foreach (var summeryItem in reportData)
+                {
+                    firstSheet.Cells["A" + firstSheetIndex].Value = summeryItem.AccountIndex;
+                    firstSheet.Cells["B" + firstSheetIndex].Value = summeryItem.ActNum1;
+                    firstSheet.Cells["C" + firstSheetIndex].Value = summeryItem.ActNum2;
+                    firstSheet.Cells["D" + firstSheetIndex].Value = summeryItem.ActNum3;
+                    firstSheet.Cells["E" + firstSheetIndex].Value = summeryItem.ActNum4;
+                    firstSheet.Cells["F" + firstSheetIndex].Value = summeryItem.ActNum5;
+                    firstSheet.Cells["G" + firstSheetIndex].Value = summeryItem.ActType;
+                    firstSheet.Cells["H" + firstSheetIndex].Value = summeryItem.ActDesc;
+                    firstSheetIndex++;
+                }
+            }
+        }
+        #endregion
 
         #region Annual Report
 
@@ -191,7 +258,12 @@ namespace AnnualReports.Application.Core.Services
                 case ReportType.AnnualReportTemplate:
                     templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\AnnualReportTemplate.xlsx";
                     break;
-
+                case ReportType.DistTemplate:
+                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\DistTemplate.xlsx";
+                    break;
+                case ReportType.GcTemplate:
+                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\GcTemplate.xlsx";
+                    break;
                 default:
                     templatePath = String.Empty;
                     break;

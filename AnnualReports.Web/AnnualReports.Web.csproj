@@ -450,6 +450,8 @@
     <Content Include="Views\Reports\MonthlyReport.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\YearMonthDatePicker.cshtml" />
     <Content Include="Views\Reports\_MonthlyReportDataList.cshtml" />
+    <Content Include="Views\Reports\DistExceptionReport.cshtml" />
+    <Content Include="Views\Reports\GcExceptionReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
