@@ -50,8 +50,8 @@ namespace AnnualReports.Application.Core.Services
             foreach (var dist in distBars)
             {
                 if(annualReportBars.FirstOrDefault(bar => bar.MapToBarNumber != null && dist.Actnumbr3!=null && 
-                                                          (bar.MapToBarNumber == dist.Actnumbr3.Substring(0,4) || 
-                                                           bar.MapToBarNumber == dist.Actnumbr3.Substring(0,6))) != null)
+                                                          (bar.MapToBarNumber == dist.Actnumbr3.Substring(0,5) || 
+                                                           bar.MapToBarNumber == dist.Actnumbr3.Substring(0,7))) != null)
                 {
                     continue;
                 }
