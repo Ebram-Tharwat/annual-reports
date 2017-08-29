@@ -31,7 +31,7 @@ namespace AnnualReports.Application.Core.Services
         }
 
 
-        public List<DistOrGcReportDataItemDetails> GetDistExceptionByYear(int year)
+        public List<ExceptionReportDataItemDetails> GetDistExceptionByYear(int year)
         {
             //step 1 get all bars in the selected year from Dist DB
             var distBars = _distDbRepository.Get(dist => dist.Active == 1 && dist.Creatddt.Year == year).ToList();
@@ -45,7 +45,7 @@ namespace AnnualReports.Application.Core.Services
             {
                 return null;
             }
-            List<DistOrGcReportDataItemDetails> results = new List<DistOrGcReportDataItemDetails>();
+            List<ExceptionReportDataItemDetails> results = new List<ExceptionReportDataItemDetails>();
             //step 3 compare between two lists to find difference that found in dist and was not fount in Annual report
             foreach (var dist in distBars)
             {
@@ -57,7 +57,7 @@ namespace AnnualReports.Application.Core.Services
                 }
                 else
                 {
-                    results.Add(new DistOrGcReportDataItemDetails
+                    results.Add(new ExceptionReportDataItemDetails
                     {
                         AccountIndex = dist.Actindx,
                         ActDesc = dist.Actdescr,
@@ -74,7 +74,7 @@ namespace AnnualReports.Application.Core.Services
 
         }
 
-        public List<DistOrGcReportDataItemDetails> GetGcExceptionByYear(int year)
+        public List<ExceptionReportDataItemDetails> GetGcExceptionByYear(int year)
         {
             //step 1 get all bars in the selected year from Dist DB
             var distBars = _gcDbRepository.Get(dist => dist.Active == 1 && dist.Creatddt.Year == year).ToList();
@@ -88,7 +88,7 @@ namespace AnnualReports.Application.Core.Services
             {
                 return null;
             }
-            List<DistOrGcReportDataItemDetails> results = new List<DistOrGcReportDataItemDetails>();
+            List<ExceptionReportDataItemDetails> results = new List<ExceptionReportDataItemDetails>();
             //step 3 compare between two lists to find difference that found in dist and was not fount in Annual report
             foreach (var dist in distBars)
             {
@@ -100,7 +100,7 @@ namespace AnnualReports.Application.Core.Services
                 }
                 else
                 {
-                    results.Add(new DistOrGcReportDataItemDetails
+                    results.Add(new ExceptionReportDataItemDetails
                     {
                         AccountIndex = dist.Actindx,
                         ActDesc = dist.Actdescr,

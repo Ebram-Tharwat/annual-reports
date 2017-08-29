@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AnnualReports.Application.Core.Contracts.Reports
+﻿namespace AnnualReports.Application.Core.Contracts.Reports
 {
-    public class DistOrGcReportDataItemDetails
+    public class ExceptionReportDataItemDetails
     {
         public int AccountIndex { get; set; }
         public string ActNum1 { get; set; }
@@ -16,6 +10,5 @@ namespace AnnualReports.Application.Core.Contracts.Reports
         public string ActNum5 { get; set; }
         public short ActType { get; set; }
         public string ActDesc { get; set; }
-
     }
 }

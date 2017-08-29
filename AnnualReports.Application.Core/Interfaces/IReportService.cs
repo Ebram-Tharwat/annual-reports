@@ -7,7 +7,7 @@ namespace AnnualReports.Application.Core.Interfaces
     {
         List<AnnualReportDataItemDetails> GetAnnualReportData(int year, int? fundId = null, string barNumber = null);
 
-        List<DistOrGcReportDataItemDetails> GetDistExceptionReportData(int year);
-        List<DistOrGcReportDataItemDetails> GetGcExceptionReportData(int year);
+        List<ExceptionReportDataItemDetails> GetDistExceptionReportData(int year);
+        List<ExceptionReportDataItemDetails> GetGcExceptionReportData(int year);
     }
 }

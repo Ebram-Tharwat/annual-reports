@@ -8,8 +8,8 @@ namespace AnnualReports.Application.Core.Interfaces
 {
     public interface IBarService
     {
-        List<DistOrGcReportDataItemDetails> GetDistExceptionByYear(int year);
-        List<DistOrGcReportDataItemDetails> GetGcExceptionByYear(int year);
+        List<ExceptionReportDataItemDetails> GetDistExceptionByYear(int year);
+        List<ExceptionReportDataItemDetails> GetGcExceptionByYear(int year);
         void Add(IEnumerable<Bar> entities);
 
         void Update(Bar entity);
