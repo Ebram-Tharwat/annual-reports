@@ -10,6 +10,7 @@ using AnnualReports.Infrastructure.Core.Interfaces;
 using AnnualReports.Infrastructure.Core.Repositories.DistDb;
 using AnnualReports.Infrastructure.Core.Repositories.GcDb;
 using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,89 +31,83 @@ namespace AnnualReports.Application.Core.Services
             _gcDbRepository = gcDbRepository;
         }
 
-
         public List<ExceptionReportDataItemDetails> GetDistExceptionByYear(int year)
         {
-            //step 1 get all bars in the selected year from Dist DB
-            var distBars = _distDbRepository.Get(dist => dist.Active == 1 && dist.Creatddt.Year == year).ToList();
-            if (distBars == null)
-            {
-                return null;
-            }
-            //step 2 get all bars in the selected year from Annual report Db
-            var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
-            if(annualReportBars == null)
-            {
-                return null;
-            }
-            List<ExceptionReportDataItemDetails> results = new List<ExceptionReportDataItemDetails>();
-            //step 3 compare between two lists to find difference that found in dist and was not fount in Annual report
-            foreach (var dist in distBars)
-            {
-                if(annualReportBars.FirstOrDefault(bar => bar.MapToBarNumber != null && dist.Actnumbr3!=null && 
-                                                          (bar.MapToBarNumber == dist.Actnumbr3.Substring(0,5) || 
-                                                           bar.MapToBarNumber == dist.Actnumbr3.Substring(0,7))) != null)
-                {
-                    continue;
-                }
-                else
-                {
-                    results.Add(new ExceptionReportDataItemDetails
-                    {
-                        AccountIndex = dist.Actindx,
-                        ActDesc = dist.Actdescr,
-                        ActNum1 = dist.FundNumber,
-                        ActNum2 = dist.Actnumbr2,
-                        ActNum3 = dist.Actnumbr3,
-                        ActNum4 = dist.Actnumbr4,
-                        ActNum5 = dist.Actnumbr5,
-                        ActType = dist.Accttype
-                    });
-                }
-            }
-            return results;
+            var results = new List<ExceptionReportDataItemDetails>();
 
+            //step 1 get all bars in the selected year from DIST DB
+            var distBars = _distDbRepository.Get(distBar => distBar.Active == 1 && distBar.Creatddt.Year == year).ToList();
+
+            //step 2 get all bars in the selected year from Annual report Db along with their Map To.
+            var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
+            var mapToBarList = new List<string>();
+            annualReportBars.ForEach((bar) =>
+            {
+                if (string.IsNullOrWhiteSpace(bar.MapToBarNumber))
+                    mapToBarList.Add(bar.BarNumber);
+                else
+                    mapToBarList.AddRange(bar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+            });
+
+            //step 3 compare between two lists to find difference that found in DIST and was not fount in Annual report
+            var exceptionData = distBars.Where(distBar => !mapToBarList.Any(mapToBar => mapToBar == distBar.Actnumbr3.Substring(0, 5)
+                                                                    || mapToBar == distBar.Actnumbr3.Substring(0, 7))).ToList();
+
+            exceptionData.ForEach(distBar =>
+            {
+                results.Add(new ExceptionReportDataItemDetails
+                {
+                    AccountIndex = distBar.Actindx,
+                    ActDesc = distBar.Actdescr,
+                    ActNum1 = distBar.FundNumber,
+                    ActNum2 = distBar.Actnumbr2,
+                    ActNum3 = distBar.Actnumbr3,
+                    ActNum4 = distBar.Actnumbr4,
+                    ActNum5 = distBar.Actnumbr5,
+                    ActType = distBar.Accttype
+                });
+            });
+
+            return results;
         }
 
         public List<ExceptionReportDataItemDetails> GetGcExceptionByYear(int year)
         {
-            //step 1 get all bars in the selected year from Dist DB
-            var distBars = _gcDbRepository.Get(dist => dist.Active == 1 && dist.Creatddt.Year == year).ToList();
-            if (distBars == null)
-            {
-                return null;
-            }
-            //step 2 get all bars in the selected year from Annual report Db
+            var results = new List<ExceptionReportDataItemDetails>();
+
+            //step 1 get all bars in the selected year from GC DB
+            var gcBars = _gcDbRepository.Get(gcBar => gcBar.Active == 1 && gcBar.Creatddt.Year == year).ToList();
+
+            //step 2 get all bars in the selected year from Annual report Db along with their Map To.
             var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
-            if (annualReportBars == null)
+            var mapToBarList = new List<string>();
+            annualReportBars.ForEach((bar) =>
             {
-                return null;
-            }
-            List<ExceptionReportDataItemDetails> results = new List<ExceptionReportDataItemDetails>();
-            //step 3 compare between two lists to find difference that found in dist and was not fount in Annual report
-            foreach (var dist in distBars)
-            {
-                if (annualReportBars.FirstOrDefault(bar => bar.MapToBarNumber != null && dist.Actnumbr5 != null &&
-                                                           (bar.MapToBarNumber == dist.Actnumbr5.Substring(0, 5) ||
-                                                            bar.MapToBarNumber == dist.Actnumbr5.Substring(0, 7))) != null)
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(bar.MapToBarNumber))
+                    mapToBarList.Add(bar.BarNumber);
                 else
+                    mapToBarList.AddRange(bar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+            });
+
+            //step 3 compare between two lists to find difference that found in GC and was not fount in Annual report
+            var exceptionData = gcBars.Where(gcBar => !mapToBarList.Any(mapToBar => mapToBar == gcBar.Actnumbr5.Substring(0, 5)
+                                                                    || mapToBar == gcBar.Actnumbr5.Substring(0, 7))).ToList();
+
+            exceptionData.ForEach(gcBar =>
+            {
+                results.Add(new ExceptionReportDataItemDetails
                 {
-                    results.Add(new ExceptionReportDataItemDetails
-                    {
-                        AccountIndex = dist.Actindx,
-                        ActDesc = dist.Actdescr,
-                        ActNum1 = dist.FundNumber,
-                        ActNum2 = dist.Actnumbr2,
-                        ActNum3 = dist.Actnumbr3,
-                        ActNum4 = dist.Actnumbr4,
-                        ActNum5 = dist.Actnumbr5,
-                        ActType = dist.Accttype
-                    });
-                }
-            }
+                    AccountIndex = gcBar.Actindx,
+                    ActDesc = gcBar.Actdescr,
+                    ActNum1 = gcBar.FundNumber,
+                    ActNum2 = gcBar.Actnumbr2,
+                    ActNum3 = gcBar.Actnumbr3,
+                    ActNum4 = gcBar.Actnumbr4,
+                    ActNum5 = gcBar.Actnumbr5,
+                    ActType = gcBar.Accttype
+                });
+            });
+
             return results;
         }
 
