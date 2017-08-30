@@ -354,6 +354,8 @@
     <Content Include="Scripts\angular-touch.min.js.map" />
     <Content Include="Content\ExcelTemplates\BarsTemplate.xlsx" />
     <Content Include="Content\ExcelTemplates\AnnualReportTemplate.xlsx" />
+    <Content Include="Content\ExcelTemplates\DistExceptionReportTemplate.xlsx" />
+    <Content Include="Content\ExcelTemplates\GcExceptionReportTemplate.xlsx" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\app\app.js" />
