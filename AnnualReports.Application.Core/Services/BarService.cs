@@ -36,7 +36,7 @@ namespace AnnualReports.Application.Core.Services
             var results = new List<ExceptionReportDataItemDetails>();
 
             //step 1 get all bars in the selected year from DIST DB
-            var distBars = _distDbRepository.Get(distBar => distBar.Active == 1 && distBar.Creatddt.Year == year).ToList();
+            var distBars = _distDbRepository.Get(distBar => distBar.Active == 1).ToList();
 
             //step 2 get all bars in the selected year from Annual report Db along with their Map To.
             var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
@@ -76,7 +76,7 @@ namespace AnnualReports.Application.Core.Services
             var results = new List<ExceptionReportDataItemDetails>();
 
             //step 1 get all bars in the selected year from GC DB
-            var gcBars = _gcDbRepository.Get(gcBar => gcBar.Active == 1 && gcBar.Creatddt.Year == year).ToList();
+            var gcBars = _gcDbRepository.Get(gcBar => gcBar.Active == 1).ToList();
 
             //step 2 get all bars in the selected year from Annual report Db along with their Map To.
             var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
