@@ -36,7 +36,9 @@ namespace AnnualReports.Application.Core.Services
             var results = new List<ExceptionReportDataItemDetails>();
 
             //step 1 get all bars in the selected year from DIST DB
-            var distBars = _distDbRepository.Get(distBar => distBar.Active == 1).ToList();
+            var distBars = _distDbRepository.Get(distBar => distBar.Active == 1
+                            && (distBar.Actnumbr3 != "UU" && distBar.Actnumbr3 != "RR" && distBar.Actnumbr3 != "FF")
+                            , (list => list.OrderBy(t => new { t.FundNumber, t.Actnumbr2, t.Actnumbr3, t.Actnumbr4, t.Actnumbr5 }))).ToList();
 
             //step 2 get all bars in the selected year from Annual report Db along with their Map To.
             var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
@@ -76,7 +78,9 @@ namespace AnnualReports.Application.Core.Services
             var results = new List<ExceptionReportDataItemDetails>();
 
             //step 1 get all bars in the selected year from GC DB
-            var gcBars = _gcDbRepository.Get(gcBar => gcBar.Active == 1).ToList();
+            var gcBars = _gcDbRepository.Get(gcBar => gcBar.Active == 1
+                                && (gcBar.Actnumbr3 != "UU" && gcBar.Actnumbr3 != "RR" && gcBar.Actnumbr3 != "FF")
+                                , (list => list.OrderBy(t => new { t.FundNumber, t.Actnumbr2, t.Actnumbr3, t.Actnumbr4, t.Actnumbr5 }))).ToList();
 
             //step 2 get all bars in the selected year from Annual report Db along with their Map To.
             var annualReportBars = _barRepository.Get(dist => dist.IsActive && dist.Year == year).ToList();
