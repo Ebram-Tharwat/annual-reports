@@ -168,6 +168,8 @@ namespace AnnualReports.Application.Core.Services
                     index++;
                 }
             }
+
+            dataSheet.Cells.AutoFitColumns();
         }
 
         private void GenerateGcExceptionReportTemplate(ExcelPackage excelPackage, IEnumerable<ExceptionReportDataItemDetails> reportData, int year)
@@ -189,6 +191,8 @@ namespace AnnualReports.Application.Core.Services
                     index++;
                 }
             }
+
+            dataSheet.Cells.AutoFitColumns();
         }
 
         #endregion Exception Report

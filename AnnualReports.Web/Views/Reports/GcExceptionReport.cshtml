@@ -4,30 +4,32 @@
 }
 
 <h2>Exception Report for GC database</h2>
-<div class="col-xs-12" data-ng-app="GcApp" data-ng-controller="GcExceptionReportCtrl as vm">
-<div class="panel panel-default">
-    <div class="panel-heading bold">Export report to excel:</div>
-    <div class="panel-body">
-        <form id="exportForm" name="exportForm" novalidate="">
-            <div class="form-group" ng-class="{ 'has-error': exportForm.year.$dirty && exportForm.year.$invalid }">
-                <label class="control-label">Please select a year</label>
-                <span class="required">*</span>
-                <div class='input-group'>
-                    <input type="text" name="year" data-ng-model="vm.exportModel.year" class="form-control" readonly=""
-                           data-datetimepicker data-options="vm.yearPickerOptions"
-                           required="" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
+<div class="row" data-ng-app="GcApp" data-ng-controller="GcExceptionReportCtrl as vm">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading bold">Export report to excel:</div>
+            <div class="panel-body">
+                <form id="exportForm" name="exportForm" novalidate="">
+                    <div class="form-group" ng-class="{ 'has-error': exportForm.year.$dirty && exportForm.year.$invalid }">
+                        <label class="control-label">Please select a year</label>
+                        <span class="required">*</span>
+                        <div class='input-group'>
+                            <input type="text" name="year" data-ng-model="vm.exportModel.year" class="form-control" readonly=""
+                                   data-datetimepicker data-options="vm.yearPickerOptions"
+                                   required="" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="button" value="Download Report" class="btn btn-success pull-right" data-ng-disabled="exportForm.$invalid"
+                               data-ng-click="vm.downloadGcExceptionReportData()" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <input type="button" value="Download Report" class="btn btn-success pull-right" data-ng-disabled="exportForm.$invalid"
-                       data-ng-click="vm.downloadGcExceptionReportData()" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
 </div>
 
 @section Scripts {
