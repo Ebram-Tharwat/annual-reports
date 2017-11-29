@@ -15,6 +15,8 @@ namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
 
         public DbSet<InvestmentTypes> InvestmentTypes { get; set; }
 
+        public DbSet<MappingRule> MappingRules { get; set; }
+
         static AnnualReportsDbContext()
         {
             System.Data.Entity.Database.SetInitializer<AnnualReportsDbContext>(null);

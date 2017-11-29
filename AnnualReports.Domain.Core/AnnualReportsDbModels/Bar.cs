@@ -10,7 +10,6 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         [Key]
         public int Id { get; set; }
 
-        //[Column(TypeName = "char")]
         [Required]
         [MaxLength(9)]
         [StringLength(9)]

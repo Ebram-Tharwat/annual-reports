@@ -77,6 +77,7 @@
     <Compile Include="Interfaces\IAnnualReportsDbFundRepository.cs" />
     <Compile Include="Interfaces\IGcDbFundRepository.cs" />
     <Compile Include="Interfaces\IDistDbFundRepository.cs" />
+    <Compile Include="Interfaces\IMappingRuleRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Mappings\AnnualReportsDb\BarConfiguration.cs" />
@@ -171,6 +172,10 @@
     <Compile Include="Migrations\AnnualReportsDb\201707312013061_AddInvestmentTypesLookup.Designer.cs">
       <DependentUpon>201707312013061_AddInvestmentTypesLookup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201711290019389_AddMappingRulesTable.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201711290019389_AddMappingRulesTable.Designer.cs">
+      <DependentUpon>201711290019389_AddMappingRulesTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Migrations\ScriptResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -181,6 +186,7 @@
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbBarRepository.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbEfRepository.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbFundRepository.cs" />
+    <Compile Include="Repositories\AnnualReportsDb\MappingRuleRepository.cs" />
     <Compile Include="Repositories\DistDb\DistDbEfRepository.cs" />
     <Compile Include="Repositories\DistDb\DistDbFundRepository.cs" />
     <Compile Include="Repositories\EFRepository.cs" />
@@ -267,6 +273,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201707312013061_AddInvestmentTypesLookup.resx">
       <DependentUpon>201707312013061_AddInvestmentTypesLookup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201711290019389_AddMappingRulesTable.resx">
+      <DependentUpon>201711290019389_AddMappingRulesTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\ScriptResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

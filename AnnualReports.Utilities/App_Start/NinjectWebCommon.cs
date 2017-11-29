@@ -103,6 +103,7 @@ namespace AnnualReports.Utilities.App_Start
             #endregion UOWs
 
             #region Repositories
+
             kernel.Bind<DistDbEfRepository<Gl00100>>().ToSelf().InRequestScope();
             kernel.Bind<GcDbEfRepository<AnnualReports.Domain.Core.GcDbModels.Gl00100>>().ToSelf().InRequestScope();
             kernel.Bind<IDistDbFundRepository>().To<DistDbFundRepository>();
@@ -110,6 +111,8 @@ namespace AnnualReports.Utilities.App_Start
 
             kernel.Bind<IAnnualReportsDbFundRepository>().To<AnnualReportsDbFundRepository>();
             kernel.Bind<IAnnualReportsDbBarRepository>().To<AnnualReportsDbBarRepository>();
+            kernel.Bind<IMappingRuleRepository>().To<MappingRuleRepository>();
+            kernel.Bind<IMappingRuleService>().To<MappingRuleService>();            
 
             #endregion Repositories
 
