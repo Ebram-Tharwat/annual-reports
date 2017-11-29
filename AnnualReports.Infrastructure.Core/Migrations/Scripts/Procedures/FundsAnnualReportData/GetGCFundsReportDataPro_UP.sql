@@ -7,7 +7,7 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    SELECT ParentFunds.FundNumber as PrimaryFundNumber, ParentFunds.Year, ParentFunds.DisplayName AS FundDisplayName, ParentFunds.MCAG
+    SELECT ParentFunds.FundNumber as PrimaryFundNumber, ParentFunds.Year, ParentFunds.DisplayName AS FundDisplayName, ParentFunds.MCAG, ParentFunds.DbSource
 	, ReportView.PERIODID AS View_Period, ReportView.ACTNUMBR_1 AS View_FundNumber, ReportView.ACTNUMBR_5 AS View_BarNumber, ReportView.DEBITAMT AS Debit, ReportView.CRDTAMNT AS Credit
 	, ReportView.ACTNUMBR_1, ReportView.ACTNUMBR_2, ReportView.ACTNUMBR_3, ReportView.ACTNUMBR_4, ReportView.ACTNUMBR_5, ReportView.ACTDESCR AS AccountDescription
 	FROM Funds AS ParentFunds INNER JOIN GCTest.dbo.slbAccountSummary AS ReportView 

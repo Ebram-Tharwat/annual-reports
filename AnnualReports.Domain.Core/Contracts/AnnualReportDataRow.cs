@@ -13,7 +13,7 @@ namespace AnnualReports.Domain.Core.Contracts
 
         public string MCAG { get; set; }
 
-        //public DbSource DbSource { get; set; }
+        public DbSource DbSource { get; set; }
 
         public Int16 View_Period { get; set; }
 
