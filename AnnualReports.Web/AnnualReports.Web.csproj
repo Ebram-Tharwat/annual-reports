@@ -263,6 +263,7 @@
     <Compile Include="Controllers\FundsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MappingRulesController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\UserAdminController.cs" />
     <Compile Include="Extensions\PagedListExtensions.cs" />
@@ -288,6 +289,9 @@
     <Compile Include="ViewModels\FundModels\FundEditViewModel.cs" />
     <Compile Include="ViewModels\FundModels\FundsCopyViewModel.cs" />
     <Compile Include="ViewModels\FundModels\FundsUploadViewModel.cs" />
+    <Compile Include="ViewModels\MappingRuleModels\MappingRuleEditViewModel.cs" />
+    <Compile Include="ViewModels\MappingRuleModels\MappingRuleAddViewModel.cs" />
+    <Compile Include="ViewModels\MappingRuleModels\MappingRuleDetailsViewModel.cs" />
     <Compile Include="ViewModels\ReportModels\MonthlyReportDataViewModel.cs" />
     <Compile Include="ViewModels\ReportModels\MonthlyReportFiltersViewModel.cs" />
   </ItemGroup>
@@ -454,6 +458,11 @@
     <Content Include="Views\Reports\_MonthlyReportDataList.cshtml" />
     <Content Include="Views\Reports\DistExceptionReport.cshtml" />
     <Content Include="Views\Reports\GcExceptionReport.cshtml" />
+    <Content Include="Views\MappingRules\Index.cshtml" />
+    <Content Include="Views\MappingRules\_mappingRulesList.cshtml" />
+    <Content Include="Views\MappingRules\Create.cshtml" />
+    <Content Include="Views\MappingRules\Edit.cshtml" />
+    <Content Include="Views\MappingRules\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -475,6 +484,10 @@
     <ProjectReference Include="..\AnnualReports.Domain.Core\AnnualReports.Domain.Core.csproj">
       <Project>{fd7c757d-50b2-40c4-8321-c916c02fc334}</Project>
       <Name>AnnualReports.Domain.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AnnualReports.Infrastructure.Core\AnnualReports.Infrastructure.Core.csproj">
+      <Project>{27d81b74-b199-44c1-8177-d82824ca5bec}</Project>
+      <Name>AnnualReports.Infrastructure.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\AnnualReports.Utilities\AnnualReports.Utilities.csproj">
       <Project>{015fb72d-fcd1-4589-bc94-f89228f24f8e}</Project>

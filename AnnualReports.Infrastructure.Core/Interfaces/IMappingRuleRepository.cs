@@ -9,5 +9,6 @@ namespace AnnualReports.Infrastructure.Core.Interfaces
 {
     public interface IMappingRuleRepository : IRepository<MappingRule>
     {
+        List<MappingRule> SearchForRules(int? year, string fundNumber, out int total, int pageIndex, int pageSize);
     }
 }

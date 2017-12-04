@@ -1,0 +1,72 @@
+﻿@model AnnualReports.Web.ViewModels.MappingRuleModels.MappingRuleDetailsViewModel
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4><i>@Model.OperatorText</i> <strong>(@Model.TargetBarNumber)</strong></h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+
+        @*<dt>
+                @Html.DisplayNameFor(model => model.TargetBarNumber)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.TargetBarNumber)
+            </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TargetFundNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TargetFundNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DebitBarNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DebitBarNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreditBarNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreditBarNumber)
+        </dd>
+
+        @*<dt>
+                @Html.DisplayNameFor(model => model.OperatorText)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.OperatorText)
+            </dd>*@
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

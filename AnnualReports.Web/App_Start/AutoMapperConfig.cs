@@ -3,6 +3,7 @@ using AnnualReports.Application.Core.Contracts.FundEntities;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Web.ViewModels.BarModels;
 using AnnualReports.Web.ViewModels.FundModels;
+using AnnualReports.Web.ViewModels.MappingRuleModels;
 using AutoMapper;
 
 namespace GRis.App_Start
@@ -64,6 +65,21 @@ namespace GRis.App_Start
                 ;
 
                 #endregion Bar
+
+                #region MappingRule
+
+                cfg.CreateMap<MappingRule, MappingRuleDetailsViewModel>()
+                .ReverseMap()
+                ;
+
+                cfg.CreateMap<MappingRuleAddViewModel, MappingRule>()
+                ;
+
+                cfg.CreateMap<MappingRule, MappingRuleEditViewModel>()
+                .ReverseMap()
+                ;
+
+                #endregion MappingRule
             });
         }
     }

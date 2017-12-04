@@ -1,0 +1,66 @@
+﻿@model IEnumerable<AnnualReports.Web.ViewModels.MappingRuleModels.MappingRuleDetailsViewModel>
+
+<table class="table">
+    <tr>
+        @*<th>
+            @Html.DisplayNameFor(model => model.Year)
+        </th>*@
+        @*<th>
+            @Html.DisplayNameFor(model => model.TargetBarNumber)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.TargetFundNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Operator)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DebitBarNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreditBarNumber)
+        </th>
+        <th></th>
+    </tr>
+    <tbody>
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    @*<td>
+                        @Html.DisplayFor(modelItem => item.Year)
+                    </td>*@
+                    @*<td>
+                        @Html.DisplayFor(modelItem => item.TargetBarNumber)
+                    </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TargetFundNumber)
+                    </td>
+                    <td>
+                        <i>@Html.DisplayFor(modelItem => item.OperatorText)</i> <strong>@Html.DisplayFor(modelItem => item.TargetBarNumber)</strong>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DebitBarNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreditBarNumber)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">
+                    <span class="label label-info">No data match the search criteria!</span>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
