@@ -29,7 +29,8 @@ namespace AnnualReports.Application.Core.Services
             // 1- get all possible combination of funds*bars
             var annualReportData = _fundsRepository.GetAnnualReportDataRows(year, fundId);
             // 2- get all possible/valid bars
-            var bars = _barService.GetAllBars(year, null, null, true);
+            var dbBars = _barService.GetAllBars(year, null, null, true);
+            var viewBars = annualReportData.Select(t => t.View_BarNumber).ToList();
             // 3- get bar mapping rules to get right MapTo list.
             var mappingRules = _mappingRuleRepository.Get(t => t.Year == year).ToList();
             // 4- generate report item detail.
@@ -38,15 +39,20 @@ namespace AnnualReports.Application.Core.Services
             {
                 // 4.1 get mapping rules for the current fund, and ONLY when it's a DIST fund
                 var currentFundMappingRules = mappingRules.Where(t => t.TargetFundNumber == fundGroup.Key.PrimaryFundNumber && fundGroup.Key.DbSource == DbSource.DIST).ToList();
-                foreach (var bar in bars)
+                foreach (var bar in viewBars)
                 {
+                    var targetBar = dbBars.FirstOrDefault(t => t.BarNumber == bar);
+                    if(targetBar == null)
+                    {
+                        targetBar = new Bar() { BarNumber = bar, MapToBarNumber = bar, Year = (short)year, DisplayName = "" };
+                    }
                     IEnumerable<AnnualReportDataRow> fundRows = new List<AnnualReportDataRow>();
-                    if (bar.Period.HasValue)
-                        fundRows = fundGroup.Where(t => t.View_Period == bar.Period.Value);
+                    if (targetBar.Period.HasValue)
+                        fundRows = fundGroup.Where(t => t.View_Period == targetBar.Period.Value);
                     else
                         fundRows = fundGroup;
 
-                    var mapToBarList = GetBarNumberMappedItems(bar, currentFundMappingRules);
+                    var mapToBarList = GetBarNumberMappedItems(targetBar, currentFundMappingRules);
                     fundRows = fundRows.Where(t => mapToBarList.Any(mapToItem => t.View_BarNumber.StartsWith(mapToItem.CreditsMappedBarNumber)
                         || t.View_BarNumber.StartsWith(mapToItem.DebitsMappedBarNumber))).ToList();
                     if (fundRows.Any())
@@ -60,9 +66,9 @@ namespace AnnualReports.Application.Core.Services
                         {
                             FundNumber = fundGroup.Key.PrimaryFundNumber,
                             FundDisplayName = fundGroup.Key.FundDisplayName,
-                            BarNumber = bar.BarNumber,
-                            BarDisplayName = bar.DisplayName,
-                            MapToBarNumber = bar.MapToBarNumber,
+                            BarNumber = targetBar.BarNumber,
+                            BarDisplayName = targetBar.DisplayName,
+                            MapToBarNumber = targetBar.MapToBarNumber,
                             Year = year,
                             MCAG = fundGroup.Key.MCAG,
                             Rows = fundRows.ToList(),

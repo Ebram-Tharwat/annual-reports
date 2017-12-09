@@ -21,7 +21,7 @@ namespace AnnualReports.Web.ViewModels.MappingRuleModels
         [Required]
         public string TargetBarNumber { get; set; }
 
-        [Display(Name = "Bar selector condition")]
+        [Display(Name = "Account selector condition")]
         [Required]
         public MappingRuleOperator? Operator { get; set; }
 
