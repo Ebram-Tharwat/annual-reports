@@ -30,7 +30,7 @@ namespace AnnualReports.Application.Core.Services
             var annualReportData = _fundsRepository.GetAnnualReportDataRows(year, fundId);
             // 2- get all possible/valid bars
             var dbBars = _barService.GetAllBars(year, null, null, true);
-            var viewBars = annualReportData.Select(t => t.View_BarNumber).ToList();
+            var viewBars = annualReportData.Select(t => t.View_BarNumber).Distinct().ToList();
             // 3- get bar mapping rules to get right MapTo list.
             var mappingRules = _mappingRuleRepository.Get(t => t.Year == year).ToList();
             // 4- generate report item detail.
