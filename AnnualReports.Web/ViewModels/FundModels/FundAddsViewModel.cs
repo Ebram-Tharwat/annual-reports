@@ -24,7 +24,7 @@ namespace AnnualReports.Web.ViewModels.FundModels
         public string MCAG { get; set; }
 
         [Required]
-        [Display(Name = "Databse source")]
+        [Display(Name = "Database source")]
         public DbSource DbSource { get; set; }
 
         [Display(Name = "Is Active")]

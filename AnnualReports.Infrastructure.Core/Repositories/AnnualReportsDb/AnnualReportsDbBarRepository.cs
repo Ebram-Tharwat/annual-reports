@@ -13,7 +13,7 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
         {
         }
 
-        public List<Bar> SearchForBars(int? year, string displayName, string barNumber, bool? isActive, out int total, int index = 0, int size = 50)
+        public List<Bar> SearchForBars(int? year, string displayName, string barNumber, bool? isActive, DbSource? dbSource, out int total, int index = 0, int size = 50)
         {
             int skipCount = index * size;
             var query = this.GetAll();
@@ -29,6 +29,9 @@ namespace AnnualReports.Infrastructure.Core.Repositories.AnnualReportsDb
 
             if (isActive.HasValue)
                 query = query.Where(t => t.IsActive == isActive);
+
+            if (dbSource.HasValue && dbSource.Value != DbSource.ALL)
+                query = query.Where(t => t.DbSource == dbSource);
 
             total = query.Count();
             query = query.OrderBy(t => t.BarNumber);

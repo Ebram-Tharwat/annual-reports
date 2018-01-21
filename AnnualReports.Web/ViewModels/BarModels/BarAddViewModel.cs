@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace AnnualReports.Web.ViewModels.BarModels
 {
@@ -24,5 +27,10 @@ namespace AnnualReports.Web.ViewModels.BarModels
         public bool IsActive { get; set; }
 
         public int? Period { get; set; }
+
+        [Display(Name = "Database source")]
+        public DbSource? DbSource { get; set; }
+
+        public List<SelectListItem> AvailableDbSources { get; set; }
     }
 }

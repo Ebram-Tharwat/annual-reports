@@ -30,5 +30,8 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         [Required]
         [DefaultValue(true)]
         public bool IsActive { get; set; }
+
+        [DefaultValue(AnnualReports.Domain.Core.AnnualReportsDbModels.DbSource.GC)]
+        public DbSource? DbSource { get; set; }
     }
 }

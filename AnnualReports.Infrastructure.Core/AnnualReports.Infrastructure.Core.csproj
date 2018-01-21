@@ -176,6 +176,10 @@
     <Compile Include="Migrations\AnnualReportsDb\201711290019389_AddMappingRulesTable.Designer.cs">
       <DependentUpon>201711290019389_AddMappingRulesTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201801211418475_AddDbSourceToBars.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201801211418475_AddDbSourceToBars.Designer.cs">
+      <DependentUpon>201801211418475_AddDbSourceToBars.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Migrations\ScriptResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -276,6 +280,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201711290019389_AddMappingRulesTable.resx">
       <DependentUpon>201711290019389_AddMappingRulesTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201801211418475_AddDbSourceToBars.resx">
+      <DependentUpon>201801211418475_AddDbSourceToBars.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\ScriptResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

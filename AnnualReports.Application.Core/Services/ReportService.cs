@@ -41,8 +41,8 @@ namespace AnnualReports.Application.Core.Services
                 var currentFundMappingRules = mappingRules.Where(t => t.TargetFundNumber == fundGroup.Key.PrimaryFundNumber && fundGroup.Key.DbSource == DbSource.DIST).ToList();
                 foreach (var bar in viewBars)
                 {
-                    var targetBar = dbBars.FirstOrDefault(t => t.BarNumber == bar);
-                    if(targetBar == null)
+                    var targetBar = dbBars.FirstOrDefault(t => t.BarNumber == bar && (t.DbSource.Value == fundGroup.Key.DbSource));
+                    if (targetBar == null)
                     {
                         targetBar = new Bar() { BarNumber = bar, MapToBarNumber = bar, Year = (short)year, DisplayName = "" };
                     }
@@ -92,44 +92,44 @@ namespace AnnualReports.Application.Core.Services
             return distExceptionBarByYear;
         }
 
-        private List<BarMappingRuleItem> GetBarNumberMappedItems(Bar bar, List<MappingRule> mappingRules)
+        private List<BarMappingRuleItem> GetBarNumberMappedItems(Bar targetBar, List<MappingRule> mappingRules)
         {
             var mapToBarList = new List<BarMappingRuleItem>();
             MappingRule mappingRule = null;
 
             // 1- check if there is "Equal" rule for the specified bar.
-            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.Equal && bar.BarNumber == t.TargetBarNumber);
+            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.Equal && targetBar.BarNumber == t.TargetBarNumber);
             if (mappingRule != null)
             {
-                mapToBarList.Add(new BarMappingRuleItem(bar.BarNumber, mappingRule));
+                mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
                 return mapToBarList;
             }
 
             // 2- if not found, then check if there is "StartWith" rule for the specified bar.
-            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.StartWith && bar.BarNumber.StartsWith(t.TargetBarNumber));
+            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.StartWith && targetBar.BarNumber.StartsWith(t.TargetBarNumber));
             if (mappingRule != null)
             {
-                mapToBarList.Add(new BarMappingRuleItem(bar.BarNumber, mappingRule));
+                mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
                 return mapToBarList;
             }
 
             // 3- if not found, then check if there is "EndWith" rule for the specified bar.
-            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.EndWith && bar.BarNumber.EndsWith(t.TargetBarNumber));
+            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.EndWith && targetBar.BarNumber.EndsWith(t.TargetBarNumber));
             if (mappingRule != null)
             {
-                mapToBarList.Add(new BarMappingRuleItem(bar.BarNumber, mappingRule));
+                mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
                 return mapToBarList;
             }
 
             // 4- if not found, then use the "MapToBarNumber" column
-            if (string.IsNullOrWhiteSpace(bar.MapToBarNumber))
+            if (string.IsNullOrWhiteSpace(targetBar.MapToBarNumber))
             {
-                mapToBarList.Add(new BarMappingRuleItem(bar.BarNumber, bar.BarNumber));
+                mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, targetBar.BarNumber));
             }
             else
             {
-                mapToBarList = bar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(item => new BarMappingRuleItem(bar.BarNumber, item)).ToList();
+                mapToBarList = targetBar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(item => new BarMappingRuleItem(targetBar.BarNumber, item)).ToList();
             }
 
             return mapToBarList;

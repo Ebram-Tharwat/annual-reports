@@ -162,16 +162,16 @@ namespace AnnualReports.Application.Core.Services
             _barRepository.BatchDelete(t => t.Year == year);
         }
 
-        public List<Bar> GetAllBars(int? year = null, string displayName = null, string barNumber = null, bool? isActive = null, PagingInfo pagingInfo = null)
+        public List<Bar> GetAllBars(int? year = null, string displayName = null, string barNumber = null, bool? isActive = null, DbSource? dbSource = DbSource.ALL, PagingInfo pagingInfo = null)
         {
             int total = 0;
 
             if (pagingInfo == null)
-                return _barRepository.SearchForBars(year, displayName, barNumber, isActive, out total, 0, int.MaxValue).ToList();
+                return _barRepository.SearchForBars(year, displayName, barNumber, isActive, dbSource, out total, 0, int.MaxValue).ToList();
             else
             {
                 List<Bar> result = null;
-                result = _barRepository.SearchForBars(year, displayName, barNumber, isActive, out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
+                result = _barRepository.SearchForBars(year, displayName, barNumber, isActive, dbSource, out total, pagingInfo.PageIndex, AppSettings.PageSize).ToList();
                 pagingInfo.Total = total;
                 return result;
             }

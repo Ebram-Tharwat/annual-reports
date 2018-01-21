@@ -13,11 +13,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.MapToBarNumber)
             </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Period)
-                </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DbSource)
             </th>
             <th></th>
         </tr>
@@ -35,21 +35,19 @@
                         @Html.DisplayFor(modelItem => item.DisplayName)
                     </td>
                     <td>
-                        @foreach (var mapToBar in item.MapToBarNumber.Split(new char[] { ',' },StringSplitOptions.RemoveEmptyEntries))
+                        @foreach (var mapToBar in item.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                         {
                             @mapToBar<br />
                         }
                     </td>
-                    @*<td>
-                            @Html.DisplayFor(modelItem => item.Period)
-                        </td>*@
                     <td>
                         @Html.DisplayFor(modelItem => item.Year)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.DbSource)
+                    </td>
+                    <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-                        @*@Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                            @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
                     </td>
                 </tr>
             }

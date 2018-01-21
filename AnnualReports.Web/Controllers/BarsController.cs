@@ -38,7 +38,7 @@ namespace AnnualReports.Web.Controllers
             var entities = Enumerable.Empty<Bar>();
             if (TryValidateModel(filter))
             {
-                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : (int?)null, filter.DisplayName, filter.BarNumber, null, pagingInfo);
+                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : (int?)null, filter.DisplayName, filter.BarNumber, null, DbSource.ALL, pagingInfo);
                 ViewBag.DisplayResults = true;
             }
             else
@@ -67,6 +67,10 @@ namespace AnnualReports.Web.Controllers
         public ActionResult Create()
         {
             var viewmodel = new BarAddViewModel();
+            viewmodel.AvailableDbSources = new List<SelectListItem>() {
+                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
             return View(viewmodel);
         }
 
@@ -76,7 +80,7 @@ namespace AnnualReports.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_barService.GetByBarNumberAndYear(viewmodel.BarNumber, viewmodel.Year.Value) == null)
+                if (!_barService.GetAllBars(viewmodel.Year.Value, null, viewmodel.BarNumber, null, viewmodel.DbSource).Any())
                 {
                     var entity = Mapper.Map<BarAddViewModel, Bar>(viewmodel);
                     if (string.IsNullOrWhiteSpace(entity.MapToBarNumber))
@@ -92,6 +96,10 @@ namespace AnnualReports.Web.Controllers
                     Danger($"A bar with same Number <strong>{viewmodel.BarNumber}</strong> already exists within the same year <strong>{viewmodel.Year.Value}</strong>.");
                 }
             }
+            viewmodel.AvailableDbSources = new List<SelectListItem>() {
+                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
             return View(viewmodel);
         }
 
@@ -184,6 +192,10 @@ namespace AnnualReports.Web.Controllers
                 return HttpNotFound();
             }
             var viewmodel = Mapper.Map<Bar, BarEditViewModel>(entity);
+            viewmodel.AvailableDbSources = new List<SelectListItem>() {
+                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
             return View(viewmodel);
         }
 
@@ -205,6 +217,10 @@ namespace AnnualReports.Web.Controllers
                 Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully updated.");
                 return RedirectToAction("Index", new { year = entity.Year });
             }
+            viewmodel.AvailableDbSources = new List<SelectListItem>() {
+                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
             return View(viewmodel);
         }
 
