@@ -25,6 +25,7 @@ namespace AnnualReports.Web.Controllers
         private readonly IFundService _fundService;
         private readonly IExportingService _exportingService;
         private readonly IGPDynamicsService _gpDynamicsService;
+        private const string FilterDateKey = "FundsFilter";
 
         public FundsController(IFundService fundService, IExportingService exportingService, IGPDynamicsService gpDynamicsService)
         {
@@ -37,6 +38,17 @@ namespace AnnualReports.Web.Controllers
         {
             var pagingInfo = new PagingInfo() { PageNumber = page };
             var entities = Enumerable.Empty<Fund>();
+            // keep track of filter across
+            if (filters != null && !filters.IsEmpty)
+            {
+                TempData[FilterDateKey] = filters;
+            }
+            else
+            {
+                if (TempData.Peek(FilterDateKey) != null)
+                    filters = TempData.Peek(FilterDateKey) as YearFilterViewModel;
+            }
+
             if (filters.Year.HasValue)
                 entities = _fundService.GetAllFunds(filters.Year.Value, filters.DbSource, filters.DisplayName, filters.FundNumber, null, pagingInfo);
             var viewmodel = entities.ToMappedPagedList<Fund, FundDetailsViewModel>(pagingInfo);
@@ -89,7 +101,7 @@ namespace AnnualReports.Web.Controllers
                     _fundService.Add(new List<Fund>() { entity });
 
                     Success($"<strong>{entity.DisplayName} - {entity.FundNumber}</strong> was successfully saved.");
-                    return RedirectToAction("Index", new { year = entity.Year });
+                    return RedirectToAction("Index", new { year = entity.Year, dbsource = entity.DbSource });
                 }
             }
             viewmodel.AvailableDbSources = new List<SelectListItem>() {
@@ -231,7 +243,7 @@ namespace AnnualReports.Web.Controllers
 
                 _fundService.Update(entity);
                 Success($"<strong>{entity.DisplayName} - {entity.FundNumber}</strong> was successfully updated.");
-                return RedirectToAction("Index", new { year = entity.Year });
+                return RedirectToAction("Index");
             }
             entity = _fundService.GetById(viewmodel.Id);
             if (entity == null)

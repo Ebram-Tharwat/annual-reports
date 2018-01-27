@@ -9,7 +9,7 @@ namespace AnnualReports.Web.ViewModels.CommonModels
         [Required(ErrorMessage = "Year is required.")]
         [UIHint("YearDatePicker")]
         [Display(Name = "Please select year")]
-        public int? Year { get; set; } = DateTime.Now.Year;
+        public int? Year { get; set; }
 
         [Display(Name = "Display name")]
         public string DisplayName { get; set; }
@@ -26,6 +26,16 @@ namespace AnnualReports.Web.ViewModels.CommonModels
         public string DateAsYear
         {
             get { return Year.HasValue ? Year.Value.ToString() : ""; }
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return (!Year.HasValue && string.IsNullOrWhiteSpace(DisplayName)
+                  && string.IsNullOrWhiteSpace(BarNumber) && string.IsNullOrWhiteSpace(FundNumber)
+                  && !DbSource.HasValue);
+            }
         }
     }
 }

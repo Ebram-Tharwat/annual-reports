@@ -23,8 +23,8 @@ namespace AnnualReports.Web.Controllers
     public class BarsController : BaseController
     {
         private IBarService _barService;
-
         private IExportingService _exportingService;
+        private const string FilterDateKey = "BarsFilter";
 
         public BarsController(IBarService barService, IExportingService exportingService)
         {
@@ -36,7 +36,19 @@ namespace AnnualReports.Web.Controllers
         {
             var pagingInfo = new PagingInfo() { PageNumber = page };
             var entities = Enumerable.Empty<Bar>();
-            if (TryValidateModel(filter))
+
+            // keep track of filter across 
+            if (filter != null && !filter.IsEmpty)
+            {
+                TempData[FilterDateKey] = filter;
+            }
+            else
+            {
+                if (TempData.Peek(FilterDateKey) != null)
+                    filter = TempData.Peek(FilterDateKey) as YearFilterViewModel;
+            }
+
+            if (filter.Year.HasValue)
             {
                 entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : (int?)null
                     , filter.DisplayName, filter.BarNumber, null, filter.DbSource, pagingInfo);
@@ -95,7 +107,7 @@ namespace AnnualReports.Web.Controllers
                     _barService.Add(new List<Bar>() { entity });
 
                     Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully saved.");
-                    return RedirectToAction("Index", new { year = entity.Year });
+                    return RedirectToAction("Index", new { year = entity.Year, dbsource = entity.DbSource });
                 }
                 else
                 {
@@ -221,7 +233,7 @@ namespace AnnualReports.Web.Controllers
 
                 _barService.Update(entity);
                 Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully updated.");
-                return RedirectToAction("Index", new { year = entity.Year });
+                return RedirectToAction("Index");
             }
             viewmodel.AvailableDbSources = new List<SelectListItem>() {
                  new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
@@ -252,7 +264,7 @@ namespace AnnualReports.Web.Controllers
             var entity = _barService.GetById(id);
             if (entity != null) _barService.Remove(entity);
             Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully deleted.");
-            return RedirectToAction("Index", new { year = entity.Year });
+            return RedirectToAction("Index");
         }
 
         #region Helpers
