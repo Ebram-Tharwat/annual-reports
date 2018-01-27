@@ -9,12 +9,14 @@ namespace AnnualReports.Application.Core.Interfaces
     public interface IBarService
     {
         List<ExceptionReportDataItemDetails> GetDistExceptionByYear(int year);
+
         List<ExceptionReportDataItemDetails> GetGcExceptionByYear(int year);
+
         void Add(IEnumerable<Bar> entities);
 
         void Update(Bar entity);
 
-        List<Bar> GetAllBars(int? year = null, string displayName = null, string barNumber = null, bool? isActive = null, DbSource? dbSource = DbSource.ALL, PagingInfo pagingInfo = null);
+        List<Bar> GetAllBars(int? year = null, string displayName = null, string barNumber = null, bool? isActive = null, DbSource? dbSource = null, PagingInfo pagingInfo = null);
 
         Bar GetByBarNumberAndYear(string barNumber, int year);
 
@@ -25,5 +27,7 @@ namespace AnnualReports.Application.Core.Interfaces
         Bar GetById(int id);
 
         void UploadBars(int year, List<BarUploadEntity> excelData, out int numOfAddedEntities, out int numOfUpdatedEntities);
+
+        void Remove(Bar bar);
     }
 }

@@ -463,6 +463,7 @@
     <Content Include="Views\MappingRules\Create.cshtml" />
     <Content Include="Views\MappingRules\Edit.cshtml" />
     <Content Include="Views\MappingRules\Delete.cshtml" />
+    <Content Include="Views\Bars\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

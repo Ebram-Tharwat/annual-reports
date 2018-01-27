@@ -38,7 +38,8 @@ namespace AnnualReports.Web.Controllers
             var entities = Enumerable.Empty<Bar>();
             if (TryValidateModel(filter))
             {
-                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : (int?)null, filter.DisplayName, filter.BarNumber, null, DbSource.ALL, pagingInfo);
+                entities = _barService.GetAllBars(!string.IsNullOrEmpty(filter.DateAsYear) ? int.Parse(filter.DateAsYear) : (int?)null
+                    , filter.DisplayName, filter.BarNumber, null, filter.DbSource, pagingInfo);
                 ViewBag.DisplayResults = true;
             }
             else
@@ -51,6 +52,11 @@ namespace AnnualReports.Web.Controllers
                 Filters = filter,
                 Data = entities.ToMappedPagedList<Bar, BarDetailsViewModel>(pagingInfo)
             };
+
+            ViewBag.AvailableDbSources = new List<SelectListItem>() {
+                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
             return View(viewmodel);
         }
 
@@ -222,6 +228,31 @@ namespace AnnualReports.Web.Controllers
                  new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
                  };
             return View(viewmodel);
+        }
+
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var entity = _barService.GetById(id.Value);
+            if (entity == null)
+            {
+                return HttpNotFound();
+            }
+            var viewmodel = Mapper.Map<Bar, BarDetailsViewModel>(entity);
+            return View(viewmodel);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var entity = _barService.GetById(id);
+            if (entity != null) _barService.Remove(entity);
+            Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully deleted.");
+            return RedirectToAction("Index", new { year = entity.Year });
         }
 
         #region Helpers

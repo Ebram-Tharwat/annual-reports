@@ -32,27 +32,23 @@ namespace AnnualReports.Application.Core.Services
             var dbBars = _barService.GetAllBars(year, null, null, true);
             var viewBars = annualReportData.Select(t => t.View_BarNumber).Distinct().ToList();
             // 3- get bar mapping rules to get right MapTo list.
-            var mappingRules = _mappingRuleRepository.Get(t => t.Year == year).ToList();
+            //var mappingRules = _mappingRuleRepository.Get(t => t.Year == year).ToList();
             // 4- generate report item detail.
             var groupByFundNumber = annualReportData.GroupBy(t => new { t.PrimaryFundNumber, t.FundDisplayName, t.MCAG, t.DbSource });
             foreach (var fundGroup in groupByFundNumber)
             {
-                // 4.1 get mapping rules for the current fund, and ONLY when it's a DIST fund
-                var currentFundMappingRules = mappingRules.Where(t => t.TargetFundNumber == fundGroup.Key.PrimaryFundNumber && fundGroup.Key.DbSource == DbSource.DIST).ToList();
+                // 4.1 get mapping rules for the current fund
+                // var currentFundMappingRules = mappingRules.Where(t => t.TargetFundNumber == fundGroup.Key.PrimaryFundNumber && fundGroup.Key.DbSource == DbSource.DIST).ToList();
                 foreach (var bar in viewBars)
                 {
-                    var targetBar = dbBars.FirstOrDefault(t => t.BarNumber == bar && (t.DbSource.Value == fundGroup.Key.DbSource));
-                    if (targetBar == null)
-                    {
-                        targetBar = new Bar() { BarNumber = bar, MapToBarNumber = bar, Year = (short)year, DisplayName = "" };
-                    }
+                    var targetBar = GetTargetDbBarOrDefault(dbBars, bar, fundGroup.Key.DbSource);
                     IEnumerable<AnnualReportDataRow> fundRows = new List<AnnualReportDataRow>();
                     if (targetBar.Period.HasValue)
                         fundRows = fundGroup.Where(t => t.View_Period == targetBar.Period.Value);
                     else
                         fundRows = fundGroup;
 
-                    var mapToBarList = GetBarNumberMappedItems(targetBar, currentFundMappingRules);
+                    var mapToBarList = GetBarNumberMappedItems(targetBar);
                     fundRows = fundRows.Where(t => mapToBarList.Any(mapToItem => t.View_BarNumber.StartsWith(mapToItem.CreditsMappedBarNumber)
                         || t.View_BarNumber.StartsWith(mapToItem.DebitsMappedBarNumber))).ToList();
                     if (fundRows.Any())
@@ -80,6 +76,27 @@ namespace AnnualReports.Application.Core.Services
             return reportData;
         }
 
+        private Bar GetTargetDbBarOrDefault(List<Bar> dbBars, string bar, DbSource dbSource)
+        {
+            Bar targetBar = null;
+            if (dbSource == DbSource.GC)
+            {
+                targetBar = dbBars.FirstOrDefault(t => (t.DbSource.HasValue && t.DbSource.Value == dbSource) && t.BarNumber == bar);
+            }
+            else if (dbSource == DbSource.DIST)
+            {
+                targetBar = dbBars.FirstOrDefault(t => (t.DbSource.HasValue && t.DbSource.Value == dbSource)
+                    && targetBar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Any(item => bar.StartsWith(item)));
+            }
+
+            if (targetBar == null)
+            {
+                targetBar = new Bar() { BarNumber = bar, MapToBarNumber = bar, DisplayName = "", DbSource = dbSource };
+            }
+            return targetBar;
+        }
+
         public List<ExceptionReportDataItemDetails> GetDistExceptionReportData(int year)
         {
             var distExceptionBarByYear = _barService.GetDistExceptionByYear(year);
@@ -92,44 +109,52 @@ namespace AnnualReports.Application.Core.Services
             return distExceptionBarByYear;
         }
 
-        private List<BarMappingRuleItem> GetBarNumberMappedItems(Bar targetBar, List<MappingRule> mappingRules)
+        private List<BarMappingRuleItem> GetBarNumberMappedItems(Bar targetBar)
         {
             var mapToBarList = new List<BarMappingRuleItem>();
-            MappingRule mappingRule = null;
+            //MappingRule mappingRule = null;
 
-            // 1- check if there is "Equal" rule for the specified bar.
-            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.Equal && targetBar.BarNumber == t.TargetBarNumber);
-            if (mappingRule != null)
-            {
-                mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
-                return mapToBarList;
-            }
+            //// 1- check if there is "Equal" rule for the specified bar.
+            //mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.Equal && targetBar.BarNumber == t.TargetBarNumber);
+            //if (mappingRule != null)
+            //{
+            //    mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
+            //    return mapToBarList;
+            //}
 
-            // 2- if not found, then check if there is "StartWith" rule for the specified bar.
-            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.StartWith && targetBar.BarNumber.StartsWith(t.TargetBarNumber));
-            if (mappingRule != null)
-            {
-                mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
-                return mapToBarList;
-            }
+            //// 2- if not found, then check if there is "StartWith" rule for the specified bar.
+            //mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.StartWith && targetBar.BarNumber.StartsWith(t.TargetBarNumber));
+            //if (mappingRule != null)
+            //{
+            //    mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
+            //    return mapToBarList;
+            //}
 
-            // 3- if not found, then check if there is "EndWith" rule for the specified bar.
-            mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.EndWith && targetBar.BarNumber.EndsWith(t.TargetBarNumber));
-            if (mappingRule != null)
-            {
-                mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
-                return mapToBarList;
-            }
+            //// 3- if not found, then check if there is "EndWith" rule for the specified bar.
+            //mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.EndWith && targetBar.BarNumber.EndsWith(t.TargetBarNumber));
+            //if (mappingRule != null)
+            //{
+            //    mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
+            //    return mapToBarList;
+            //}
 
             // 4- if not found, then use the "MapToBarNumber" column
-            if (string.IsNullOrWhiteSpace(targetBar.MapToBarNumber))
+
+            if (targetBar.DbSource == DbSource.GC)
+            {
+                if (string.IsNullOrWhiteSpace(targetBar.MapToBarNumber))
+                {
+                    mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, targetBar.BarNumber));
+                }
+                else
+                {
+                    mapToBarList = targetBar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(item => new BarMappingRuleItem(targetBar.BarNumber, item)).ToList();
+                }
+            }
+            else if (targetBar.DbSource == DbSource.DIST)
             {
                 mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, targetBar.BarNumber));
-            }
-            else
-            {
-                mapToBarList = targetBar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(item => new BarMappingRuleItem(targetBar.BarNumber, item)).ToList();
             }
 
             return mapToBarList;

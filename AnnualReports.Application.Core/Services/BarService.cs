@@ -157,12 +157,7 @@ namespace AnnualReports.Application.Core.Services
             return _barRepository.GetById(id);
         }
 
-        private void RemoveBars(int year)
-        {
-            _barRepository.BatchDelete(t => t.Year == year);
-        }
-
-        public List<Bar> GetAllBars(int? year = null, string displayName = null, string barNumber = null, bool? isActive = null, DbSource? dbSource = DbSource.ALL, PagingInfo pagingInfo = null)
+        public List<Bar> GetAllBars(int? year = null, string displayName = null, string barNumber = null, bool? isActive = null, DbSource? dbSource = null, PagingInfo pagingInfo = null)
         {
             int total = 0;
 
@@ -263,6 +258,12 @@ namespace AnnualReports.Application.Core.Services
             numOfUpdatedEntities = entitiesToUpdate.Count;
         }
 
+        public void Remove(Bar bar)
+        {
+            _barRepository.Delete(bar);
+            _uow.Commit();
+        }
+
         /// <summary>
         /// Tricky bars are the the bars that starts with 5 and have length of 5
         /// </summary>
@@ -288,6 +289,11 @@ namespace AnnualReports.Application.Core.Services
             }
 
             return result;
+        }
+
+        private void RemoveBars(int year)
+        {
+            _barRepository.BatchDelete(t => t.Year == year);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace AnnualReports.Application.Core.Services
             return newFunds.Union(fundsToUpdate).Union(fundsToSkip).ToList();
         }
 
-        public List<Fund> GetAllFunds(int? year, DbSource? dbSource = DbSource.ALL, string displayName = null, string fundNumber = null, bool? isActive = null, PagingInfo pagingInfo = null)
+        public List<Fund> GetAllFunds(int? year, DbSource? dbSource = null, string displayName = null, string fundNumber = null, bool? isActive = null, PagingInfo pagingInfo = null)
         {
             int total = 0;
 

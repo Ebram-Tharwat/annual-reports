@@ -38,10 +38,14 @@ namespace AnnualReports.Web.Controllers
             var pagingInfo = new PagingInfo() { PageNumber = page };
             var entities = Enumerable.Empty<Fund>();
             if (filters.Year.HasValue)
-                entities = _fundService.GetAllFunds(filters.Year.Value, DbSource.ALL, filters.DisplayName, filters.FundNumber, null, pagingInfo);
+                entities = _fundService.GetAllFunds(filters.Year.Value, filters.DbSource, filters.DisplayName, filters.FundNumber, null, pagingInfo);
             var viewmodel = entities.ToMappedPagedList<Fund, FundDetailsViewModel>(pagingInfo);
 
             ViewBag.FilterViewModel = filters;
+            ViewBag.AvailableDbSources = new List<SelectListItem>() {
+                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
             return View(viewmodel);
         }
 

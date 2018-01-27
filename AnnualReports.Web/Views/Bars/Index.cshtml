@@ -50,6 +50,14 @@
                         </div>
 
                         <div class="form-group">
+                            @Html.LabelFor(model => model.Filters.DbSource, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.Filters.DbSource, (IEnumerable<SelectListItem>)ViewBag.AvailableDbSources, "--Please Select--",
+                                new { @class = "form-control", Name = "dbsource" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <div class="col-md-offset-2 col-md-10">
                                 <input type="submit" value="Filter" class="btn btn-default" />
                             </div>
@@ -63,7 +71,7 @@
     {
         Html.RenderPartial("_BarsList", Model.Data);
         <div>
-            @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page, year = Model.Filters.DateAsYear, displayname = Model.Filters.DisplayName,barnumber = Model.Filters.BarNumber }))
+            @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page, year = Model.Filters.DateAsYear, displayname = Model.Filters.DisplayName,barnumber = Model.Filters.BarNumber, dbsource = Model.Filters.DbSource }))
         </div>
     }
 

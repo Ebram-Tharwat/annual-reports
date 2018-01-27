@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace AnnualReports.Web.ViewModels.CommonModels
@@ -18,6 +19,9 @@ namespace AnnualReports.Web.ViewModels.CommonModels
 
         [Display(Name = "Fund Number")]
         public string FundNumber { get; set; }
+
+        [Display(Name = "Database source")]
+        public DbSource? DbSource { get; set; }
 
         public string DateAsYear
         {
