@@ -42,6 +42,8 @@ namespace AnnualReports.Application.Core.Services
                 foreach (var bar in viewBars)
                 {
                     var targetBar = GetTargetDbBarOrDefault(dbBars, bar, fundGroup.Key.DbSource);
+                    if (targetBar == null)
+                        continue;
                     IEnumerable<AnnualReportDataRow> fundRows = new List<AnnualReportDataRow>();
                     if (targetBar.Period.HasValue)
                         fundRows = fundGroup.Where(t => t.View_Period == targetBar.Period.Value);
@@ -82,17 +84,16 @@ namespace AnnualReports.Application.Core.Services
             if (dbSource == DbSource.GC)
             {
                 targetBar = dbBars.FirstOrDefault(t => (t.DbSource.HasValue && t.DbSource.Value == dbSource) && t.BarNumber == bar);
+                if (targetBar == null)
+                {
+                    targetBar = new Bar() { BarNumber = bar, MapToBarNumber = bar, DisplayName = "", DbSource = dbSource };
+                }
             }
             else if (dbSource == DbSource.DIST)
             {
                 targetBar = dbBars.FirstOrDefault(t => (t.DbSource.HasValue && t.DbSource.Value == dbSource)
                     && targetBar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                     .Any(item => bar.StartsWith(item)));
-            }
-
-            if (targetBar == null)
-            {
-                targetBar = new Bar() { BarNumber = bar, MapToBarNumber = bar, DisplayName = "", DbSource = dbSource };
             }
             return targetBar;
         }
