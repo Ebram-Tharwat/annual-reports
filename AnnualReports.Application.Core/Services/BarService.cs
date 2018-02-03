@@ -120,7 +120,7 @@ namespace AnnualReports.Application.Core.Services
             var finalBars = new List<Bar>(entities);
             foreach (var entity in entities)
             {
-                if (entity.BarNumber.Length == 5 && entity.BarNumber.StartsWith("5")) // if BarNumber length is 5 and starts with 5
+                if (entity.BarNumber.Length == 5 && entity.BarNumber.StartsWith("5") && entity.DbSource == DbSource.GC) // if BarNumber length is 5 and starts with 5
                 {
                     var sourceBarObj = finalBars.FirstOrDefault(t => t.BarNumber == entity.BarNumber);
                     finalBars.AddRange(HandleTrickyBarNumbers(sourceBarObj));

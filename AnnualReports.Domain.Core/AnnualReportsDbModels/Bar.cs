@@ -33,5 +33,7 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
 
         [DefaultValue(AnnualReports.Domain.Core.AnnualReportsDbModels.DbSource.GC)]
         public DbSource? DbSource { get; set; }
+
+        public BarNumberTarget? BarTarget { get; set; }
     }
 }

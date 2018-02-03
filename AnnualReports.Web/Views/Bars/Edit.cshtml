@@ -1,4 +1,5 @@
-﻿@model AnnualReports.Web.ViewModels.BarModels.BarEditViewModel
+﻿@using AnnualReports.Domain.Core.AnnualReportsDbModels
+@model AnnualReports.Web.ViewModels.BarModels.BarEditViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -6,11 +7,10 @@
 
 <h2>Edit</h2>
 
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>@Model.DisplayName (@Model.BarNumber)</h4>
         <hr />
@@ -20,7 +20,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.BarNumber, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.BarNumber, new { htmlAttributes = new { @class = "form-control", disabled="disabled" } })
+                @Html.EditorFor(model => model.BarNumber, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
                 @Html.ValidationMessageFor(model => model.BarNumber, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -42,11 +42,20 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.MapToBarNumber, htmlAttributes: new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.MapToBarNumber, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.MapToBarNumber, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.MapToBarNumber, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.MapToBarNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MapToBarNumber, "", new { @class = "text-danger" })
                 <label class="label label-warning">You can enter multiple values, seperated by comma ( , )</label>
+            </div>
+        </div>
+
+        <div class="form-group barnumber-target">
+            @Html.LabelFor(model => model.BarTarget, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.BarTarget, Model.AvailableBarNumberTargets, "--Select Target--", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.BarTarget, "", new { @class = "text-danger" })
+                <label class="label label-info">leave it empty if it represents both</label>
             </div>
         </div>
 
@@ -82,4 +91,18 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            $('#DbSource').change(function () {
+                var selectedVal = $(this).val();
+                if (selectedVal == @((int)DbSource.DIST))
+                    $('.barnumber-target').show();
+                else {
+                    $('.barnumber-target').hide();
+                }
+            });
+
+            $('#DbSource').trigger('change');
+        });
+    </script>
 }

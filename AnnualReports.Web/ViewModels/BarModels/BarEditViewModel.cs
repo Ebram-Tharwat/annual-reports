@@ -23,9 +23,14 @@ namespace AnnualReports.Web.ViewModels.BarModels
 
         public int? Period { get; set; }
 
-        [Display(Name = "Database source")]
+        [Display(Name = "DB source")]
         public DbSource? DbSource { get; set; }
 
+        [Display(Name = "Debits or Credits")]
+        public BarNumberTarget? BarTarget { get; set; }
+
         public List<SelectListItem> AvailableDbSources { get; set; }
+
+        public List<SelectListItem> AvailableBarNumberTargets { get; set; }
     }
 }

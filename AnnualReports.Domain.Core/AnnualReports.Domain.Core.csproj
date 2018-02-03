@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnualReportsDbModels\Bar.cs" />
+    <Compile Include="AnnualReportsDbModels\BarNumberTarget.cs" />
     <Compile Include="AnnualReportsDbModels\DbSource.cs" />
     <Compile Include="AnnualReportsDbModels\Fund.cs" />
     <Compile Include="AnnualReportsDbModels\IdentityModels.cs" />

@@ -37,7 +37,8 @@ namespace AnnualReports.Web.Controllers
             var pagingInfo = new PagingInfo() { PageNumber = page };
             var entities = Enumerable.Empty<Bar>();
 
-            // keep track of filter across 
+            #region keep track of filter across
+
             if (filter != null && !filter.IsEmpty)
             {
                 TempData[FilterDateKey] = filter;
@@ -47,6 +48,8 @@ namespace AnnualReports.Web.Controllers
                 if (TempData.Peek(FilterDateKey) != null)
                     filter = TempData.Peek(FilterDateKey) as YearFilterViewModel;
             }
+
+            #endregion keep track of filter across
 
             if (filter.Year.HasValue)
             {
@@ -69,6 +72,7 @@ namespace AnnualReports.Web.Controllers
                  new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
                  new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
                  };
+            ViewBag.DisplayBarNumberTarget = filter.DbSource.HasValue && (filter.DbSource.Value == DbSource.DIST);
             return View(viewmodel);
         }
 
@@ -89,6 +93,10 @@ namespace AnnualReports.Web.Controllers
                  new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
                  new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
                  };
+            viewmodel.AvailableBarNumberTargets = new List<SelectListItem>() {
+                 new SelectListItem() {Text = BarNumberTarget.Debit.ToString(), Value = ((int)BarNumberTarget.Debit).ToString() },
+                 new SelectListItem() {Text = BarNumberTarget.Credit.ToString(), Value = ((int)BarNumberTarget.Credit).ToString() }
+                 };
             return View(viewmodel);
         }
 
@@ -98,11 +106,14 @@ namespace AnnualReports.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!_barService.GetAllBars(viewmodel.Year.Value, null, viewmodel.BarNumber, null, viewmodel.DbSource).Any())
+                if (!_barService.GetAllBars(viewmodel.Year.Value, viewmodel.DisplayName, viewmodel.BarNumber, null, viewmodel.DbSource).Any())
                 {
                     var entity = Mapper.Map<BarAddViewModel, Bar>(viewmodel);
                     if (string.IsNullOrWhiteSpace(entity.MapToBarNumber))
                         entity.MapToBarNumber = entity.BarNumber;
+
+                    if (entity.DbSource != DbSource.DIST)
+                        entity.BarTarget = null;
 
                     _barService.Add(new List<Bar>() { entity });
 
@@ -117,6 +128,10 @@ namespace AnnualReports.Web.Controllers
             viewmodel.AvailableDbSources = new List<SelectListItem>() {
                  new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
                  new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
+            viewmodel.AvailableBarNumberTargets = new List<SelectListItem>() {
+                 new SelectListItem() {Text = BarNumberTarget.Debit.ToString(), Value = ((int)BarNumberTarget.Debit).ToString() },
+                 new SelectListItem() {Text = BarNumberTarget.Credit.ToString(), Value = ((int)BarNumberTarget.Credit).ToString() }
                  };
             return View(viewmodel);
         }
@@ -214,6 +229,10 @@ namespace AnnualReports.Web.Controllers
                  new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
                  new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
                  };
+            viewmodel.AvailableBarNumberTargets = new List<SelectListItem>() {
+                 new SelectListItem() {Text = BarNumberTarget.Debit.ToString(), Value = ((int)BarNumberTarget.Debit).ToString() },
+                 new SelectListItem() {Text = BarNumberTarget.Credit.ToString(), Value = ((int)BarNumberTarget.Credit).ToString() }
+                 };
             return View(viewmodel);
         }
 
@@ -231,6 +250,9 @@ namespace AnnualReports.Web.Controllers
                 }
                 Mapper.Map(viewmodel, entity);
 
+                if (entity.DbSource != DbSource.DIST)
+                    entity.BarTarget = null;
+
                 _barService.Update(entity);
                 Success($"<strong>{entity.DisplayName} - {entity.BarNumber}</strong> was successfully updated.");
                 return RedirectToAction("Index");
@@ -238,6 +260,10 @@ namespace AnnualReports.Web.Controllers
             viewmodel.AvailableDbSources = new List<SelectListItem>() {
                  new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
                  new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+                 };
+            viewmodel.AvailableBarNumberTargets = new List<SelectListItem>() {
+                 new SelectListItem() {Text = BarNumberTarget.Debit.ToString(), Value = ((int)BarNumberTarget.Debit).ToString() },
+                 new SelectListItem() {Text = BarNumberTarget.Credit.ToString(), Value = ((int)BarNumberTarget.Credit).ToString() }
                  };
             return View(viewmodel);
         }
