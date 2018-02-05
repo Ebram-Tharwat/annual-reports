@@ -69,6 +69,7 @@
     <Compile Include="Contracts\MappingRuleEntities\BarMappingRuleItem.cs" />
     <Compile Include="Contracts\Paging\PagingInfo.cs" />
     <Compile Include="Contracts\Reports\AnnualReportDataItemDetails.cs" />
+    <Compile Include="Contracts\Reports\DISTAnnualReportItem.cs" />
     <Compile Include="Contracts\Reports\ExceptionReportDataItemDetails.cs" />
     <Compile Include="Enums\ReportType.cs" />
     <Compile Include="Interfaces\IBarService.cs" />

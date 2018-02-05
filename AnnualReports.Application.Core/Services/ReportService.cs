@@ -47,25 +47,39 @@ namespace AnnualReports.Application.Core.Services
             foreach (var fundGroup in groupByFundNumber)
             {
                 if (fundGroup.DbSource == DbSource.GC)
-                    reportData.AddRange(GetGCAnnualReportItems(year, viewBars, dbBars, fundGroup));
+                    reportData.AddRange(GetGcAnnualReportItems(year, viewBars, dbBars, fundGroup));
                 else
-                    reportData.AddRange(GetDISTAnnualReportItems(year, viewBars, dbBars, fundGroup));
+                    reportData.AddRange(GetDistAnnualReportItems(year, viewBars, dbBars, fundGroup));
             }
             return reportData;
         }
 
-        private IEnumerable<AnnualReportDataItemDetails> GetGCAnnualReportItems(int year, List<string> viewBars, List<Bar> dbBars, AnnualReportDataItemGroup fundGroup)
+        public List<ExceptionReportDataItemDetails> GetDistExceptionReportData(int year)
+        {
+            var distExceptionBarByYear = _barService.GetDistExceptionByYear(year);
+            return distExceptionBarByYear;
+        }
+
+        public List<ExceptionReportDataItemDetails> GetGcExceptionReportData(int year)
+        {
+            var distExceptionBarByYear = _barService.GetGcExceptionByYear(year);
+            return distExceptionBarByYear;
+        }
+
+        #region Helpers
+
+        private IEnumerable<AnnualReportDataItemDetails> GetGcAnnualReportItems(int year, List<string> viewBars, List<Bar> dbBars, AnnualReportDataItemGroup fundGroup)
         {
             foreach (var bar in viewBars)
             {
-                var targetBar = GetTargetDbBarOrDefault(dbBars, bar, fundGroup.DbSource);
+                var targetBar = GetGcTargetBarMappingOrDefault(dbBars, bar);
                 IEnumerable<AnnualReportDataRow> fundRows = new List<AnnualReportDataRow>();
                 if (targetBar.Period.HasValue)
                     fundRows = fundGroup.GroupData.Where(t => t.View_Period == targetBar.Period.Value);
                 else
                     fundRows = fundGroup.GroupData;
 
-                var mapToBarList = GetBarNumberMappedItems(targetBar);
+                var mapToBarList = GetGcBarMappedItems(targetBar);
                 fundRows = fundRows.Where(t => mapToBarList.Any(mapToItem => t.View_BarNumber.StartsWith(mapToItem.CreditsMappedBarNumber)
                     || t.View_BarNumber.StartsWith(mapToItem.DebitsMappedBarNumber))).ToList();
                 if (fundRows.Any())
@@ -73,7 +87,7 @@ namespace AnnualReports.Application.Core.Services
                     decimal total = 0;
                     foreach (var mapToItem in mapToBarList)
                     {
-                        total += GetGCBarTotalAmount(fundRows, mapToItem.TargetBarNumber);
+                        total += GetGcBarTotalAmount(fundRows, mapToItem.TargetBarNumber);
                     }
                     yield return new AnnualReportDataItemDetails()
                     {
@@ -91,99 +105,46 @@ namespace AnnualReports.Application.Core.Services
             }
         }
 
-        private IEnumerable<AnnualReportDataItemDetails> GetDISTAnnualReportItems(int year, List<string> viewBars, List<Bar> dbBars, AnnualReportDataItemGroup fundGroup)
+        private IEnumerable<AnnualReportDataItemDetails> GetDistAnnualReportItems(int year, List<string> viewBars, List<Bar> dbBars, AnnualReportDataItemGroup fundGroup)
         {
+            var distReportItems = new List<DISTAnnualReportItem>();
             foreach (var bar in viewBars)
             {
-                var targetBar = GetTargetDbBarOrDefault(dbBars, bar, fundGroup.DbSource);
-                if (targetBar == null)
+                var targetBarMappings = GetDistTargetBarMappings(dbBars, bar);
+                if (targetBarMappings.Count == 0)
                     continue;
 
-                IEnumerable<AnnualReportDataRow> fundRows = fundGroup.GroupData.Where(t => t.View_BarNumber == bar).ToList();
+                var fundRows = fundGroup.GroupData.Where(t => t.View_BarNumber == bar).ToList();
                 if (fundRows.Any())
                 {
-                    decimal total = 0;
-                    total += GetDISTBarTotalAmount(fundRows, bar, bar);
-
-                    yield return new AnnualReportDataItemDetails()
+                    foreach (var targetBarMapping in targetBarMappings)
                     {
-                        FundNumber = fundGroup.PrimaryFundNumber,
-                        FundDisplayName = fundGroup.FundDisplayName,
-                        BarNumber = targetBar.BarNumber,
-                        BarDisplayName = targetBar.DisplayName,
-                        MapToBarNumber = targetBar.MapToBarNumber,
-                        Year = year,
-                        MCAG = fundGroup.MCAG,
-                        Rows = fundRows.ToList(),
-                        Amount = total
-                    };
+                        distReportItems.Add(new DISTAnnualReportItem
+                        {
+                            BarNumber = targetBarMapping.BarNumber,
+                            Amount = GetDistBarTotalAmount(fundRows, targetBarMapping),
+                            Rows = fundRows
+                        });
+                    }
                 }
             }
-        }
-
-        private Bar GetTargetDbBarOrDefault(List<Bar> dbBars, string bar, DbSource dbSource)
-        {
-            Bar targetBar = null;
-            if (dbSource == DbSource.GC)
+            return distReportItems.GroupBy(t => t.BarNumber, (gKey, gValue) => new AnnualReportDataItemDetails()
             {
-                targetBar = dbBars.FirstOrDefault(t => (t.DbSource.HasValue && t.DbSource.Value == dbSource) && t.BarNumber == bar);
-                if (targetBar == null)
-                {
-                    targetBar = new Bar() { BarNumber = bar, MapToBarNumber = bar, DisplayName = "", DbSource = dbSource };
-                }
-            }
-            else if (dbSource == DbSource.DIST)
-            {
-                targetBar = dbBars.FirstOrDefault(t => (t.DbSource.HasValue && t.DbSource.Value == dbSource)
-                    && t.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Any(item => bar.StartsWith(item.Trim())));
-            }
-            return targetBar;
+                FundNumber = fundGroup.PrimaryFundNumber,
+                FundDisplayName = fundGroup.FundDisplayName,
+                BarNumber = gKey,
+                //    BarDisplayName = targetBar.DisplayName,
+                //    MapToBarNumber = targetBar.MapToBarNumber,
+                Year = year,
+                MCAG = fundGroup.MCAG,
+                Rows = gValue.SelectMany(t => t.Rows).ToList(),
+                Amount = gValue.Sum(t => t.Amount)
+            }).ToList();
         }
 
-        public List<ExceptionReportDataItemDetails> GetDistExceptionReportData(int year)
-        {
-            var distExceptionBarByYear = _barService.GetDistExceptionByYear(year);
-            return distExceptionBarByYear;
-        }
-
-        public List<ExceptionReportDataItemDetails> GetGcExceptionReportData(int year)
-        {
-            var distExceptionBarByYear = _barService.GetGcExceptionByYear(year);
-            return distExceptionBarByYear;
-        }
-
-        private List<BarMappingRuleItem> GetBarNumberMappedItems(Bar targetBar)
+        private List<BarMappingRuleItem> GetGcBarMappedItems(Bar targetBar)
         {
             var mapToBarList = new List<BarMappingRuleItem>();
-            //MappingRule mappingRule = null;
-
-            //// 1- check if there is "Equal" rule for the specified bar.
-            //mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.Equal && targetBar.BarNumber == t.TargetBarNumber);
-            //if (mappingRule != null)
-            //{
-            //    mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
-            //    return mapToBarList;
-            //}
-
-            //// 2- if not found, then check if there is "StartWith" rule for the specified bar.
-            //mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.StartWith && targetBar.BarNumber.StartsWith(t.TargetBarNumber));
-            //if (mappingRule != null)
-            //{
-            //    mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
-            //    return mapToBarList;
-            //}
-
-            //// 3- if not found, then check if there is "EndWith" rule for the specified bar.
-            //mappingRule = mappingRules.FirstOrDefault(t => t.Operator == MappingRuleOperator.EndWith && targetBar.BarNumber.EndsWith(t.TargetBarNumber));
-            //if (mappingRule != null)
-            //{
-            //    mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, mappingRule));
-            //    return mapToBarList;
-            //}
-
-            // 4- if not found, then use the "MapToBarNumber" column
-
             if (targetBar.DbSource == DbSource.GC)
             {
                 if (string.IsNullOrWhiteSpace(targetBar.MapToBarNumber))
@@ -196,15 +157,27 @@ namespace AnnualReports.Application.Core.Services
                         .Select(item => new BarMappingRuleItem(targetBar.BarNumber, item)).ToList();
                 }
             }
-            else if (targetBar.DbSource == DbSource.DIST)
-            {
-                mapToBarList.Add(new BarMappingRuleItem(targetBar.BarNumber, targetBar.BarNumber));
-            }
 
             return mapToBarList;
         }
 
-        private decimal GetGCBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, string targetBarNumber)
+        private Bar GetGcTargetBarMappingOrDefault(List<Bar> dbBars, string bar)
+        {
+            var targetBar = dbBars.FirstOrDefault(t => (t.DbSource.HasValue && t.DbSource.Value == DbSource.GC) && t.BarNumber == bar);
+            if (targetBar == null)
+                targetBar = new Bar() { BarNumber = bar, MapToBarNumber = bar, DisplayName = "", DbSource = DbSource.GC };
+
+            return targetBar;
+        }
+
+        private List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar)
+        {
+            return dbBars.Where(t => (t.DbSource.HasValue && t.DbSource.Value == DbSource.DIST)
+                    && t.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Any(item => bar.StartsWith(item.Trim()))).ToList();
+        }
+
+        private decimal GetGcBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, string targetBarNumber)
         {
             if (targetBarNumber.StartsWith("5") || targetBarNumber.StartsWith("1"))
                 return fundRows.Where(t => t.View_BarNumber.StartsWith(targetBarNumber)).Sum(t => t.Debit - t.Credit);
@@ -212,11 +185,16 @@ namespace AnnualReports.Application.Core.Services
                 return fundRows.Where(t => t.View_BarNumber.StartsWith(targetBarNumber)).Sum(t => t.Credit - t.Debit);
         }
 
-        private decimal GetDISTBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, string debitsMappedBarNumber, string creditsMappedBarNumber)
+        private decimal GetDistBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, Bar targetBarMapping)
         {
-            decimal debitsAmount = fundRows.Where(t => t.View_BarNumber.StartsWith(debitsMappedBarNumber)).Sum(t => t.Debit);
-            decimal creditsAmount = fundRows.Where(t => t.View_BarNumber.StartsWith(creditsMappedBarNumber)).Sum(t => t.Credit);
-            return debitsAmount - creditsAmount;
+            if (targetBarMapping.BarTarget == BarNumberTarget.Credit)
+                return fundRows.Sum(t => t.Credit);
+            if (targetBarMapping.BarTarget == BarNumberTarget.Debit)
+                return fundRows.Sum(t => t.Debit);
+            else
+                return fundRows.Sum(t => t.Debit) - fundRows.Sum(t => t.Credit);
         }
+
+        #endregion Helpers
     }
 }
