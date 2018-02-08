@@ -201,6 +201,7 @@ namespace AnnualReports.Application.Core.Services
 
         private void GenerateAnnualReportTemplate(ExcelPackage excelPackage, IEnumerable<AnnualReportDataItemDetails> reportData, int year)
         {
+            var distBars = _barService.GetAllBars(year, null, null, true, DbSource.DIST);
             var summerySheet = excelPackage.Workbook.Worksheets[1];
             var detailsSheet = excelPackage.Workbook.Worksheets[2];
             var summeryIndex = 2; // starting index.
@@ -232,10 +233,28 @@ namespace AnnualReports.Application.Core.Services
                     detailsSheet.Cells["H" + detailsIndex].Value = detailsItem.Debit;
                     detailsSheet.Cells["I" + detailsIndex].Value = detailsItem.Credit;
                     detailsSheet.Cells["J" + detailsIndex].Style.Font.Bold = true;
-                    if (summeryItem.MapToBarNumber.StartsWith("5") || summeryItem.MapToBarNumber.StartsWith("1"))
-                        detailsSheet.Cells["J" + detailsIndex].Formula = $"=H{detailsIndex}-I{detailsIndex}";
-                    else
-                        detailsSheet.Cells["J" + detailsIndex].Formula = $"=I{detailsIndex}-H{detailsIndex}";
+                    // ToDo: move the following logic to centralized service.
+                    if (summeryItem.FundDbSource == DbSource.GC)
+                    {
+                        if (summeryItem.MapToBarNumber.StartsWith("5") || summeryItem.MapToBarNumber.StartsWith("1"))
+                            detailsSheet.Cells["J" + detailsIndex].Formula = $"=H{detailsIndex}-I{detailsIndex}";
+                        else
+                            detailsSheet.Cells["J" + detailsIndex].Formula = $"=I{detailsIndex}-H{detailsIndex}";
+                    }
+                    else if (summeryItem.FundDbSource == DbSource.DIST)
+                    {
+                        var targetBarMapping = _reportService.GetDistTargetBarMappings(distBars, detailsItem.View_BarNumber)
+                            .FirstOrDefault(t => t.BarNumber == summeryItem.BarNumber);
+                        if(targetBarMapping.BarTarget == null)
+                            detailsSheet.Cells["J" + detailsIndex].Formula = $"=H{detailsIndex}-I{detailsIndex}";
+                        else
+                        {
+                            if(targetBarMapping.BarTarget == BarNumberTarget.Credit)
+                                detailsSheet.Cells["J" + detailsIndex].Formula = $"=I{detailsIndex}";
+                            else
+                                detailsSheet.Cells["J" + detailsIndex].Formula = $"=H{detailsIndex}";
+                        }
+                    }
                     detailsIndex++;
                 }
             }

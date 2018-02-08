@@ -10,6 +10,8 @@ namespace AnnualReports.Application.Core.Contracts.Reports
 
         public string FundDisplayName { get; set; }
 
+        public DbSource FundDbSource { get; set; }
+
         public string BarNumber { get; set; }
 
         public string BarDisplayName { get; set; }

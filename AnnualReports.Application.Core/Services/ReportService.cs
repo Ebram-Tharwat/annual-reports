@@ -93,6 +93,7 @@ namespace AnnualReports.Application.Core.Services
                     {
                         FundNumber = fundGroup.PrimaryFundNumber,
                         FundDisplayName = fundGroup.FundDisplayName,
+                        FundDbSource = fundGroup.DbSource,
                         BarNumber = targetBar.BarNumber,
                         BarDisplayName = targetBar.DisplayName,
                         MapToBarNumber = targetBar.MapToBarNumber,
@@ -122,17 +123,19 @@ namespace AnnualReports.Application.Core.Services
                         distReportItems.Add(new DISTAnnualReportItem
                         {
                             BarNumber = targetBarMapping.BarNumber,
+                            BarDbSource = targetBarMapping.DbSource,
                             Amount = GetDistBarTotalAmount(fundRows, targetBarMapping),
                             Rows = fundRows
                         });
                     }
                 }
             }
-            return distReportItems.GroupBy(t => t.BarNumber, (gKey, gValue) => new AnnualReportDataItemDetails()
+            return distReportItems.GroupBy(t => new { t.BarNumber }, (gKey, gValue) => new AnnualReportDataItemDetails()
             {
                 FundNumber = fundGroup.PrimaryFundNumber,
                 FundDisplayName = fundGroup.FundDisplayName,
-                BarNumber = gKey,
+                FundDbSource = fundGroup.DbSource,
+                BarNumber = gKey.BarNumber,
                 //    BarDisplayName = targetBar.DisplayName,
                 //    MapToBarNumber = targetBar.MapToBarNumber,
                 Year = year,
@@ -170,7 +173,7 @@ namespace AnnualReports.Application.Core.Services
             return targetBar;
         }
 
-        private List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar)
+        public List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar)
         {
             return dbBars.Where(t => (t.DbSource.HasValue && t.DbSource.Value == DbSource.DIST)
                     && t.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
