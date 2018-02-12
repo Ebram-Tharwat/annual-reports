@@ -114,19 +114,27 @@ namespace AnnualReports.Application.Core.Services
                 var targetBarMappings = GetDistTargetBarMappings(dbBars, bar);
                 if (targetBarMappings.Count == 0)
                     continue;
-                
+
                 var fundRows = fundGroup.GroupData.Where(t => t.View_BarNumber == bar).ToList();
                 if (fundRows.Any())
                 {
                     foreach (var targetBarMapping in targetBarMappings)
                     {
-                        distReportItems.Add(new DISTAnnualReportItem
+                        var fundPeriodsByPeriod = fundRows;
+                        if (targetBarMapping.Period.HasValue)
+                            fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t =>
+                                t.View_Period == targetBarMapping.Period.Value).ToList();
+
+                        if (fundPeriodsByPeriod.Any())
                         {
-                            BarNumber = targetBarMapping.BarNumber,
-                            BarDbSource = targetBarMapping.DbSource,
-                            Amount = GetDistBarTotalAmount(fundRows, targetBarMapping),
-                            Rows = fundRows
-                        });
+                            distReportItems.Add(new DISTAnnualReportItem
+                            {
+                                BarNumber = targetBarMapping.BarNumber,
+                                BarDbSource = targetBarMapping.DbSource,
+                                Amount = GetDistBarTotalAmount(fundPeriodsByPeriod, targetBarMapping),
+                                Rows = fundPeriodsByPeriod
+                            });
+                        }
                     }
                 }
             }
@@ -190,11 +198,6 @@ namespace AnnualReports.Application.Core.Services
 
         private decimal GetDistBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, Bar targetBarMapping)
         {
-            // 1- check if there is a period filteration.
-            if (targetBarMapping.Period.HasValue)
-                fundRows = fundRows.Where(t => t.View_Period == targetBarMapping.Period.Value);
-            
-            // 2- calculate the final total amount.
             if (targetBarMapping.BarTarget == BarNumberTarget.Credit)
                 return fundRows.Sum(t => t.Credit);
             else if (targetBarMapping.BarTarget == BarNumberTarget.Debit)
