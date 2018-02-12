@@ -215,7 +215,6 @@ namespace AnnualReports.Application.Core.Services
                 summerySheet.Cells["D" + summeryIndex].Value = summeryItem.FundDisplayName;
                 summerySheet.Cells["E" + summeryIndex].Value = summeryItem.BarNumber;
                 summerySheet.Cells["F" + summeryIndex].Value = summeryItem.BarDisplayName;
-                //summerySheet.Cells["H" + summeryIndex].Value = summeryItem.Amount;
                 summerySheet.Cells["G" + summeryIndex].Style.Font.Bold = true;
                 summerySheet.Cells["G" + summeryIndex].Formula = $"=SUM(Details!$J{detailsIndex}:Details!$J{detailsIndex + summeryItem.Rows.Count - 1 })";
                 summeryIndex++;
@@ -224,35 +223,37 @@ namespace AnnualReports.Application.Core.Services
                 {
                     detailsSheet.Cells["A" + detailsIndex].Value = year;
                     detailsSheet.Cells["B" + detailsIndex].Value = detailsItem.AccountDescription;
-                    detailsSheet.Cells["C" + detailsIndex].Value = detailsItem.ACTNUMBR_1;
-                    detailsSheet.Cells["D" + detailsIndex].Value = detailsItem.ACTNUMBR_2;
-                    detailsSheet.Cells["E" + detailsIndex].Value = detailsItem.ACTNUMBR_3;
-                    detailsSheet.Cells["F" + detailsIndex].Value = detailsItem.ACTNUMBR_4;
-                    detailsSheet.Cells["G" + detailsIndex].Value = detailsItem.ACTNUMBR_5;
-                    //detailsSheet.Cells["H" + detailsIndex].Value = detailsItem.View_Period;
-                    detailsSheet.Cells["H" + detailsIndex].Value = detailsItem.Debit;
-                    detailsSheet.Cells["I" + detailsIndex].Value = detailsItem.Credit;
-                    detailsSheet.Cells["J" + detailsIndex].Style.Font.Bold = true;
+                    detailsSheet.Cells["C" + detailsIndex].Value = summeryItem.BarNumber;
+
+                    detailsSheet.Cells["D" + detailsIndex].Value = detailsItem.ACTNUMBR_1;
+                    detailsSheet.Cells["E" + detailsIndex].Value = detailsItem.ACTNUMBR_2;
+                    detailsSheet.Cells["F" + detailsIndex].Value = detailsItem.ACTNUMBR_3;
+                    detailsSheet.Cells["G" + detailsIndex].Value = detailsItem.ACTNUMBR_4;
+                    detailsSheet.Cells["H" + detailsIndex].Value = detailsItem.ACTNUMBR_5;
+
+                    detailsSheet.Cells["I" + detailsIndex].Value = detailsItem.Debit;
+                    detailsSheet.Cells["J" + detailsIndex].Value = detailsItem.Credit;
+                    detailsSheet.Cells["K" + detailsIndex].Style.Font.Bold = true;
                     // ToDo: move the following logic to centralized service.
                     if (summeryItem.FundDbSource == DbSource.GC)
                     {
                         if (summeryItem.MapToBarNumber.StartsWith("5") || summeryItem.MapToBarNumber.StartsWith("1"))
-                            detailsSheet.Cells["J" + detailsIndex].Formula = $"=H{detailsIndex}-I{detailsIndex}";
+                            detailsSheet.Cells["K" + detailsIndex].Formula = $"=I{detailsIndex}-J{detailsIndex}";
                         else
-                            detailsSheet.Cells["J" + detailsIndex].Formula = $"=I{detailsIndex}-H{detailsIndex}";
+                            detailsSheet.Cells["K" + detailsIndex].Formula = $"=J{detailsIndex}-I{detailsIndex}";
                     }
                     else if (summeryItem.FundDbSource == DbSource.DIST)
                     {
                         var targetBarMapping = _reportService.GetDistTargetBarMappings(distBars, detailsItem.View_BarNumber)
                             .FirstOrDefault(t => t.BarNumber == summeryItem.BarNumber);
-                        if(targetBarMapping.BarTarget == null)
-                            detailsSheet.Cells["J" + detailsIndex].Formula = $"=H{detailsIndex}-I{detailsIndex}";
+                        if (targetBarMapping.BarTarget == null)
+                            detailsSheet.Cells["K" + detailsIndex].Formula = $"=I{detailsIndex}-J{detailsIndex}";
                         else
                         {
-                            if(targetBarMapping.BarTarget == BarNumberTarget.Credit)
-                                detailsSheet.Cells["J" + detailsIndex].Formula = $"=I{detailsIndex}";
+                            if (targetBarMapping.BarTarget == BarNumberTarget.Credit)
+                                detailsSheet.Cells["K" + detailsIndex].Formula = $"=J{detailsIndex}";
                             else
-                                detailsSheet.Cells["J" + detailsIndex].Formula = $"=H{detailsIndex}";
+                                detailsSheet.Cells["K" + detailsIndex].Formula = $"=I{detailsIndex}";
                         }
                     }
                     detailsIndex++;
