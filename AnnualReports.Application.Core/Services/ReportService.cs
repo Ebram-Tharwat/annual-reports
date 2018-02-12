@@ -114,7 +114,7 @@ namespace AnnualReports.Application.Core.Services
                 var targetBarMappings = GetDistTargetBarMappings(dbBars, bar);
                 if (targetBarMappings.Count == 0)
                     continue;
-
+                
                 var fundRows = fundGroup.GroupData.Where(t => t.View_BarNumber == bar).ToList();
                 if (fundRows.Any())
                 {
@@ -190,9 +190,14 @@ namespace AnnualReports.Application.Core.Services
 
         private decimal GetDistBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, Bar targetBarMapping)
         {
+            // 1- check if there is a period filteration.
+            if (targetBarMapping.Period.HasValue)
+                fundRows = fundRows.Where(t => t.View_Period == targetBarMapping.Period.Value);
+            
+            // 2- calculate the final total amount.
             if (targetBarMapping.BarTarget == BarNumberTarget.Credit)
                 return fundRows.Sum(t => t.Credit);
-            if (targetBarMapping.BarTarget == BarNumberTarget.Debit)
+            else if (targetBarMapping.BarTarget == BarNumberTarget.Debit)
                 return fundRows.Sum(t => t.Debit);
             else
                 return fundRows.Sum(t => t.Debit) - fundRows.Sum(t => t.Credit);
