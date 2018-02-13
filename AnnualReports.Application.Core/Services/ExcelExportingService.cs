@@ -216,7 +216,7 @@ namespace AnnualReports.Application.Core.Services
                 summerySheet.Cells["E" + summeryIndex].Value = summeryItem.BarNumber;
                 summerySheet.Cells["F" + summeryIndex].Value = summeryItem.BarDisplayName;
                 summerySheet.Cells["G" + summeryIndex].Style.Font.Bold = true;
-                summerySheet.Cells["G" + summeryIndex].Formula = $"=SUM(Details!$J{detailsIndex}:Details!$J{detailsIndex + summeryItem.Rows.Count - 1 })";
+                summerySheet.Cells["G" + summeryIndex].Formula = $"=SUM(Details!$K{detailsIndex}:Details!$K{detailsIndex + summeryItem.Rows.Count - 1 })";
                 summeryIndex++;
 
                 foreach (var detailsItem in summeryItem.Rows)
