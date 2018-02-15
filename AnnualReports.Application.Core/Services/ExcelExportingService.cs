@@ -246,8 +246,15 @@ namespace AnnualReports.Application.Core.Services
                     {
                         var targetBarMapping = _reportService.GetDistTargetBarMappings(distBars, detailsItem.View_BarNumber)
                             .FirstOrDefault(t => t.BarNumber == summeryItem.BarNumber);
-                        if (targetBarMapping.BarTarget == null)
+                        var mapToBarNumbers = targetBarMapping.MapToBarNumber.Split(new char[] { ',' }
+                                        , StringSplitOptions.RemoveEmptyEntries).Select(item => item.Trim());
+
+                        if (targetBarMapping.BarTarget == null
+                            || (mapToBarNumbers.Any(item => item == "3" || item == "5")
+                                && (detailsItem.View_BarNumber.StartsWith("3") || detailsItem.View_BarNumber.StartsWith("5"))))
+                        {
                             detailsSheet.Cells["K" + detailsIndex].Formula = $"=I{detailsIndex}-J{detailsIndex}";
+                        }
                         else
                         {
                             if (targetBarMapping.BarTarget == BarNumberTarget.Credit)

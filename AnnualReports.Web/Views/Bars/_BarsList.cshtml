@@ -44,7 +44,7 @@
                     <td>
                         @foreach (var mapToBar in item.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                         {
-                            @mapToBar<br />
+                            @mapToBar.Trim()<br />
                         }
                     </td>
                     @if (displayBarNumberTarget)
