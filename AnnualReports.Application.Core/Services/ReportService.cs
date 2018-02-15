@@ -109,13 +109,13 @@ namespace AnnualReports.Application.Core.Services
         private IEnumerable<AnnualReportDataItemDetails> GetDistAnnualReportItems(int year, List<string> viewBars, List<Bar> dbBars, AnnualReportDataItemGroup fundGroup)
         {
             var distReportItems = new List<DISTAnnualReportItem>();
-            foreach (var bar in viewBars)
+            foreach (var targetViewBar in viewBars)
             {
-                var targetBarMappings = GetDistTargetBarMappings(dbBars, bar);
+                var targetBarMappings = GetDistTargetBarMappings(dbBars, targetViewBar);
                 if (targetBarMappings.Count == 0)
                     continue;
 
-                var fundRows = fundGroup.GroupData.Where(t => t.View_BarNumber == bar).ToList();
+                var fundRows = fundGroup.GroupData.Where(t => t.View_BarNumber == targetViewBar).ToList();
                 if (fundRows.Any())
                 {
                     foreach (var targetBarMapping in targetBarMappings)
@@ -131,7 +131,7 @@ namespace AnnualReports.Application.Core.Services
                             {
                                 BarNumber = targetBarMapping.BarNumber,
                                 BarDbSource = targetBarMapping.DbSource,
-                                Amount = GetDistBarTotalAmount(fundPeriodsByPeriod, targetBarMapping),
+                                Amount = GetDistBarTotalAmount(fundPeriodsByPeriod, targetBarMapping, targetViewBar),
                                 Rows = fundPeriodsByPeriod
                             });
                         }
@@ -165,6 +165,7 @@ namespace AnnualReports.Application.Core.Services
                 else
                 {
                     mapToBarList = targetBar.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(item => item.Trim())
                         .Select(item => new BarMappingRuleItem(targetBar.BarNumber, item)).ToList();
                 }
             }
@@ -185,6 +186,7 @@ namespace AnnualReports.Application.Core.Services
         {
             return dbBars.Where(t => (t.DbSource.HasValue && t.DbSource.Value == DbSource.DIST)
                     && t.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(item => item.Trim())
                     .Any(item => bar.StartsWith(item.Trim()))).ToList();
         }
 
@@ -196,14 +198,24 @@ namespace AnnualReports.Application.Core.Services
                 return fundRows.Where(t => t.View_BarNumber.StartsWith(targetBarNumber)).Sum(t => t.Credit - t.Debit);
         }
 
-        private decimal GetDistBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, Bar targetBarMapping)
+        private decimal GetDistBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, Bar targetBarMapping, string targetViewBar)
         {
-            if (targetBarMapping.BarTarget == BarNumberTarget.Credit)
-                return fundRows.Sum(t => t.Credit);
-            else if (targetBarMapping.BarTarget == BarNumberTarget.Debit)
-                return fundRows.Sum(t => t.Debit);
-            else
+            var mapToBarNumbers = targetBarMapping.MapToBarNumber.Split(new char[] { ',' }
+                                        , StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim());
+
+            if (mapToBarNumbers.Any(item => item == "3") && targetViewBar.StartsWith("3"))
+                return fundRows.Sum(t => t.Credit) - fundRows.Sum(t => t.Debit);
+            else if (mapToBarNumbers.Any(item => item == "5") && targetViewBar.StartsWith("5"))
                 return fundRows.Sum(t => t.Debit) - fundRows.Sum(t => t.Credit);
+            else if (targetBarMapping.BarTarget == null)
+                return fundRows.Sum(t => t.Debit) - fundRows.Sum(t => t.Credit);
+            else
+            {
+                if (targetBarMapping.BarTarget == BarNumberTarget.Credit)
+                    return fundRows.Sum(t => t.Credit);
+                else
+                    return fundRows.Sum(t => t.Debit);
+            }
         }
 
         #endregion Helpers
