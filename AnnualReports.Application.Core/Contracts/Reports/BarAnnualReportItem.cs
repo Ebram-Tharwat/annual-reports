@@ -4,9 +4,11 @@ using System.Collections.Generic;
 
 namespace AnnualReports.Application.Core.Contracts.Reports
 {
-    public class DISTAnnualReportItem
+    public class BarAnnualReportItem
     {
         public string BarNumber { get; set; }
+
+        public string BarDisplayName { get; set; }
 
         public decimal Amount { get; set; }
 
