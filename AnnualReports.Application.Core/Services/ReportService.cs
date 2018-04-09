@@ -15,6 +15,7 @@ namespace AnnualReports.Application.Core.Services
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IBarService _barService;
         private readonly IMappingRuleRepository _mappingRuleRepository;
+        private const int AllPeriodsValue = 13;
 
         public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService, IMappingRuleRepository mappingRuleRepository)
         {
@@ -79,7 +80,14 @@ namespace AnnualReports.Application.Core.Services
 
                 var fundRows = fundGroup.GroupData;
                 if (targetBar.Period.HasValue)
-                    fundRows = fundRows.Where(t => t.View_Period == targetBar.Period.Value).ToList();
+                {
+                    if (Enumerable.Range(0, 13).Contains(targetBar.Period.Value)) // 0, 13 == 0..12
+                        fundRows = fundRows.Where(t => t.View_Period == targetBar.Period.Value).ToList();
+                    else if (targetBar.Period.Value == AllPeriodsValue)
+                        fundRows = fundRows.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
+                }
+                else
+                    fundRows = fundRows.Where(t => Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
 
                 fundRows = fundRows.Where(t => t.View_BarNumber == targetViewBar).ToList();
 
@@ -125,9 +133,16 @@ namespace AnnualReports.Application.Core.Services
                     foreach (var targetBarMapping in targetBarMappings)
                     {
                         var fundPeriodsByPeriod = fundRows;
+
                         if (targetBarMapping.Period.HasValue)
-                            fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t =>
-                                t.View_Period == targetBarMapping.Period.Value).ToList();
+                        {
+                            if (Enumerable.Range(0, 13).Contains(targetBarMapping.Period.Value)) // 0, 13 == 0..12
+                                fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => t.View_Period == targetBarMapping.Period.Value).ToList();
+                            else if (targetBarMapping.Period.Value == AllPeriodsValue)
+                                fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
+                        }
+                        else
+                            fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
 
                         if (fundPeriodsByPeriod.Any())
                         {
