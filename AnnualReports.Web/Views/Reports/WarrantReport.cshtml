@@ -1,0 +1,63 @@
+﻿@model AnnualReports.Web.ViewModels.ReportModels.ReportFiltersViewModel
+
+@{
+    ViewBag.Title = "Warrant Monthly Report";
+}
+
+<h2>Warrant Monthly Report</h2>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading bold">Warrant Monthly Report:</div>
+            <div class="panel-body">
+                @using (Html.BeginForm("WarrantReport", "Reports", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div id="step-1">
+                        <h3 class="margin-top-0">Step 1:</h3>
+                        <p class="help-block">
+                            Please select the year and month of this Warrant Monthly Report
+                        </p>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label" })
+                            <span class="text-danger">*</span>
+                            <div class="">
+                                @Html.EditorFor(model => model.Date, new { fieldName = "date" })
+                                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div id="step-2">
+                        <h3>Step 2</h3>
+                        <p class="help-block">
+                            Upload AuditorMaster excel sheet
+                        </p>
+                        <div class="form-group clearfix">
+                            @Html.EditorFor(model => model.ExcelFile)
+                            @Html.ValidationMessageFor(model => model.ExcelFile, "", new { @class = "text-danger" })
+                        </div>
+                        <hr />
+                    </div>
+                    <div id="step-3">
+                        <h3>Step 3:</h3>
+                        <p class="help-block">
+                            Click on <strong><i>"Export to Excel"</i></strong> button to download the Warrant Monthly Report based on the selected year and month.
+                        </p>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">
+                                <span class="glyphicon glyphicon-download-alt"></span> Export To Excel
+                            </button>
+                        </div>
+                        <hr />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/plugins")
+}

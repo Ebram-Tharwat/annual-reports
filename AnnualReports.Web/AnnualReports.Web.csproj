@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -293,6 +294,7 @@
     <Compile Include="ViewModels\MappingRuleModels\MappingRuleAddViewModel.cs" />
     <Compile Include="ViewModels\MappingRuleModels\MappingRuleDetailsViewModel.cs" />
     <Compile Include="ViewModels\ReportModels\MonthlyReportDataViewModel.cs" />
+    <Compile Include="ViewModels\ReportModels\ReportFiltersViewModel.cs" />
     <Compile Include="ViewModels\ReportModels\MonthlyReportFiltersViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -464,6 +466,7 @@
     <Content Include="Views\MappingRules\Edit.cshtml" />
     <Content Include="Views\MappingRules\Delete.cshtml" />
     <Content Include="Views\Bars\Delete.cshtml" />
+    <Content Include="Views\Reports\WarrantReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

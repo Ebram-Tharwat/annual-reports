@@ -7,6 +7,7 @@ using System;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
 namespace AnnualReports.Web.Controllers
@@ -58,9 +59,8 @@ namespace AnnualReports.Web.Controllers
             {
                 if (viewmodel.ExcelFile != null && viewmodel.ExcelFile.ContentLength > 0)
                 {
-                    var fileName = Path.GetFileName(viewmodel.ExcelFile.FileName);
-                    var path = Path.Combine(Server.MapPath("~/Uploads/MonthlyReport/"), DateTime.Now.GetTimeStamp() + "_" + fileName);
-                    viewmodel.ExcelFile.SaveAs(path); // save a copy of the uploaded file.
+                    SaveUploadedFile(viewmodel.ExcelFile, Server.MapPath("~/Uploads/MonthlyReport/"));
+
                     // convert the uploaded file into datatable, then add/update db entities.
                     var dtBarsHours = ImportUtils.ImportXlsxToDataTable(viewmodel.ExcelFile.InputStream, true, 1);
                     var excelData = dtBarsHours.AsEnumerable().Select(row =>
@@ -91,6 +91,27 @@ namespace AnnualReports.Web.Controllers
         }
 
         [HttpGet]
+        public ActionResult WarrantReport()
+        {
+            var viewmodel = new ReportFiltersViewModel();
+            return View(viewmodel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult WarrantReport(ReportFiltersViewModel viewmodel)
+        {
+            if (ModelState.IsValid) // validate file exist
+            {
+                if (viewmodel.ExcelFile != null && viewmodel.ExcelFile.ContentLength > 0)
+                {
+                    SaveUploadedFile(viewmodel.ExcelFile, Server.MapPath("~/Uploads/WarrantReport/"));
+                }
+            }
+            return View(viewmodel);
+        }
+
+        [HttpGet]
         [Route("ExportAnnualReportToExcel/{year:int}/{fundId:int?}")]
         public ActionResult ExportAnnualReportToExcel(int year, int? fundId)
         {
@@ -113,6 +134,14 @@ namespace AnnualReports.Web.Controllers
         {
             MemoryStream stream = _exportingService.GetGcExceptionReportExcel(year);
             return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.GcExceptionReportExcelFileName, year));
+        }
+
+        private void SaveUploadedFile(HttpPostedFileBase file, string folderPath)
+        {
+            Directory.CreateDirectory(folderPath);
+            var fileName = Path.GetFileName(file.FileName);
+            var fullPath = Path.Combine(folderPath, DateTime.Now.GetTimeStamp() + "_" + fileName);
+            file.SaveAs(fullPath);
         }
     }
 }
