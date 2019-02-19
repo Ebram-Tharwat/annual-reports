@@ -17,7 +17,11 @@ namespace AnnualReports.Common.Utils
         /// <param name="workSheetIndex">Index of worksheet, 1-base</param>
         /// <param name="skipEmptyRow">Should skip adding a row, in case the whole row values are NullOrEmpty().</param>
         /// <returns>A Datatable represents the excel sheet</returns>
-        public static DataTable ImportXlsxToDataTable(Stream inputStream, bool hasHeader, int workSheetIndex, bool skipEmptyRow = true)
+        public static DataTable ImportXlsxToDataTable(
+            Stream inputStream,
+            bool hasHeader,
+            int workSheetIndex,
+            bool skipEmptyRow = true)
         {
             var dt = new DataTable();
             using (var excel = new ExcelPackage(inputStream))
@@ -56,10 +60,16 @@ namespace AnnualReports.Common.Utils
         /// Convert stream (of excel sheet) into datatable, with specific set of columns.
         /// So, it will import only the required passed columns.
         /// </summary>
-        /// <param name="inputStream"></param>
-        /// <param name="columnsToImport"></param>
+        /// <param name="inputStream">The Stream object of the excel sheet</param>
+        /// <param name="workSheetIndex">Index of worksheet, 1-base</param>
+        /// <param name="columnsToImport">Header of columns to be parsed/read. Any other columns won't be parsed/read</param>
+        /// <param name="skipEmptyRow">Should skip adding a row, in case the whole row values are NullOrEmpty().</param>
         /// <returns></returns>
-        public static DataTable ImportXlsxToDataTable(Stream inputStream, params string[] columnsToImport)
+        public static DataTable ImportXlsxToDataTable(
+            Stream inputStream,
+            int workSheetIndex,
+            string[] columnsToImport,
+            bool skipEmptyRow = true)
         {
             var dt = new DataTable();
             const bool hasHeader = true; // it must be true, as we are importing specific columns.
