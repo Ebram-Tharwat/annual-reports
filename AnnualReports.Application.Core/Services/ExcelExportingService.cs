@@ -1,6 +1,7 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.Enums;
 using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Common.Extensions;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using OfficeOpenXml;
 using System;
@@ -78,6 +79,18 @@ namespace AnnualReports.Application.Core.Services
             ExcelPackage package = new ExcelPackage(templateFile, true);
 
             GenerateGcExceptionReportTemplate(package, _reportService.GetGcExceptionReportData(year), year);
+
+            var stream = new MemoryStream(package.GetAsByteArray());
+            return stream;
+        }
+
+        public MemoryStream GetWarrantsReportExcel(IEnumerable<WarrantReportOutputItem> reportData)
+        {
+            string excelTemplate = GetExcelTemplate(ReportType.WarrantsReportTemplate);
+            var templateFile = new FileInfo(excelTemplate);
+            ExcelPackage package = new ExcelPackage(templateFile, true);
+
+            GenerateWarrantsReportTemplate(package, reportData);
 
             var stream = new MemoryStream(package.GetAsByteArray());
             return stream;
@@ -273,6 +286,29 @@ namespace AnnualReports.Application.Core.Services
 
         #endregion Annual Report
 
+        #region Warrants Report
+        private void GenerateWarrantsReportTemplate(ExcelPackage excelPackage, IEnumerable<WarrantReportOutputItem> reportData)
+        {
+            var dataSheet = excelPackage.Workbook.Worksheets[1];
+            var index = 2; // starting index.
+            if (reportData != null)
+            {
+                foreach (var item in reportData)
+                {
+                    dataSheet.Cells["A" + index].Value = item.AccountNumber;
+                    dataSheet.Cells["B" + index].Value = item.Description;
+                    dataSheet.Cells["C" + index].Value = item.Debit;
+                    dataSheet.Cells["D" + index].Value = item.Credit;
+                    dataSheet.Cells["E" + index].Value = item.JournalVoucher.GetDescriptionName();
+
+                    index++;
+                }
+            }
+
+            dataSheet.Cells.AutoFitColumns();
+        }
+        #endregion
+
         #region Private Methods
 
         private string GetExcelTemplate(ReportType type)
@@ -299,6 +335,10 @@ namespace AnnualReports.Application.Core.Services
 
                 case ReportType.GcExceptionReportTemplate:
                     templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\GcExceptionReportTemplate.xlsx";
+                    break;
+
+                case ReportType.WarrantsReportTemplate:
+                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\WarrantsReportTemplate.xlsx";
                     break;
 
                 default:

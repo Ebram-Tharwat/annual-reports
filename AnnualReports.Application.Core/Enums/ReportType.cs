@@ -6,6 +6,7 @@
         BarsTemplate = 2,
         AnnualReportTemplate = 3,
         DistExceptionReportTemplate = 4,
-        GcExceptionReportTemplate = 5
+        GcExceptionReportTemplate = 5,
+        WarrantsReportTemplate = 6
     }
 }
