@@ -74,6 +74,7 @@
     <Compile Include="Contracts\Reports\WarrantReportInputItem.cs" />
     <Compile Include="Contracts\Reports\WarrantReportOutputItem.cs" />
     <Compile Include="Enums\ReportType.cs" />
+    <Compile Include="ExcelParsers\WarrantSheetParser.cs" />
     <Compile Include="Interfaces\IBarService.cs" />
     <Compile Include="Interfaces\IExportingService.cs" />
     <Compile Include="Interfaces\IFundService.cs" />
