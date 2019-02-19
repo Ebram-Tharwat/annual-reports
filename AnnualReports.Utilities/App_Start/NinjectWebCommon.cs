@@ -14,6 +14,7 @@ using AnnualReports.Infrastructure.Core.Repositories.GcDb;
 
 namespace AnnualReports.Utilities.App_Start
 {
+    using AnnualReports.Application.Core.UseCases;
     using Domain.Core.DistDbModels;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;
@@ -112,7 +113,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IAnnualReportsDbFundRepository>().To<AnnualReportsDbFundRepository>();
             kernel.Bind<IAnnualReportsDbBarRepository>().To<AnnualReportsDbBarRepository>();
             kernel.Bind<IMappingRuleRepository>().To<MappingRuleRepository>();
-            kernel.Bind<IMappingRuleService>().To<MappingRuleService>();            
+            kernel.Bind<IMappingRuleService>().To<MappingRuleService>();
 
             #endregion Repositories
 
@@ -123,6 +124,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IExportingService>().To<ExcelExportingService>();
             kernel.Bind<IBarService>().To<BarService>();
             kernel.Bind<IReportService>().To<ReportService>();
+            kernel.Bind<IGenerateWarrantReportUseCase>().To<GenerateWarrantReportUseCase>();
 
             #endregion Services
         }

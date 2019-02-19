@@ -7,6 +7,7 @@
         public const string FundsTemplateExcelFileName = "FundsTemplate - {0}.xlsx";
         public const string AnnualReportExcelFileName = "Annual Report - {0}.xlsx";
         public const string DistExceptionReportExcelFileName = "Dist Exeption Report - {0}.xlsx";
-        public const string  GcExceptionReportExcelFileName = "Gc Exeption Report - {0}.xlsx";
+        public const string GcExceptionReportExcelFileName = "Gc Exeption Report - {0}.xlsx";
+        public const string WarrantsReportExcelFileName = "Warrants Report - {0}.xlsx";
     }
 }

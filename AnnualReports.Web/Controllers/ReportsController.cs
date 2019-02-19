@@ -1,5 +1,6 @@
 ﻿using AnnualReports.Application.Core;
 using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Application.Core.UseCases;
 using AnnualReports.Common.Extensions;
 using AnnualReports.Common.Utils;
 using AnnualReports.Web.ViewModels.ReportModels;
@@ -18,11 +19,13 @@ namespace AnnualReports.Web.Controllers
     {
         private readonly IFundService _fundService;
         private readonly IExportingService _exportingService;
+        private readonly IGenerateWarrantReportUseCase _warrantReportUseCase;
 
-        public ReportsController(IFundService fundService, IExportingService exportingService)
+        public ReportsController(IFundService fundService, IExportingService exportingService, IGenerateWarrantReportUseCase warrantReportUseCase)
         {
             _fundService = fundService;
             _exportingService = exportingService;
+            _warrantReportUseCase = warrantReportUseCase;
         }
 
         [HttpGet]
@@ -101,11 +104,14 @@ namespace AnnualReports.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult WarrantReport(ReportFiltersViewModel viewmodel)
         {
-            if (ModelState.IsValid) // validate file exist
+            if (ModelState.IsValid)
             {
                 if (viewmodel.ExcelFile != null && viewmodel.ExcelFile.ContentLength > 0)
                 {
                     SaveUploadedFile(viewmodel.ExcelFile, Server.MapPath("~/Uploads/WarrantReport/"));
+                    MemoryStream stream = _warrantReportUseCase.Execute(viewmodel.ExcelFile.InputStream, viewmodel.Date.Value.Year);
+
+                    return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.WarrantsReportExcelFileName, viewmodel.Date.Value.Year));
                 }
             }
             return View(viewmodel);
