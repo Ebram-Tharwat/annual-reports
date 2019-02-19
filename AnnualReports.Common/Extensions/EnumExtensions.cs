@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +14,14 @@ namespace AnnualReports.Common.Extensions
                            .First()
                            .GetCustomAttribute<DisplayAttribute>()
                            .Name;
+        }
+
+        public static string GetDescriptionName(this Enum enumValue)
+        {
+            return enumValue.GetType().GetMember(enumValue.ToString())
+                           .First()
+                           .GetCustomAttribute<DescriptionAttribute>()
+                           .Description;
         }
     }
 }
