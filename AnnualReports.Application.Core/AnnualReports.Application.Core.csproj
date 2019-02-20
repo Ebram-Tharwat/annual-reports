@@ -74,9 +74,11 @@
     <Compile Include="Contracts\Reports\AnnualReportDataItemDetails.cs" />
     <Compile Include="Contracts\Reports\BarAnnualReportItem.cs" />
     <Compile Include="Contracts\Reports\ExceptionReportDataItemDetails.cs" />
+    <Compile Include="Contracts\Reports\TaxesSheetInputItem.cs" />
     <Compile Include="Contracts\Reports\WarrantsSheetInputItem.cs" />
     <Compile Include="Contracts\Reports\JournalVoucherReportOutputItem.cs" />
     <Compile Include="Enums\ReportType.cs" />
+    <Compile Include="ExcelParsers\AuditorMaster\TaxesSheetParser.cs" />
     <Compile Include="ExcelParsers\AuditorMaster\WarrantSheetParser.cs" />
     <Compile Include="Interfaces\IBarService.cs" />
     <Compile Include="Interfaces\IExportingService.cs" />
