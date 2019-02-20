@@ -5,7 +5,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 
-namespace AnnualReports.Application.Core.ExcelParsers
+namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
 {
     public static class WarrantSheetParser
     {

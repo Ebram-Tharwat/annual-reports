@@ -1,5 +1,5 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
-using AnnualReports.Application.Core.ExcelParsers;
+using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
