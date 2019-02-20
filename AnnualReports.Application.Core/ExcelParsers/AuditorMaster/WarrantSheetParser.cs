@@ -20,21 +20,11 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
                 {
                     FundId = row["FundID"].ToString(),
                     Name = row["Name"].ToString(),
-                    Issues = ParseNegativeValue(row["Issues"].ToString()),
-                    Presented = ParseNegativeValue(row["Presented"].ToString()),
-                    Cancels = ParseNegativeValue(row["Cancels"].ToString()),
+                    Issues = StringUtils.ParseNegativeValue(row["Issues"].ToString()),
+                    Presented = StringUtils.ParseNegativeValue(row["Presented"].ToString()),
+                    Cancels = StringUtils.ParseNegativeValue(row["Cancels"].ToString()),
                 };
             }).ToList();
-        }
-
-        private static decimal ParseNegativeValue(string input)
-        {
-            if (input.StartsWith("("))
-            {
-                input = input.Replace("(", "").Replace(")", "");
-                return decimal.Parse(input) * -1;
-            }
-            else return decimal.Parse(input);
         }
     }
 }
