@@ -10,18 +10,18 @@ using System.Linq;
 
 namespace AnnualReports.Application.Core.UseCases
 {
-    public interface IGenerateWarrantReportUseCase
+    public interface IGenerateJournalVoucherReportUseCase
     {
         MemoryStream Execute(Stream inputStream, int year);
     }
 
-    public class GenerateWarrantReportUseCase : IGenerateWarrantReportUseCase
+    public class GenerateJournalVoucherReportUseCase : IGenerateJournalVoucherReportUseCase
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IDistDbFundRepository _distDbFundRepo;
         private readonly IExportingService _exportingService;
 
-        public GenerateWarrantReportUseCase(
+        public GenerateJournalVoucherReportUseCase(
             IAnnualReportsDbFundRepository fundsRepository,
             IDistDbFundRepository distDbFundRepo,
             IExportingService exportingService)
@@ -33,7 +33,7 @@ namespace AnnualReports.Application.Core.UseCases
 
         public MemoryStream Execute(Stream inputStream, int year)
         {
-            List<WarrantReportOutputItem> results = new List<WarrantReportOutputItem>();
+            List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
             var warrantInputItems = WarrantSheetParser.Parse(inputStream);
             var funds = _fundsRepository.Get(t => t.Year == year).ToList();
 
@@ -44,73 +44,73 @@ namespace AnnualReports.Application.Core.UseCases
 
                 if (existingFund.DbSource == DbSource.GC)
                 {
-                    results.AddRange(CreateWarrentReportOutputEntriesForGc(primaryFundId, existingFund.GpDescription, warrantInput));
+                    results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, existingFund.GpDescription, warrantInput));
                 }
                 else
                 {
                     primaryFundId = warrantInput.FundId.Replace("-", "").Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateWarrentReportOutputEntriesForDist(primaryFundId, distFunds, warrantInput));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, warrantInput));
                 }
             }
 
-            return _exportingService.GetWarrantsReportExcel(results);
+            return _exportingService.GetJournalVoucherReportExcel(results);
         }
 
-        private IEnumerable<WarrantReportOutputItem> CreateWarrentReportOutputEntriesForGc(
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
             string primaryFundId,
             string description,
-            WarrantReportInputItem warrantInput)
+            WarrantsSheetInputItem warrantInput)
         {
-            var results = new List<WarrantReportOutputItem>();
+            var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateWarrentReportOutputEntriesForGc(primaryFundId, description, warrantInput.Issues, JournalVoucherType.WarrantIssues));
-            results.AddRange(CreateWarrentReportOutputEntriesForGc(primaryFundId, description, warrantInput.Presented, JournalVoucherType.WarrantPresented));
-            results.AddRange(CreateWarrentReportOutputEntriesForGc(primaryFundId, description, warrantInput.Cancels, JournalVoucherType.WarrantCancels));
+            results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, description, warrantInput.Issues, JournalVoucherType.WarrantIssues));
+            results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, description, warrantInput.Presented, JournalVoucherType.WarrantPresented));
+            results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, description, warrantInput.Cancels, JournalVoucherType.WarrantCancels));
 
             return results;
         }
 
-        private IEnumerable<WarrantReportOutputItem> CreateWarrentReportOutputEntriesForGc(
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
             string primaryFundId,
             string description,
             decimal entryValue,
             JournalVoucherType journalVoucher)
         {
             if (entryValue == 0)
-                return Enumerable.Empty<WarrantReportOutputItem>();
+                return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
             string restOfAccountNumber = "000.00.0000";
             string accountNumber = $"{primaryFundId}.{restOfAccountNumber}";
             return new[] {
-                CreateDebitWarrantOutputEntry(accountNumber, description.Trim(), entryValue, journalVoucher),
-                CreateCreditWarrantOutputEntry(accountNumber, description.Trim(), entryValue, journalVoucher)
+                CreateDebitJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher),
+                CreateCreditJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher)
             };
         }
 
-        private IEnumerable<WarrantReportOutputItem> CreateWarrentReportOutputEntriesForDist(
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
-            WarrantReportInputItem warrantInput)
+            WarrantsSheetInputItem warrantInput)
         {
-            var results = new List<WarrantReportOutputItem>();
+            var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateWarrentReportOutputEntriesForDist(primaryFundId, distFunds, warrantInput.Issues, JournalVoucherType.WarrantIssues));
-            results.AddRange(CreateWarrentReportOutputEntriesForDist(primaryFundId, distFunds, warrantInput.Presented, JournalVoucherType.WarrantPresented));
-            results.AddRange(CreateWarrentReportOutputEntriesForDist(primaryFundId, distFunds, warrantInput.Cancels, JournalVoucherType.WarrantCancels));
+            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, warrantInput.Issues, JournalVoucherType.WarrantIssues));
+            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, warrantInput.Presented, JournalVoucherType.WarrantPresented));
+            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, warrantInput.Cancels, JournalVoucherType.WarrantCancels));
 
             return results;
         }
 
-        private IEnumerable<WarrantReportOutputItem> CreateWarrentReportOutputEntriesForDist(
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
             decimal entryValue,
             JournalVoucherType journalVoucher)
         {
             if (entryValue == 0)
-                return Enumerable.Empty<WarrantReportOutputItem>();
+                return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
             string debitFundId = string.Empty;
             string creditFundId = string.Empty;
@@ -138,8 +138,8 @@ namespace AnnualReports.Application.Core.UseCases
             string creditAccountNumber = $"{primaryFundId}.{creditFund.Actnumbr2.Trim()}.{creditFundId}";
 
             return new[] {
-                CreateDebitWarrantOutputEntry(debitAccountNumber, debitFund.Actdescr.Trim(), entryValue, journalVoucher),
-                CreateCreditWarrantOutputEntry(creditAccountNumber, creditFund.Actdescr.Trim(), entryValue, journalVoucher)
+                CreateDebitJournalVoucherOutputItem(debitAccountNumber, debitFund.Actdescr.Trim(), entryValue, journalVoucher),
+                CreateCreditJournalVoucherOutputItem(creditAccountNumber, creditFund.Actdescr.Trim(), entryValue, journalVoucher)
             };
         }
 
@@ -159,13 +159,13 @@ namespace AnnualReports.Application.Core.UseCases
                 ? ("229000000", "211000000") : ("211000000", "229000000");
         }
 
-        private WarrantReportOutputItem CreateDebitWarrantOutputEntry(
+        private JournalVoucherReportOutputItem CreateDebitJournalVoucherOutputItem(
            string accountNumber,
            string description,
            decimal entryValue,
            JournalVoucherType journalVoucher)
         {
-            return new WarrantReportOutputItem()
+            return new JournalVoucherReportOutputItem()
             {
                 AccountNumber = accountNumber,
                 Description = description,
@@ -175,13 +175,13 @@ namespace AnnualReports.Application.Core.UseCases
             };
         }
 
-        private WarrantReportOutputItem CreateCreditWarrantOutputEntry(
+        private JournalVoucherReportOutputItem CreateCreditJournalVoucherOutputItem(
            string accountNumber,
            string description,
            decimal entryValue,
            JournalVoucherType journalVoucher)
         {
-            return new WarrantReportOutputItem()
+            return new JournalVoucherReportOutputItem()
             {
                 AccountNumber = accountNumber,
                 Description = description,

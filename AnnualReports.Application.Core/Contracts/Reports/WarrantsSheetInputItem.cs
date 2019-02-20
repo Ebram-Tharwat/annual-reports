@@ -1,6 +1,6 @@
 ﻿namespace AnnualReports.Application.Core.Contracts.Reports
 {
-    public class WarrantReportInputItem
+    public class WarrantsSheetInputItem
     {
         public string FundId { get; set; }
         public string Name { get; set; }

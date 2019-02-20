@@ -1,22 +1,22 @@
 ﻿@model AnnualReports.Web.ViewModels.ReportModels.ReportFiltersViewModel
 
 @{
-    ViewBag.Title = "Warrant Monthly Report";
+    ViewBag.Title = "Journal Voucher Report";
 }
 
-<h2>Warrant Monthly Report</h2>
+<h2>Journal Voucher Report</h2>
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
-            <div class="panel-heading bold">Warrant Monthly Report:</div>
+            <div class="panel-heading bold">Journal Voucher Report:</div>
             <div class="panel-body">
-                @using (Html.BeginForm("WarrantReport", "Reports", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("JournalVoucherReport", "Reports", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
                     <div id="step-1">
                         <h3 class="margin-top-0">Step 1:</h3>
                         <p class="help-block">
-                            Please select the year and month of this Warrant Monthly Report
+                            Please select the year and month of this Journal Voucher Report
                         </p>
                         <div class="form-group">
                             @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label" })
@@ -42,7 +42,7 @@
                     <div id="step-3">
                         <h3>Step 3:</h3>
                         <p class="help-block">
-                            Click on <strong><i>"Export to Excel"</i></strong> button to download the Warrant Monthly Report based on the selected year and month.
+                            Click on <strong><i>"Export to Excel"</i></strong> button to download the Journal Voucher Report based on the selected year and month.
                         </p>
                         <div class="form-group">
                             <button type="submit" class="btn btn-success">

@@ -74,8 +74,8 @@
     <Compile Include="Contracts\Reports\AnnualReportDataItemDetails.cs" />
     <Compile Include="Contracts\Reports\BarAnnualReportItem.cs" />
     <Compile Include="Contracts\Reports\ExceptionReportDataItemDetails.cs" />
-    <Compile Include="Contracts\Reports\WarrantReportInputItem.cs" />
-    <Compile Include="Contracts\Reports\WarrantReportOutputItem.cs" />
+    <Compile Include="Contracts\Reports\WarrantsSheetInputItem.cs" />
+    <Compile Include="Contracts\Reports\JournalVoucherReportOutputItem.cs" />
     <Compile Include="Enums\ReportType.cs" />
     <Compile Include="ExcelParsers\AuditorMaster\WarrantSheetParser.cs" />
     <Compile Include="Interfaces\IBarService.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Services\GPDynamicsService.cs" />
     <Compile Include="Services\MappingRuleService.cs" />
     <Compile Include="Services\ReportService.cs" />
-    <Compile Include="UseCases\GenerateWarrantReportUseCase.cs" />
+    <Compile Include="UseCases\GenerateJournalVoucherReportUseCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

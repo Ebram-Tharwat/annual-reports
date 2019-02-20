@@ -2,7 +2,7 @@
 
 namespace AnnualReports.Application.Core.Contracts.Reports
 {
-    public class WarrantReportOutputItem
+    public class JournalVoucherReportOutputItem
     {
         public string AccountNumber { get; set; }
         public string Description { get; set; }

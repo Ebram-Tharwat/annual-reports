@@ -124,7 +124,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IExportingService>().To<ExcelExportingService>();
             kernel.Bind<IBarService>().To<BarService>();
             kernel.Bind<IReportService>().To<ReportService>();
-            kernel.Bind<IGenerateWarrantReportUseCase>().To<GenerateWarrantReportUseCase>();
+            kernel.Bind<IGenerateJournalVoucherReportUseCase>().To<GenerateJournalVoucherReportUseCase>();
 
             #endregion Services
         }

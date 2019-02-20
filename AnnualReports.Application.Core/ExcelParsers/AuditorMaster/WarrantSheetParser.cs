@@ -9,14 +9,14 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
 {
     public static class WarrantSheetParser
     {
-        public static IEnumerable<WarrantReportInputItem> Parse(Stream inputStream)
+        public static IEnumerable<WarrantsSheetInputItem> Parse(Stream inputStream)
         {
             const int WarrantSheetIndex = 1;
             var columnsToParse = new[] { "FundID", "Name", "Issues", "Presented", "Cancels" };
             var sheetData = ImportUtils.ImportXlsxToDataTable(inputStream, WarrantSheetIndex, columnsToParse);
             return sheetData.AsEnumerable().Select(row =>
             {
-                return new WarrantReportInputItem()
+                return new WarrantsSheetInputItem()
                 {
                     FundId = row["FundID"].ToString(),
                     Name = row["Name"].ToString(),
