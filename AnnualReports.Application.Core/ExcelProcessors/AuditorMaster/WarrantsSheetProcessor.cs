@@ -1,5 +1,7 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
+using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Application.Core.UseCases;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System;
@@ -13,11 +15,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IDistDbFundRepository _distDbFundRepo;
+        private readonly IReportService _reportService;
 
-        public WarrantsSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo)
+        public WarrantsSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo, IReportService reportService)
         {
             _fundsRepository = fundsRepository;
             _distDbFundRepo = distDbFundRepo;
+            _reportService = reportService;
         }
 
         public override IEnumerable<JournalVoucherReportOutputItem> Process(Stream inputStream, int year)
@@ -33,7 +37,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 var primaryFundId = warrantInput.FundId.Split('-')[0];
                 var existingFund = funds.FirstOrDefault(t => t.FundNumber.Trim() == primaryFundId);
 
-                if (existingFund.DbSource == DbSource.GC)
+                if (existingFund?.DbSource == DbSource.GC)
                 {
                     results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, existingFund.GpDescription, warrantInput));
                 }
@@ -136,18 +140,25 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistIssues()
         {
-            return ("229000000", "211000000");
+            // return ("229000000", "211000000");
+            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantIssues);
+            return (result?.DebitAccount, result?.CreditAccount);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistPresented()
         {
-            return ("211000000", "101000000");
+            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantPresented);
+            return (result?.DebitAccount, result?.CreditAccount);
+            //return ("211000000", "101000000");
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistCancels(decimal cancelsValue)
         {
-            return (cancelsValue > 0)
-                ? ("229000000", "211000000") : ("211000000", "229000000");
+
+            //return (cancelsValue > 0)
+            //    ? ("229000000", "211000000") : ("211000000", "229000000");
+            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantCancels);
+            return (cancelsValue > 0) ? (result?.DebitAccount, result?.CreditAccount) : (result?.DebitExceptionNegative, result?.CreditExceptionNegative);
         }
     }
 }

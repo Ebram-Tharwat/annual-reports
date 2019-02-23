@@ -83,6 +83,26 @@ namespace AnnualReports.Application.Core.Services
         {
             return _monthlyReportRepository.GetById(id);
         }
+        public MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType)
+        {
+            MonthlyReportRule result = null;
+            switch (jvType)
+            {
+                case JournalVoucherType.WarrantIssues:
+                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Warrant Issue").FirstOrDefault();
+                    break;
+                case JournalVoucherType.WarrantPresented:
+                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Warrant Presented").FirstOrDefault();
+                    break;
+                case JournalVoucherType.WarrantCancels:
+                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Warrant Cancel").FirstOrDefault();
+                    break;
+                default:
+                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Taxes").FirstOrDefault();
+                    break;
+            }
+            return result;
+        }
 
         public MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule)
         {

@@ -13,6 +13,7 @@ namespace AnnualReports.Application.Core.UseCases
 
         List<MonthlyReportRule> GetMonthlyReportRules();
         MonthlyReportRule GetMonthlyReport(int id);
+        MonthlyReportRule GetMonthlyReport(JournalVoucherType type);
 
         MonthlyReportRule UpdateMonthlyReport(MonthlyReportRule monthlyReportRule);
     }
@@ -52,6 +53,11 @@ namespace AnnualReports.Application.Core.UseCases
         public MonthlyReportRule GetMonthlyReport(int id)
         {
             return _reportService.GetMonthlyReportRule(id);
+        }
+
+        public MonthlyReportRule GetMonthlyReport(JournalVoucherType type)
+        {
+            return _reportService.GetMonthlyReportRule(type);
         }
 
         public MonthlyReportRule UpdateMonthlyReport(MonthlyReportRule monthlyReportRule)

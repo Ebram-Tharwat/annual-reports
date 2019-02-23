@@ -14,6 +14,7 @@ namespace AnnualReports.Application.Core.Interfaces
 
         List<MonthlyReportRule> GetMonthlyReportRules();
         MonthlyReportRule GetMonthlyReportRule(int id);
+        MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType);
         MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule);
         List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar);
         
