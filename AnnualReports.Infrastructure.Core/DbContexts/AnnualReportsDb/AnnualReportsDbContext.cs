@@ -13,6 +13,8 @@ namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
 
         public DbSet<Bar> Bars { get; set; }
 
+        public DbSet<MonthlyReportRule> MonthlyReportRules { get; set; }
+
         public DbSet<InvestmentTypes> InvestmentTypes { get; set; }
 
         public DbSet<MappingRule> MappingRules { get; set; }

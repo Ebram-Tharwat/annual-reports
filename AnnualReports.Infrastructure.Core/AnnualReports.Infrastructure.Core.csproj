@@ -184,6 +184,10 @@
     <Compile Include="Migrations\AnnualReportsDb\201802031303530_AddBarNumberTarget.Designer.cs">
       <DependentUpon>201802031303530_AddBarNumberTarget.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201902231115430_AddDynamicRuleTable.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201902231115430_AddDynamicRuleTable.Designer.cs">
+      <DependentUpon>201902231115430_AddDynamicRuleTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Migrations\ScriptResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -290,6 +294,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201802031303530_AddBarNumberTarget.resx">
       <DependentUpon>201802031303530_AddBarNumberTarget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201902231115430_AddDynamicRuleTable.resx">
+      <DependentUpon>201902231115430_AddDynamicRuleTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\ScriptResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

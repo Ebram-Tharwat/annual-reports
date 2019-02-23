@@ -42,7 +42,7 @@ namespace AnnualReports.Application.Core.UseCases
                 var primaryFundId = warrantInput.FundId.Split('-')[0];
                 var existingFund = funds.FirstOrDefault(t => t.FundNumber.Trim() == primaryFundId);
 
-                if (existingFund.DbSource == DbSource.GC)
+                if (existingFund?.DbSource == DbSource.GC)
                 {
                     results.AddRange(CreateWarrentReportOutputEntriesForGc(primaryFundId, existingFund.GpDescription, warrantInput));
                 }
@@ -134,12 +134,12 @@ namespace AnnualReports.Application.Core.UseCases
             }
             var debitFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == debitFundId);
             var creditFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == creditFundId);
-            string debitAccountNumber = $"{primaryFundId}.{debitFund.Actnumbr2.Trim()}.{debitFundId}";
-            string creditAccountNumber = $"{primaryFundId}.{creditFund.Actnumbr2.Trim()}.{creditFundId}";
+            string debitAccountNumber = $"{primaryFundId}.{debitFund?.Actnumbr2?.Trim()}.{debitFundId}";
+            string creditAccountNumber = $"{primaryFundId}.{creditFund?.Actnumbr2?.Trim()}.{creditFundId}";
 
             return new[] {
-                CreateDebitWarrantOutputEntry(debitAccountNumber, debitFund.Actdescr.Trim(), entryValue, journalVoucher),
-                CreateCreditWarrantOutputEntry(creditAccountNumber, creditFund.Actdescr.Trim(), entryValue, journalVoucher)
+                CreateDebitWarrantOutputEntry(debitAccountNumber, debitFund?.Actdescr?.Trim(), entryValue, journalVoucher),
+                CreateCreditWarrantOutputEntry(creditAccountNumber, creditFund?.Actdescr?.Trim(), entryValue, journalVoucher)
             };
         }
 

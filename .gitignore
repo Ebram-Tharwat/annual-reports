@@ -297,3 +297,6 @@ ConnectionStrings.config
 **/Uploads/**
 
 # End of https://www.gitignore.io/api/visualstudio
+/AnnualReports.Web/Scripts/app/dist
+/AnnualReports.Web/libs
+/AnnualReports.Web/Content/ExcelTemplates
