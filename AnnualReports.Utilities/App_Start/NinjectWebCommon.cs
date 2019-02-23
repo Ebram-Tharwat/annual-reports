@@ -14,6 +14,7 @@ using AnnualReports.Infrastructure.Core.Repositories.GcDb;
 
 namespace AnnualReports.Utilities.App_Start
 {
+    using AnnualReports.Application.Core.ExcelProcessors.AuditorMaster;
     using AnnualReports.Application.Core.UseCases;
     using Domain.Core.DistDbModels;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
@@ -125,6 +126,8 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IBarService>().To<BarService>();
             kernel.Bind<IReportService>().To<ReportService>();
             kernel.Bind<IGenerateJournalVoucherReportUseCase>().To<GenerateJournalVoucherReportUseCase>();
+            kernel.Bind<AuditorMasterProcessor>().To<WarrantsSheetProcessor>();
+            kernel.Bind<AuditorMasterProcessor>().To<TaxesSheetProcessor>();
 
             #endregion Services
         }
