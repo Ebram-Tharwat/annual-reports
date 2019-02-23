@@ -12,6 +12,9 @@ namespace AnnualReports.Application.Core.UseCases
         MemoryStream Execute(Stream inputStream, int year);
 
         List<MonthlyReportRule> GetMonthlyReportRules();
+        MonthlyReportRule GetMonthlyReport(int id);
+
+        MonthlyReportRule UpdateMonthlyReport(MonthlyReportRule monthlyReportRule);
     }
 
     public class GenerateJournalVoucherReportUseCase : IGenerateJournalVoucherReportUseCase
@@ -44,6 +47,16 @@ namespace AnnualReports.Application.Core.UseCases
         public List<MonthlyReportRule> GetMonthlyReportRules()
         {
             return _reportService.GetMonthlyReportRules();   
+        }
+
+        public MonthlyReportRule GetMonthlyReport(int id)
+        {
+            return _reportService.GetMonthlyReportRule(id);
+        }
+
+        public MonthlyReportRule UpdateMonthlyReport(MonthlyReportRule monthlyReportRule)
+        {
+            return _reportService.UpdateMonthlyReportRule(monthlyReportRule);
         }
     }
 }

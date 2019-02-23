@@ -12,24 +12,30 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
     public class MonthlyReportRule
     {
         [Key]
+        
         public int Id { get; set; }
 
         [Required]
         [StringLength(30)]
+        [Display(Name ="Jv Type")]
         public string JvType { get; set; }
 
         [Required]
         [StringLength(10)]
+        [Display(Name = "Debit Account")]
         public string DebitAccount { get; set; }
 
         [Required]
         [StringLength(10)]
+        [Display(Name = "Credit Account")]
         public string CreditAccount { get; set; }
 
         [StringLength(10)]
+        [Display(Name = "Debit Negative")]
         public string DebitExceptionNegative { get; set; }
 
         [StringLength(10)]
+        [Display(Name = "Credit Account")]
         public string CreditExceptionNegative { get; set; }
     }
 }

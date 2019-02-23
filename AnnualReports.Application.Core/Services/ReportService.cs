@@ -3,6 +3,7 @@ using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Domain.Core.Contracts;
+using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,15 +17,18 @@ namespace AnnualReports.Application.Core.Services
         private readonly IMonthlyReportRepository _monthlyReportRepository;
         private readonly IBarService _barService;
         private readonly IMappingRuleRepository _mappingRuleRepository;
+        private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
         private const int AllPeriodsValue = 13;
 
         public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService, 
-                             IMappingRuleRepository mappingRuleRepository,IMonthlyReportRepository monthlyReportRepository)
+                             IMappingRuleRepository mappingRuleRepository,IMonthlyReportRepository monthlyReportRepository,
+                             IUnitOfWork<AnnualReportsDbContext> uow)
         {
             this._fundsRepository = fundsRepository;
             this._barService = barService;
             this._mappingRuleRepository = mappingRuleRepository;
             this._monthlyReportRepository = monthlyReportRepository;
+            this._uow = uow;
         }
 
         public List<AnnualReportDataItemDetails> GetAnnualReportData(int year, int? fundId = null, string barNumber = null)
@@ -73,6 +77,18 @@ namespace AnnualReports.Application.Core.Services
         public List<MonthlyReportRule> GetMonthlyReportRules()
         {
             return _monthlyReportRepository.GetAll().ToList();
+        }
+
+        public MonthlyReportRule GetMonthlyReportRule(int id)
+        {
+            return _monthlyReportRepository.GetById(id);
+        }
+
+        public MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule)
+        {
+             _monthlyReportRepository.Update(monthlyReportRule);
+            _uow.Commit();
+            return monthlyReportRule;
         }
 
         #region Helpers

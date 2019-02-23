@@ -3,11 +3,13 @@ using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Application.Core.UseCases;
 using AnnualReports.Common.Extensions;
 using AnnualReports.Common.Utils;
+using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Web.ViewModels.ReportModels;
 using System;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -100,6 +102,49 @@ namespace AnnualReports.Web.Controllers
             var viewmodel = new ReportFiltersViewModel();
             viewmodel.MonthlyReportRules = _journalVoucherReportUseCase.GetMonthlyReportRules();
             return View(viewmodel);
+        }
+
+        [HttpGet]
+        [Route("journal-voucher-edit")]
+        public ActionResult EditRule(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (ModelState.IsValid)
+            {
+               return View( _journalVoucherReportUseCase.GetMonthlyReport(int.Parse(id)));
+            }
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        }
+
+        [HttpPost]
+        [Route("journal-voucher-edit")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditRule(MonthlyReportRule model)
+        {
+           
+            if (ModelState.IsValid)
+            {
+                var result = _journalVoucherReportUseCase.GetMonthlyReport(model.Id);
+                if(result == null)
+                {
+                    return HttpNotFound();
+                }
+                result.CreditAccount = model.CreditAccount;
+                result.DebitAccount = model.DebitAccount;
+                result.CreditExceptionNegative =string.IsNullOrWhiteSpace(model.CreditExceptionNegative)?null:model.CreditExceptionNegative;
+                result.DebitExceptionNegative = string.IsNullOrWhiteSpace(model.DebitExceptionNegative) ? null : model.DebitExceptionNegative;
+                result = _journalVoucherReportUseCase.UpdateMonthlyReport(result);
+                if(result == null)
+                {
+                    return HttpNotFound();
+                }
+                return RedirectToAction("JournalVoucherReport");
+            }
+            ModelState.AddModelError("", "An error occurred.");
+            return View();
         }
 
         [HttpPost]

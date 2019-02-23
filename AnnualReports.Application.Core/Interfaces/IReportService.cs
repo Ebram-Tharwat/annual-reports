@@ -13,7 +13,9 @@ namespace AnnualReports.Application.Core.Interfaces
         List<ExceptionReportDataItemDetails> GetGcExceptionReportData(int year);
 
         List<MonthlyReportRule> GetMonthlyReportRules();
-
+        MonthlyReportRule GetMonthlyReportRule(int id);
+        MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule);
         List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar);
+        
     }
 }
