@@ -20,6 +20,9 @@ namespace AnnualReports.Application.Core.Contracts.Reports
         WarrantPresented,
 
         [Description("Warrant Cancels")]
-        WarrantCancels
+        WarrantCancels,
+
+        [Description("Taxes")]
+        Taxes
     }
 }
