@@ -19,13 +19,13 @@ namespace AnnualReports.Web.Controllers
     {
         private readonly IFundService _fundService;
         private readonly IExportingService _exportingService;
-        private readonly IGenerateWarrantReportUseCase _warrantReportUseCase;
+        private readonly IGenerateJournalVoucherReportUseCase _journalVoucherReportUseCase;
 
-        public ReportsController(IFundService fundService, IExportingService exportingService, IGenerateWarrantReportUseCase warrantReportUseCase)
+        public ReportsController(IFundService fundService, IExportingService exportingService, IGenerateJournalVoucherReportUseCase journalVoucherReportUseCase)
         {
             _fundService = fundService;
             _exportingService = exportingService;
-            _warrantReportUseCase = warrantReportUseCase;
+            _journalVoucherReportUseCase = journalVoucherReportUseCase;
         }
 
         [HttpGet]
@@ -94,24 +94,26 @@ namespace AnnualReports.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult WarrantReport()
+        [Route("journal-voucher")]
+        public ActionResult JournalVoucherReport()
         {
             var viewmodel = new ReportFiltersViewModel();
             return View(viewmodel);
         }
 
         [HttpPost]
+        [Route("journal-voucher")]
         [ValidateAntiForgeryToken]
-        public ActionResult WarrantReport(ReportFiltersViewModel viewmodel)
+        public ActionResult JournalVoucherReport(ReportFiltersViewModel viewmodel)
         {
             if (ModelState.IsValid)
             {
                 if (viewmodel.ExcelFile != null && viewmodel.ExcelFile.ContentLength > 0)
                 {
                     SaveUploadedFile(viewmodel.ExcelFile, Server.MapPath("~/Uploads/WarrantReport/"));
-                    MemoryStream stream = _warrantReportUseCase.Execute(viewmodel.ExcelFile.InputStream, viewmodel.Date.Value.Year);
+                    MemoryStream stream = _journalVoucherReportUseCase.Execute(viewmodel.ExcelFile.InputStream, viewmodel.Date.Value.Year);
 
-                    return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.WarrantsReportExcelFileName, viewmodel.Date.Value.Year));
+                    return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.JournalVoucherReportExcelFileName, viewmodel.Date.Value.Year));
                 }
             }
             return View(viewmodel);

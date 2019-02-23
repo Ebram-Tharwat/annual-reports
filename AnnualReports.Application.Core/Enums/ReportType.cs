@@ -7,6 +7,6 @@
         AnnualReportTemplate = 3,
         DistExceptionReportTemplate = 4,
         GcExceptionReportTemplate = 5,
-        WarrantsReportTemplate = 6
+        JournalVoucherReportTemplate = 6
     }
 }

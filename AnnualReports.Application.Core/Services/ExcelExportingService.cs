@@ -84,13 +84,13 @@ namespace AnnualReports.Application.Core.Services
             return stream;
         }
 
-        public MemoryStream GetWarrantsReportExcel(IEnumerable<WarrantReportOutputItem> reportData)
+        public MemoryStream GetJournalVoucherReportExcel(IEnumerable<JournalVoucherReportOutputItem> reportData)
         {
-            string excelTemplate = GetExcelTemplate(ReportType.WarrantsReportTemplate);
+            string excelTemplate = GetExcelTemplate(ReportType.JournalVoucherReportTemplate);
             var templateFile = new FileInfo(excelTemplate);
             ExcelPackage package = new ExcelPackage(templateFile, true);
 
-            GenerateWarrantsReportTemplate(package, reportData);
+            GenerateJournalVoucherReportTemplate(package, reportData);
 
             var stream = new MemoryStream(package.GetAsByteArray());
             return stream;
@@ -286,8 +286,8 @@ namespace AnnualReports.Application.Core.Services
 
         #endregion Annual Report
 
-        #region Warrants Report
-        private void GenerateWarrantsReportTemplate(ExcelPackage excelPackage, IEnumerable<WarrantReportOutputItem> reportData)
+        #region JournalVoucher Report
+        private void GenerateJournalVoucherReportTemplate(ExcelPackage excelPackage, IEnumerable<JournalVoucherReportOutputItem> reportData)
         {
             var dataSheet = excelPackage.Workbook.Worksheets[1];
             var index = 2; // starting index.
@@ -337,8 +337,8 @@ namespace AnnualReports.Application.Core.Services
                     templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\GcExceptionReportTemplate.xlsx";
                     break;
 
-                case ReportType.WarrantsReportTemplate:
-                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\WarrantsReportTemplate.xlsx";
+                case ReportType.JournalVoucherReportTemplate:
+                    templatePath = System.AppDomain.CurrentDomain.BaseDirectory + "Content\\ExcelTemplates\\JournalVoucherReportTemplate.xlsx";
                     break;
 
                 default:

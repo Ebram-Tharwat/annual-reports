@@ -2,7 +2,7 @@
 
 namespace AnnualReports.Application.Core.Contracts.Reports
 {
-    public class WarrantReportOutputItem
+    public class JournalVoucherReportOutputItem
     {
         public string AccountNumber { get; set; }
         public string Description { get; set; }
@@ -20,6 +20,9 @@ namespace AnnualReports.Application.Core.Contracts.Reports
         WarrantPresented,
 
         [Description("Warrant Cancels")]
-        WarrantCancels
+        WarrantCancels,
+
+        [Description("Taxes")]
+        Taxes
     }
 }

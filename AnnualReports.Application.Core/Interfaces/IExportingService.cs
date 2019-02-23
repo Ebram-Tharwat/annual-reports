@@ -11,6 +11,6 @@ namespace AnnualReports.Application.Core.Interfaces
         MemoryStream GetAnnualReportExcel(int year, int? fundId);
         MemoryStream GetDistExceptionReportExcel(int year);
         MemoryStream GetGcExceptionReportExcel(int year);
-        MemoryStream GetWarrantsReportExcel(IEnumerable<WarrantReportOutputItem> reportData);
+        MemoryStream GetJournalVoucherReportExcel(IEnumerable<JournalVoucherReportOutputItem> reportData);
     }
 }

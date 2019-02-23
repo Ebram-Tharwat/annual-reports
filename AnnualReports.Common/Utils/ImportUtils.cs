@@ -76,7 +76,7 @@ namespace AnnualReports.Common.Utils
             var mappingColIndexToColHeader = new Dictionary<int, string>();
             using (var excel = new ExcelPackage(inputStream))
             {
-                var ws = excel.Workbook.Worksheets.First();
+                var ws = excel.Workbook.Worksheets[workSheetIndex];
                 // add DataColumns to DataTable
                 foreach (var firstRowCell in ws.Cells[1, 1, 1, ws.Dimension.End.Column])
                 {
@@ -102,7 +102,15 @@ namespace AnnualReports.Common.Utils
                         }
                     }
 
-                    dt.Rows.Add(row);
+                    if (skipEmptyRow)
+                    {
+                        if (!row.AreAllColumnsNullOrEmpty())
+                            dt.Rows.Add(row);
+                    }
+                    else
+                    {
+                        dt.Rows.Add(row);
+                    }
                 }
             }
 
