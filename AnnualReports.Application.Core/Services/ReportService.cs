@@ -13,15 +13,18 @@ namespace AnnualReports.Application.Core.Services
     public class ReportService : IReportService
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
+        private readonly IMonthlyReportRepository _monthlyReportRepository;
         private readonly IBarService _barService;
         private readonly IMappingRuleRepository _mappingRuleRepository;
         private const int AllPeriodsValue = 13;
 
-        public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService, IMappingRuleRepository mappingRuleRepository)
+        public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService, 
+                             IMappingRuleRepository mappingRuleRepository,IMonthlyReportRepository monthlyReportRepository)
         {
             this._fundsRepository = fundsRepository;
             this._barService = barService;
             this._mappingRuleRepository = mappingRuleRepository;
+            this._monthlyReportRepository = monthlyReportRepository;
         }
 
         public List<AnnualReportDataItemDetails> GetAnnualReportData(int year, int? fundId = null, string barNumber = null)
@@ -65,6 +68,11 @@ namespace AnnualReports.Application.Core.Services
         {
             var distExceptionBarByYear = _barService.GetGcExceptionByYear(year);
             return distExceptionBarByYear;
+        }
+
+        public List<MonthlyReportRule> GetMonthlyReportRules()
+        {
+            return _monthlyReportRepository.GetAll().ToList();
         }
 
         #region Helpers
@@ -235,6 +243,8 @@ namespace AnnualReports.Application.Core.Services
                     return fundRows.Sum(t => t.Debit);
             }
         }
+
+        
 
         #endregion Helpers
     }

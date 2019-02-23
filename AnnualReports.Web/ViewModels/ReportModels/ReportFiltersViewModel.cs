@@ -1,5 +1,7 @@
-﻿using AnnualReports.Web.Validations;
+﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using AnnualReports.Web.Validations;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 
@@ -17,6 +19,8 @@ namespace AnnualReports.Web.ViewModels.ReportModels
         [Display(Name = "AuditorMaster excel file")]
         [UIHint("FileUpload")]
         public HttpPostedFileBase ExcelFile { get; set; }
+
+        public List<MonthlyReportRule>  MonthlyReportRules { get; set; }
 
         public string DateAsMonthYear
         {

@@ -98,6 +98,7 @@ namespace AnnualReports.Web.Controllers
         public ActionResult JournalVoucherReport()
         {
             var viewmodel = new ReportFiltersViewModel();
+            viewmodel.MonthlyReportRules = _journalVoucherReportUseCase.GetMonthlyReportRules();
             return View(viewmodel);
         }
 

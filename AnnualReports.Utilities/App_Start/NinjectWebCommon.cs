@@ -16,6 +16,8 @@ namespace AnnualReports.Utilities.App_Start
 {
     using AnnualReports.Application.Core.ExcelProcessors.AuditorMaster;
     using AnnualReports.Application.Core.UseCases;
+    using AnnualReports.Domain.Core.AnnualReportsDbModels;
+    using AnnualReports.Infrastructure.Core.Repositories;
     using Domain.Core.DistDbModels;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;
@@ -125,6 +127,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IExportingService>().To<ExcelExportingService>();
             kernel.Bind<IBarService>().To<BarService>();
             kernel.Bind<IReportService>().To<ReportService>();
+            kernel.Bind<IMonthlyReportRepository>().To<MonthlyReportRepository>();
             kernel.Bind<IGenerateJournalVoucherReportUseCase>().To<GenerateJournalVoucherReportUseCase>();
             kernel.Bind<AuditorMasterProcessor>().To<WarrantsSheetProcessor>();
             kernel.Bind<AuditorMasterProcessor>().To<TaxesSheetProcessor>();

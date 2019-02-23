@@ -78,6 +78,7 @@
     <Compile Include="Interfaces\IGcDbFundRepository.cs" />
     <Compile Include="Interfaces\IDistDbFundRepository.cs" />
     <Compile Include="Interfaces\IMappingRuleRepository.cs" />
+    <Compile Include="Interfaces\IMonthlyImportRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Mappings\AnnualReportsDb\BarConfiguration.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbEfRepository.cs" />
     <Compile Include="Repositories\AnnualReportsDb\AnnualReportsDbFundRepository.cs" />
     <Compile Include="Repositories\AnnualReportsDb\MappingRuleRepository.cs" />
+    <Compile Include="Repositories\AnnualReportsDb\MonthlyReportRepository.cs" />
     <Compile Include="Repositories\DistDb\DistDbEfRepository.cs" />
     <Compile Include="Repositories\DistDb\DistDbFundRepository.cs" />
     <Compile Include="Repositories\EFRepository.cs" />
