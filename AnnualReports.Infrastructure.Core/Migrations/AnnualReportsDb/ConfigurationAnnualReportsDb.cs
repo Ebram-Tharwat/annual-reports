@@ -37,7 +37,7 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
             context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 7, Name = "Warrants Issued" });
             context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 8, Name = "Warrants Presented" });
 
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = 1, JvType = "Warrant Issue", CreditAccount = "211000000", DebitAccount = "299000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = 1, JvType = "Warrant Issue", CreditAccount = "211000000", DebitAccount = "229000000" });
             context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = 2, JvType = "Warrant Presented", CreditAccount = "101000000", DebitAccount = "211000000" });
             context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
             {
@@ -45,7 +45,7 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
                 JvType = "Warrant Cancel",
                 CreditAccount = "211000000",
                 DebitAccount = "229000000",
-                CreditExceptionNegative = "299000000",
+                CreditExceptionNegative = "229000000",
                 DebitExceptionNegative = "211000000"
             });
             context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = 4, JvType = "Taxes", CreditAccount = "311110000", DebitAccount = "101000000" });
