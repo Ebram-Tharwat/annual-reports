@@ -85,34 +85,7 @@ namespace AnnualReports.Application.Core.Services
         }
         public MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType)
         {
-            MonthlyReportRule result = null;
-            switch (jvType)
-            {
-                case JournalVoucherType.WarrantIssues:
-                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Warrant Issue").FirstOrDefault();
-                    break;
-                case JournalVoucherType.WarrantPresented:
-                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Warrant Presented").FirstOrDefault();
-                    break;
-                case JournalVoucherType.WarrantCancels:
-                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Warrant Cancel").FirstOrDefault();
-                    break;
-                case JournalVoucherType.Taxes:
-                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Taxes").FirstOrDefault();
-                    break;
-                case JournalVoucherType.InvestmentPurchases:
-                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Investment Purchase").FirstOrDefault();
-                    break;
-                case JournalVoucherType.InvestmentSales:
-                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Investment Sales").FirstOrDefault();
-                    break;
-                case JournalVoucherType.InvestmentInterest:
-                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Investment Interest").FirstOrDefault();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(jvType));
-            }
-            return result;
+            return _monthlyReportRepository.OneOrDefault(t => t.Id == (int)jvType);
         }
 
         public MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule)
