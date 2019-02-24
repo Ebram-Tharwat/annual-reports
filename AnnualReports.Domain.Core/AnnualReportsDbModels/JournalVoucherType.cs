@@ -5,7 +5,7 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
     public enum JournalVoucherType
     {
         [Description("Warrant Issues")]
-        WarrantIssues,
+        WarrantIssues = 1,
 
         [Description("Warrant Presented")]
         WarrantPresented,
@@ -24,5 +24,11 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
 
         [Description("Investment Interest")]
         InvestmentInterest,
+
+        [Description("Warrant Interest")]
+        WarrantInterest,
+
+        [Description("Remits")]
+        Remits,
     }
 }
