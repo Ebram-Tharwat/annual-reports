@@ -20,8 +20,8 @@ namespace AnnualReports.Application.Core.Services
         private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
         private const int AllPeriodsValue = 13;
 
-        public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService, 
-                             IMappingRuleRepository mappingRuleRepository,IMonthlyReportRepository monthlyReportRepository,
+        public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService,
+                             IMappingRuleRepository mappingRuleRepository, IMonthlyReportRepository monthlyReportRepository,
                              IUnitOfWork<AnnualReportsDbContext> uow)
         {
             this._fundsRepository = fundsRepository;
@@ -97,16 +97,27 @@ namespace AnnualReports.Application.Core.Services
                 case JournalVoucherType.WarrantCancels:
                     result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Warrant Cancel").FirstOrDefault();
                     break;
-                default:
+                case JournalVoucherType.Taxes:
                     result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Taxes").FirstOrDefault();
                     break;
+                case JournalVoucherType.InvestmentPurchases:
+                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Investment Purchase").FirstOrDefault();
+                    break;
+                case JournalVoucherType.InvestmentSales:
+                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Investment Sales").FirstOrDefault();
+                    break;
+                case JournalVoucherType.InvestmentInterest:
+                    result = _monthlyReportRepository.Get(t => t.JvType.Trim() == "Investment Interest").FirstOrDefault();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(jvType));
             }
             return result;
         }
 
         public MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule)
         {
-             _monthlyReportRepository.Update(monthlyReportRule);
+            _monthlyReportRepository.Update(monthlyReportRule);
             _uow.Commit();
             return monthlyReportRule;
         }
@@ -280,7 +291,7 @@ namespace AnnualReports.Application.Core.Services
             }
         }
 
-        
+
 
         #endregion Helpers
     }

@@ -23,6 +23,15 @@ namespace AnnualReports.Application.Core.Contracts.Reports
         WarrantCancels,
 
         [Description("Taxes")]
-        Taxes
+        Taxes,
+
+        [Description("Investment Purchases")]
+        InvestmentPurchases,
+
+        [Description("Investment Sales")]
+        InvestmentSales,
+
+        [Description("Investment Interest")]
+        InvestmentInterest,
     }
 }

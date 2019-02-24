@@ -131,6 +131,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IGenerateJournalVoucherReportUseCase>().To<GenerateJournalVoucherReportUseCase>();
             kernel.Bind<AuditorMasterProcessor>().To<WarrantsSheetProcessor>();
             kernel.Bind<AuditorMasterProcessor>().To<TaxesSheetProcessor>();
+            kernel.Bind<AuditorMasterProcessor>().To<InvestmentsSheetProcessor>();
 
             #endregion Services
         }
