@@ -60,6 +60,7 @@
     <Compile Include="AnnualReportsDbModels\Fund.cs" />
     <Compile Include="AnnualReportsDbModels\IdentityModels.cs" />
     <Compile Include="AnnualReportsDbModels\InvestmentTypes.cs" />
+    <Compile Include="AnnualReportsDbModels\JournalVoucherType.cs" />
     <Compile Include="AnnualReportsDbModels\MappingRule.cs" />
     <Compile Include="AnnualReportsDbModels\MappingRuleOperator.cs" />
     <Compile Include="AnnualReportsDbModels\MonthlyReportRule.cs" />

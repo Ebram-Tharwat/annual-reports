@@ -1,10 +1,8 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
+using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 {
