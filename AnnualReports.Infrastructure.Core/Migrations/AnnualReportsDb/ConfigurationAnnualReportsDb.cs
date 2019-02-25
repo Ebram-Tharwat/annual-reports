@@ -48,11 +48,11 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
                 CreditExceptionNegative = "229000000",
                 DebitExceptionNegative = "211000000"
             });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Taxes, JvType = "Taxes", CreditAccount = "311110000", DebitAccount = "101000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Taxes, JvType = "Taxes", CreditAccount = "311100000", DebitAccount = "101000000" });
             context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentPurchases, JvType = "Investment Purchase", CreditAccount = "101000000", DebitAccount = "118000000" });
             context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentSales, JvType = "Investment Sales", CreditAccount = "118000000", DebitAccount = "101000000" });
             context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentInterest, JvType = "Investment Interest", CreditAccount = "361110000", DebitAccount = "118000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantInterest, JvType = "Warrant Interest", CreditAccount = "101000000", DebitAccount = "299000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantInterest, JvType = "Warrant Interest", CreditAccount = "101000000", DebitAccount = "229000000" });
             context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Remits, JvType = "Remits", CreditAccount = "101000000", DebitAccount = "229000000" });
 
             string[] systemRoles = new string[] { "Admin", "Clerk" };
