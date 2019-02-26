@@ -116,15 +116,15 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             switch (journalVoucher)
             {
                 case JournalVoucherType.InvestmentPurchases:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForDistPurchases();
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases();
                     break;
 
                 case JournalVoucherType.InvestmentSales:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForDistSales();
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales();
                     break;
 
                 case JournalVoucherType.InvestmentInterest:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForDistInterest(entryValue);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(entryValue);
                     break;
 
                 default:
@@ -141,19 +141,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistPurchases()
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentPurchases()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentPurchases);
             return (result?.DebitAccount, result?.CreditAccount);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistSales()
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentSales()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentSales);
             return (result?.DebitAccount, result?.CreditAccount);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistInterest(decimal cancelsValue)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentInterest(decimal cancelsValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentInterest);
             return (result?.DebitAccount, result?.CreditAccount);

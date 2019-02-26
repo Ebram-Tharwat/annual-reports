@@ -1,7 +1,6 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
 using AnnualReports.Application.Core.Interfaces;
-using AnnualReports.Application.Core.UseCases;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System;
@@ -113,15 +112,15 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             switch (journalVoucher)
             {
                 case JournalVoucherType.WarrantIssues:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForDistIssues();
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantIssues();
                     break;
 
                 case JournalVoucherType.WarrantPresented:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForDistPresented();
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantPresented();
                     break;
 
                 case JournalVoucherType.WarrantCancels:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForDistCancels(entryValue);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantCancels(entryValue);
                     break;
 
                 default:
@@ -138,25 +137,20 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistIssues()
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantIssues()
         {
-            // return ("229000000", "211000000");
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantIssues);
             return (result?.DebitAccount, result?.CreditAccount);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistPresented()
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantPresented()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantPresented);
             return (result?.DebitAccount, result?.CreditAccount);
-            //return ("211000000", "101000000");
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistCancels(decimal cancelsValue)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantCancels(decimal cancelsValue)
         {
-
-            //return (cancelsValue > 0)
-            //    ? ("229000000", "211000000") : ("211000000", "229000000");
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantCancels);
             return (cancelsValue > 0) ? (result?.DebitAccount, result?.CreditAccount) : (result?.DebitExceptionNegative, result?.CreditExceptionNegative);
         }

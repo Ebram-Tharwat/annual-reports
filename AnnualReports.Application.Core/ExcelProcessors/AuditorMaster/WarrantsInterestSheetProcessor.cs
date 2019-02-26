@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AnnualReports.Application.Core.Contracts.Reports;
+﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Domain.Core.DistDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 {
@@ -19,7 +16,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private readonly IDistDbFundRepository _distDbFundRepo;
         private readonly IReportService _reportService;
 
-        public WarrantsInterestSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo,IReportService reportService)
+        public WarrantsInterestSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo, IReportService reportService)
         {
             _fundsRepository = fundsRepository;
             _distDbFundRepo = distDbFundRepo;
@@ -33,6 +30,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             const int warrantsInterestSheetIndex = 4;
             var warrantsInterestSheetInputItems = WarrantInvestmentSheetParser.Parse(inputStream, warrantsInterestSheetIndex);
             var funds = _fundsRepository.Get(t => t.Year == year).ToList();
+
             foreach (var warrantInterestInput in warrantsInterestSheetInputItems)
             {
                 var primaryFundId = new string(warrantInterestInput.FundId.Take(3).ToArray());
@@ -40,37 +38,71 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
                 if (existingFund.DbSource == DbSource.GC)
                 {
-                    results.AddRange(CreateJournalVoucherOutputItemsForGcForWarrantsInterest(primaryFundId, existingFund.GpDescription, warrantInterestInput));
+                    results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, existingFund.GpDescription, warrantInterestInput));
                 }
                 else
                 {
                     primaryFundId = warrantInterestInput.FundId.Replace("-", "").Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateJournalVoucherOutputItemsForDistForWarrantsInterest(primaryFundId, distFunds, warrantInterestInput));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, warrantInterestInput));
                 }
             }
 
             return results;
         }
 
-        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDistForWarrantsInterest(string primaryFundId, List<Gl00100> distFunds,
-                                                                                                           WarrantsInterestSheetInputItem input)
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
+            string primaryFundId,
+            string gpDescription,
+            WarrantsInterestSheetInputItem warrantInterest)
         {
             var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateJournalVoucherOutputItemsForDistForWarrantsInterest(primaryFundId, distFunds, input.WarrantInterest, JournalVoucherType.WarrantInterest));
+            results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, gpDescription, warrantInterest.WarrantInterest, JournalVoucherType.WarrantInterest));
 
             return results;
         }
 
-        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDistForWarrantsInterest(string primaryFundId, List<Gl00100> distFunds, 
-                                                                                                           decimal entryValue, JournalVoucherType journalVoucher)
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
+            string primaryFundId,
+            string description,
+            decimal entryValue,
+            JournalVoucherType journalVoucher)
         {
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForDistWarrants();
+            string restOfAccountNumber = "000.00.0000";
+            string accountNumber = $"{primaryFundId}.{restOfAccountNumber}";
+            return new[] {
+                CreateDebitJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher),
+                CreateCreditJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher)
+            };
+        }
+
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
+            string primaryFundId,
+            List<Gl00100> distFunds,
+            WarrantsInterestSheetInputItem input)
+        {
+            var results = new List<JournalVoucherReportOutputItem>();
+
+            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, input.WarrantInterest, JournalVoucherType.WarrantInterest));
+
+            return results;
+        }
+
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
+            string primaryFundId,
+            List<Gl00100> distFunds,
+            decimal entryValue,
+            JournalVoucherType journalVoucher)
+        {
+            if (entryValue == 0)
+                return Enumerable.Empty<JournalVoucherReportOutputItem>();
+
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest();
 
             var debitFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == debitFundId);
             var creditFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == creditFundId);
@@ -86,34 +118,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistWarrants()
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantInterest()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantInterest);
             return (result?.DebitAccount, result?.CreditAccount);
-        }
-
-        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGcForWarrantsInterest(string primaryFundId, string gpDescription, 
-                                                                                                         WarrantsInterestSheetInputItem warrantInterest)
-        {
-            var results = new List<JournalVoucherReportOutputItem>();
-
-            results.AddRange(CreateJournalVoucherOutputItemsForGcForWarrantsInterest(primaryFundId, gpDescription, warrantInterest.WarrantInterest, JournalVoucherType.WarrantInterest));
-
-            return results;
-        }
-
-        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGcForWarrantsInterest(string primaryFundId, string description, decimal entryValue, 
-                                                                                                          JournalVoucherType journalVoucher)
-        {
-            if (entryValue == 0)
-                return Enumerable.Empty<JournalVoucherReportOutputItem>();
-
-            string restOfAccountNumber = "000.00.0000";
-            string accountNumber = $"{primaryFundId}.{restOfAccountNumber}";
-            return new[] {
-                CreateDebitJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher),
-                CreateCreditJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher)
-            };
         }
     }
 }

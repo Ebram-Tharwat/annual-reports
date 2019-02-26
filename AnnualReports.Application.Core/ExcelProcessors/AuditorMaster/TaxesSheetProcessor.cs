@@ -44,7 +44,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                     primaryFundId = taxesInput.FundId.Replace("-", "").Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateJournalVoucherOutputItemsForDistForTaxes(primaryFundId, distFunds, taxesInput));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, taxesInput));
                 }
             }
 
@@ -80,19 +80,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDistForTaxes(
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
             TaxesSheetInputItem input)
         {
             var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateJournalVoucherOutputItemsForDistForTaxes(primaryFundId, distFunds, input.Taxes, JournalVoucherType.Taxes));
+            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, input.Taxes, JournalVoucherType.Taxes));
 
             return results;
         }
 
-        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDistForTaxes(
+        private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
             decimal entryValue,
@@ -101,7 +101,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForDistTaxes();
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForTaxes();
 
             var debitFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == debitFundId);
             var creditFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == creditFundId);
@@ -117,7 +117,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistTaxes()
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForTaxes()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.Taxes);
             return (result?.DebitAccount, result?.CreditAccount);
