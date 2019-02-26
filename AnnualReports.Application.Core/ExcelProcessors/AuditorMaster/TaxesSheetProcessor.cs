@@ -1,5 +1,6 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
+using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Collections.Generic;
@@ -12,11 +13,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IDistDbFundRepository _distDbFundRepo;
+        private readonly IReportService _reportService;
 
-        public TaxesSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo)
+        public TaxesSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo,IReportService reportService)
         {
             _fundsRepository = fundsRepository;
             _distDbFundRepo = distDbFundRepo;
+            _reportService = reportService;
         }
 
         public override IEnumerable<JournalVoucherReportOutputItem> Process(Stream inputStream, int year)
@@ -116,7 +119,8 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistTaxes()
         {
-            return ("101000000", "311100000");
+            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.Taxes);
+            return (result?.DebitAccount, result?.CreditAccount);
         }
     }
 }

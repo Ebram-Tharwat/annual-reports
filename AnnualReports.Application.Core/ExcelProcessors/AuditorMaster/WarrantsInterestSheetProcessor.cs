@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
+using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Domain.Core.DistDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
@@ -16,11 +17,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IDistDbFundRepository _distDbFundRepo;
+        private readonly IReportService _reportService;
 
-        public WarrantsInterestSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo)
+        public WarrantsInterestSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo,IReportService reportService)
         {
             _fundsRepository = fundsRepository;
             _distDbFundRepo = distDbFundRepo;
+            _reportService = reportService;
         }
 
         public override IEnumerable<JournalVoucherReportOutputItem> Process(Stream inputStream, int year)
@@ -85,7 +88,8 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForDistWarrants()
         {
-            return ("299000000", "101000000");
+            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantInterest);
+            return (result?.DebitAccount, result?.CreditAccount);
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGcForWarrantsInterest(string primaryFundId, string gpDescription, 
