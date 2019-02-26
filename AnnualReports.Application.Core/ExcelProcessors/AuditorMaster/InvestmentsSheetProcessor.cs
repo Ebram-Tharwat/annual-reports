@@ -1,12 +1,14 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
 using AnnualReports.Application.Core.Interfaces;
+using AnnualReports.Common.Utils;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 {
@@ -42,7 +44,9 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 }
                 else
                 {
-                    primaryFundId = investmentInput.FundId.Replace("-", "").Remove(6, 1);
+                    primaryFundId = Regex.Replace(investmentInput.FundId, @"[-.]", "")
+                                         .Truncate(9)
+                                         .Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
                     results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput));
