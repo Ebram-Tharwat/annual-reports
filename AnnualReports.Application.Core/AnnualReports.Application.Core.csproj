@@ -74,6 +74,7 @@
     <Compile Include="Contracts\Reports\AnnualReportDataItemDetails.cs" />
     <Compile Include="Contracts\Reports\BarAnnualReportItem.cs" />
     <Compile Include="Contracts\Reports\ExceptionReportDataItemDetails.cs" />
+    <Compile Include="Contracts\Reports\JournalVoucherMatchingResultBuilder.cs" />
     <Compile Include="Contracts\Reports\RemitsSheetInputItem.cs" />
     <Compile Include="Contracts\Reports\TaxesSheetInputItem.cs" />
     <Compile Include="Contracts\Reports\InvestmentsSheetInputItem.cs" />
