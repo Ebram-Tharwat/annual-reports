@@ -164,19 +164,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantIssues()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantIssues);
-            return (result?.DebitAccount, result?.CreditAccount);
+            return (result.DebitAccount, result.CreditAccount);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantPresented()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantPresented);
-            return (result?.DebitAccount, result?.CreditAccount);
+            return (result.DebitAccount, result.CreditAccount);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantCancels(decimal cancelsValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantCancels);
-            return (cancelsValue > 0) ? (result?.DebitAccount, result?.CreditAccount) : (result?.DebitExceptionNegative, result?.CreditExceptionNegative);
+            return (cancelsValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
     }
 }

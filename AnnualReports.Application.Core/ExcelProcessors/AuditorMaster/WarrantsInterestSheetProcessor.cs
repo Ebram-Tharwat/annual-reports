@@ -142,7 +142,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantInterest()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantInterest);
-            return (result?.DebitAccount, result?.CreditAccount);
+            return (result.DebitAccount, result.CreditAccount);
         }
     }
 }

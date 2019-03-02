@@ -83,9 +83,14 @@ namespace AnnualReports.Application.Core.Services
         {
             return _monthlyReportRepository.GetById(id);
         }
+
         public MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType)
         {
-            return _monthlyReportRepository.OneOrDefault(t => t.Id == (int)jvType);
+            var reportRule = _monthlyReportRepository.OneOrDefault(t => t.Id == (int)jvType);
+            if (reportRule == null)
+                throw new KeyNotFoundException($"Unable to find rule for {jvType}");
+
+            return reportRule;
         }
 
         public MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule)
@@ -263,8 +268,6 @@ namespace AnnualReports.Application.Core.Services
                     return fundRows.Sum(t => t.Debit);
             }
         }
-
-
 
         #endregion Helpers
     }
