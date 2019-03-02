@@ -2,6 +2,7 @@
 {
     public class InvestmentsSheetInputItem
     {
+        public int RowIndex { get; set; }
         public string Name { get; set; }
         public string FundId { get; set; }
         public decimal Purchases { get; set; }

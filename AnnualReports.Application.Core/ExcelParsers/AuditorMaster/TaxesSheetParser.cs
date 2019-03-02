@@ -1,4 +1,5 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
+using AnnualReports.Common.Extensions;
 using AnnualReports.Common.Utils;
 using System.Collections.Generic;
 using System.Data;
@@ -11,17 +12,21 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
     {
         public static IEnumerable<TaxesSheetInputItem> Parse(Stream inputStream, int sheetIndex)
         {
+            var results = new List<TaxesSheetInputItem>();
             var columnsToParse = new[] { "Fund", "Name", "Taxes" };
             var sheetData = ImportUtils.ImportXlsxToDataTable(inputStream, sheetIndex, columnsToParse);
-            return sheetData.AsEnumerable().Select(row =>
+            sheetData.AsEnumerable().ForEachWithIndex((row, index) =>
             {
-                return new TaxesSheetInputItem()
+                results.Add(new TaxesSheetInputItem()
                 {
+                    RowIndex = index + 2, // 2 => one for table header and one for zero-indexed loop
                     FundId = row["Fund"].ToString(),
                     Name = row["Name"].ToString(),
                     Taxes = StringUtils.ParseNegativeValue(row["Taxes"].ToString()),
-                };
-            }).ToList();
+                });
+            });
+
+            return results;
         }
     }
 }
