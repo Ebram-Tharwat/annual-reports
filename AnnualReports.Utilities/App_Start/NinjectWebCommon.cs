@@ -133,6 +133,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<AuditorMasterProcessor>().To<TaxesSheetProcessor>();
             kernel.Bind<AuditorMasterProcessor>().To<InvestmentsSheetProcessor>();
             kernel.Bind<AuditorMasterProcessor>().To<WarrantsInterestSheetProcessor>();
+            kernel.Bind<AuditorMasterProcessor>().To<RemitsSheetProcessor>();
 
             #endregion Services
         }
