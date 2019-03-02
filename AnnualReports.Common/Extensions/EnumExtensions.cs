@@ -18,6 +18,9 @@ namespace AnnualReports.Common.Extensions
 
         public static string GetDescriptionName(this Enum enumValue)
         {
+            if (enumValue == null)
+                return string.Empty;
+
             return enumValue.GetType().GetMember(enumValue.ToString())
                            .First()
                            .GetCustomAttribute<DescriptionAttribute>()

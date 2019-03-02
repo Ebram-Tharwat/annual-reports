@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static AnnualReports.Application.Core.Contracts.Reports.JournalVoucherMatchingResultBuilder;
 
 namespace AnnualReports.Application.Core.Services
 {
@@ -84,13 +85,15 @@ namespace AnnualReports.Application.Core.Services
             return stream;
         }
 
-        public MemoryStream GetJournalVoucherReportExcel(IEnumerable<JournalVoucherReportOutputItem> reportData)
+        public MemoryStream GetJournalVoucherReportExcel(
+            IEnumerable<JournalVoucherReportOutputItem> reportData,
+            IEnumerable<JournalVoucherUnamtchedResult> unamtchedResults)
         {
             string excelTemplate = GetExcelTemplate(ReportType.JournalVoucherReportTemplate);
             var templateFile = new FileInfo(excelTemplate);
             ExcelPackage package = new ExcelPackage(templateFile, true);
 
-            GenerateJournalVoucherReportTemplate(package, reportData);
+            GenerateJournalVoucherReportTemplate(package, reportData, unamtchedResults);
 
             var stream = new MemoryStream(package.GetAsByteArray());
             return stream;
@@ -287,27 +290,54 @@ namespace AnnualReports.Application.Core.Services
         #endregion Annual Report
 
         #region JournalVoucher Report
-        private void GenerateJournalVoucherReportTemplate(ExcelPackage excelPackage, IEnumerable<JournalVoucherReportOutputItem> reportData)
+
+        private void GenerateJournalVoucherReportTemplate(
+            ExcelPackage excelPackage,
+            IEnumerable<JournalVoucherReportOutputItem> reportData,
+            IEnumerable<JournalVoucherUnamtchedResult> unamtchedResults)
         {
-            var dataSheet = excelPackage.Workbook.Worksheets[1];
-            var index = 2; // starting index.
-            if (reportData != null)
-            {
-                foreach (var item in reportData)
-                {
-                    dataSheet.Cells["A" + index].Value = item.AccountNumber;
-                    dataSheet.Cells["B" + index].Value = item.Description;
-                    dataSheet.Cells["C" + index].Value = item.Debit;
-                    dataSheet.Cells["D" + index].Value = item.Credit;
-                    dataSheet.Cells["E" + index].Value = item.JournalVoucher.GetDescriptionName();
+            var journalvoucherSheet = excelPackage.Workbook.Worksheets[1];
+            var exceptionsSheet = excelPackage.Workbook.Worksheets[2];
 
-                    index++;
-                }
-            }
+            FillJournalVoucherSheet(journalvoucherSheet, reportData);
+            FillJournalVoucherExceptionsSheet(exceptionsSheet, unamtchedResults);
 
-            dataSheet.Cells.AutoFitColumns();
+            journalvoucherSheet.Cells.AutoFitColumns();
+            exceptionsSheet.Cells.AutoFitColumns();
         }
-        #endregion
+
+        private void FillJournalVoucherSheet(ExcelWorksheet dataSheet, IEnumerable<JournalVoucherReportOutputItem> reportData)
+        {
+            var index = 2; // starting index.
+            foreach (var item in reportData)
+            {
+                dataSheet.Cells["A" + index].Value = item.AccountNumber;
+                dataSheet.Cells["B" + index].Value = item.Description;
+                dataSheet.Cells["C" + index].Value = item.Debit;
+                dataSheet.Cells["D" + index].Value = item.Credit;
+                dataSheet.Cells["E" + index].Value = item.JournalVoucher.GetDescriptionName();
+
+                index++;
+            }
+        }
+
+        private void FillJournalVoucherExceptionsSheet(ExcelWorksheet dataSheet, IEnumerable<JournalVoucherUnamtchedResult> unamtchedResults)
+        {
+            var index = 2; // starting index.
+            foreach (var item in unamtchedResults)
+            {
+                dataSheet.Cells["A" + index].Value = item.RowIndex;
+                dataSheet.Cells["B" + index].Value = item.SheetName;
+                dataSheet.Cells["C" + index].Value = item.FundId;
+                dataSheet.Cells["D" + index].Value = item.Database;
+                dataSheet.Cells["E" + index].Value = item.JournalVoucher.GetDescriptionName();
+                dataSheet.Cells["F" + index].Value = item.JournalVoucherRuleAccount;
+
+                index++;
+            }
+        }
+
+        #endregion JournalVoucher Report
 
         #region Private Methods
 
