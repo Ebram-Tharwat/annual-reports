@@ -8,7 +8,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 {
     public abstract class AuditorMasterProcessor
     {
-        public abstract IEnumerable<JournalVoucherReportOutputItem> Process(Stream inputStream, int year);
+        public abstract IEnumerable<JournalVoucherReportOutputItem> Process(
+            Stream inputStream,
+            int year,
+            JournalVoucherMatchingResultBuilder matchingResultBuilder);
 
         protected JournalVoucherReportOutputItem CreateDebitJournalVoucherOutputItem(
            string accountNumber,

@@ -25,7 +25,7 @@ namespace AnnualReports.Application.Core.UseCases
         private readonly AuditorMasterProcessor[] _sheetProcessors;
 
         public GenerateJournalVoucherReportUseCase(
-            IExportingService exportingService,IReportService reportService,
+            IExportingService exportingService, IReportService reportService,
             AuditorMasterProcessor[] sheetProcessors)
         {
             _exportingService = exportingService;
@@ -36,18 +36,19 @@ namespace AnnualReports.Application.Core.UseCases
         public MemoryStream Execute(Stream inputStream, int year)
         {
             List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
+            var matchingResultBuilder = new JournalVoucherMatchingResultBuilder();
 
             foreach (var processor in _sheetProcessors)
             {
-                results.AddRange(processor.Process(inputStream, year));
+                results.AddRange(processor.Process(inputStream, year, matchingResultBuilder));
             }
 
-            return _exportingService.GetJournalVoucherReportExcel(results);
+            return _exportingService.GetJournalVoucherReportExcel(results, matchingResultBuilder.UnmatchedFunds);
         }
 
         public List<MonthlyReportRule> GetMonthlyReportRules()
         {
-            return _reportService.GetMonthlyReportRules();   
+            return _reportService.GetMonthlyReportRules();
         }
 
         public MonthlyReportRule GetMonthlyReport(int id)

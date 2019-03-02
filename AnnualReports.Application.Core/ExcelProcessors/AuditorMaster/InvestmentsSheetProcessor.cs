@@ -17,6 +17,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IDistDbFundRepository _distDbFundRepo;
         private readonly IReportService _reportService;
+        private const string _sheetName = "Investments";
 
         public InvestmentsSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo, IReportService reportService)
         {
@@ -25,7 +26,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             _reportService = reportService;
         }
 
-        public override IEnumerable<JournalVoucherReportOutputItem> Process(Stream inputStream, int year)
+        public override IEnumerable<JournalVoucherReportOutputItem> Process(
+            Stream inputStream,
+            int year,
+            JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
             List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
 
@@ -37,8 +41,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             {
                 var primaryFundId = investmentInput.FundId.Split('-')[0];
                 var existingFund = funds.FirstOrDefault(t => t.FundNumber.Trim() == primaryFundId);
+                if (existingFund == null)
+                {
+                    matchingResultBuilder.ReportUnmatchedFund(investmentInput.RowIndex, _sheetName, primaryFundId);
+                    continue;
+                }
 
-                if (existingFund?.DbSource == DbSource.GC)
+                if (existingFund.DbSource == DbSource.GC)
                 {
                     results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, existingFund.GpDescription, investmentInput));
                 }
@@ -49,7 +58,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                                          .Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput, matchingResultBuilder));
                 }
             }
 
@@ -90,13 +99,14 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
-            InvestmentsSheetInputItem investmentInput)
+            InvestmentsSheetInputItem investmentInput,
+            JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
             var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Purchases, JournalVoucherType.InvestmentPurchases));
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Sales, JournalVoucherType.InvestmentSales));
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Interest, JournalVoucherType.InvestmentInterest));
+            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Purchases, investmentInput.RowIndex, JournalVoucherType.InvestmentPurchases, matchingResultBuilder));
+            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Sales, investmentInput.RowIndex, JournalVoucherType.InvestmentSales, matchingResultBuilder));
+            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Interest, investmentInput.RowIndex, JournalVoucherType.InvestmentInterest, matchingResultBuilder));
 
             return results;
         }
@@ -105,7 +115,9 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
             decimal entryValue,
-            JournalVoucherType journalVoucher)
+            int entryRowIndex,
+            JournalVoucherType journalVoucher,
+            JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
@@ -132,6 +144,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             }
             var debitFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == debitFundId);
             var creditFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == creditFundId);
+
+            if (debitFund == null)
+            {
+                matchingResultBuilder.ReportUnmatchedDistFund(entryRowIndex, _sheetName, primaryFundId, journalVoucher, debitFundId);
+                return Enumerable.Empty<JournalVoucherReportOutputItem>();
+            }
+
+            if (creditFund == null)
+            {
+                matchingResultBuilder.ReportUnmatchedDistFund(entryRowIndex, _sheetName, primaryFundId, journalVoucher, creditFundId);
+                return Enumerable.Empty<JournalVoucherReportOutputItem>();
+            }
+
             string debitAccountNumber = $"{primaryFundId}.{debitFund?.Actnumbr2?.Trim()}.{debitFundId}";
             string creditAccountNumber = $"{primaryFundId}.{creditFund?.Actnumbr2?.Trim()}.{creditFundId}";
 
@@ -144,19 +169,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentPurchases()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentPurchases);
-            return (result?.DebitAccount, result?.CreditAccount);
+            return (result.DebitAccount, result.CreditAccount);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentSales()
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentSales);
-            return (result?.DebitAccount, result?.CreditAccount);
+            return (result.DebitAccount, result.CreditAccount);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentInterest(decimal cancelsValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentInterest);
-            return (result?.DebitAccount, result?.CreditAccount);
+            return (result.DebitAccount, result.CreditAccount);
         }
     }
 }
