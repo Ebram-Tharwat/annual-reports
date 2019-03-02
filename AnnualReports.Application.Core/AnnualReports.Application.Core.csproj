@@ -84,7 +84,7 @@
     <Compile Include="ExcelParsers\AuditorMaster\RemitSheetParser.cs" />
     <Compile Include="ExcelParsers\AuditorMaster\TaxesSheetParser.cs" />
     <Compile Include="ExcelParsers\AuditorMaster\InvestmentsSheetParser.cs" />
-    <Compile Include="ExcelParsers\AuditorMaster\WarrantInvestmentSheetParser.cs" />
+    <Compile Include="ExcelParsers\AuditorMaster\WarrantInterestSheetParser.cs" />
     <Compile Include="ExcelParsers\AuditorMaster\WarrantSheetParser.cs" />
     <Compile Include="ExcelProcessors\AuditorMaster\AuditorMasterProcessor.cs" />
     <Compile Include="ExcelProcessors\AuditorMaster\InvestmentsSheetProcessor.cs" />

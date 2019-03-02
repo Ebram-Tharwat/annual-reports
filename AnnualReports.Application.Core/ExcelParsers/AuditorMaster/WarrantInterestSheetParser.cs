@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
 {
-   public static class WarrantInvestmentSheetParser
+   public static class WarrantInterestSheetParser
     {
         public static IEnumerable<WarrantsInterestSheetInputItem> Parse(Stream inputStream, int sheetIndex)
         {

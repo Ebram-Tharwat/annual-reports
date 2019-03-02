@@ -28,7 +28,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
 
             const int warrantsInterestSheetIndex = 4;
-            var warrantsInterestSheetInputItems = WarrantInvestmentSheetParser.Parse(inputStream, warrantsInterestSheetIndex);
+            var warrantsInterestSheetInputItems = WarrantInterestSheetParser.Parse(inputStream, warrantsInterestSheetIndex);
             var funds = _fundsRepository.Get(t => t.Year == year).ToList();
 
             foreach (var warrantInterestInput in warrantsInterestSheetInputItems)
