@@ -19,7 +19,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private readonly IReportService _reportService;
         private const string _sheetName = "Investments";
 
-        public InvestmentsSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo, IReportService reportService)
+        public InvestmentsSheetProcessor(
+            IAnnualReportsDbFundRepository fundsRepository,
+            IDistDbFundRepository distDbFundRepo,
+            IReportService reportService)
         {
             _fundsRepository = fundsRepository;
             _distDbFundRepo = distDbFundRepo;
@@ -99,14 +102,22 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
-            InvestmentsSheetInputItem investmentInput,
+            InvestmentsSheetInputItem input,
             JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
             var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Purchases, investmentInput.RowIndex, JournalVoucherType.InvestmentPurchases, matchingResultBuilder));
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Sales, investmentInput.RowIndex, JournalVoucherType.InvestmentSales, matchingResultBuilder));
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, investmentInput.Interest, investmentInput.RowIndex, JournalVoucherType.InvestmentInterest, matchingResultBuilder));
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForDist(
+                    primaryFundId, distFunds, input.Purchases, input.RowIndex, JournalVoucherType.InvestmentPurchases, matchingResultBuilder));
+
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForDist(
+                    primaryFundId, distFunds, input.Sales, input.RowIndex, JournalVoucherType.InvestmentSales, matchingResultBuilder));
+
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForDist(
+                    primaryFundId, distFunds, input.Interest, input.RowIndex, JournalVoucherType.InvestmentInterest, matchingResultBuilder));
 
             return results;
         }

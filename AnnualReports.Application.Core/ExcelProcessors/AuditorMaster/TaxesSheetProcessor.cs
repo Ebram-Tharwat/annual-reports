@@ -16,7 +16,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private readonly IReportService _reportService;
         private const string _sheetName = "Taxes";
 
-        public TaxesSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo, IReportService reportService)
+        public TaxesSheetProcessor(
+            IAnnualReportsDbFundRepository fundsRepository,
+            IDistDbFundRepository distDbFundRepo, 
+            IReportService reportService)
         {
             _fundsRepository = fundsRepository;
             _distDbFundRepo = distDbFundRepo;
@@ -97,7 +100,9 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         {
             var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, input.Taxes, input.RowIndex, JournalVoucherType.Taxes, matchingResultBuilder));
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForDist(
+                    primaryFundId, distFunds, input.Taxes, input.RowIndex, JournalVoucherType.Taxes, matchingResultBuilder));
 
             return results;
         }

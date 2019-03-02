@@ -17,7 +17,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private readonly IReportService _reportService;
         private readonly string _sheetName = "Remits";
 
-        public RemitsSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo, IReportService reportService)
+        public RemitsSheetProcessor(
+            IAnnualReportsDbFundRepository fundsRepository,
+            IDistDbFundRepository distDbFundRepo,
+            IReportService reportService)
         {
             _fundsRepository = fundsRepository;
             _distDbFundRepo = distDbFundRepo;
@@ -98,7 +101,9 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         {
             var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, input.Remits, input.RowIndex, JournalVoucherType.Remits, matchingResultBuilder));
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForDist(
+                    primaryFundId, distFunds, input.Remits, input.RowIndex, JournalVoucherType.Remits, matchingResultBuilder));
 
             return results;
         }

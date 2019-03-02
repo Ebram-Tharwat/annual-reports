@@ -17,7 +17,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private readonly IReportService _reportService;
         private const string _sheetName = "Warrants";
 
-        public WarrantsSheetProcessor(IAnnualReportsDbFundRepository fundsRepository, IDistDbFundRepository distDbFundRepo, IReportService reportService)
+        public WarrantsSheetProcessor(
+            IAnnualReportsDbFundRepository fundsRepository,
+            IDistDbFundRepository distDbFundRepo,
+            IReportService reportService)
         {
             _fundsRepository = fundsRepository;
             _distDbFundRepo = distDbFundRepo;
@@ -100,9 +103,17 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         {
             var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, input.Issues, input.RowIndex, JournalVoucherType.WarrantIssues, matchingResultBuilder));
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, input.Presented, input.RowIndex, JournalVoucherType.WarrantPresented, matchingResultBuilder));
-            results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, input.Cancels, input.RowIndex, JournalVoucherType.WarrantCancels, matchingResultBuilder));
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForDist(
+                    primaryFundId, distFunds, input.Issues, input.RowIndex, JournalVoucherType.WarrantIssues, matchingResultBuilder));
+
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForDist(
+                    primaryFundId, distFunds, input.Presented, input.RowIndex, JournalVoucherType.WarrantPresented, matchingResultBuilder));
+
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForDist(
+                    primaryFundId, distFunds, input.Cancels, input.RowIndex, JournalVoucherType.WarrantCancels, matchingResultBuilder));
 
             return results;
         }
