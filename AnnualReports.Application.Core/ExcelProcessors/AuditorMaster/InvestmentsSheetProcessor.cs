@@ -91,11 +91,33 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
+            string debitFundId = string.Empty;
+            string creditFundId = string.Empty;
+            switch (journalVoucher)
+            {
+                case JournalVoucherType.InvestmentPurchases:
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases();
+                    break;
+
+                case JournalVoucherType.InvestmentSales:
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales();
+                    break;
+
+                case JournalVoucherType.InvestmentInterest:
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(entryValue);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(journalVoucher));
+            }
+
             string restOfAccountNumber = "000.00.0000";
-            string accountNumber = $"{primaryFundId}.{restOfAccountNumber}";
+            string accountNumberDebit = $"{primaryFundId}.{restOfAccountNumber}.{debitFundId}";
+            string accountNumberCredit = $"{primaryFundId}.{restOfAccountNumber}.{creditFundId}";
+
             return new[] {
-                CreateDebitJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher),
-                CreateCreditJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher)
+                CreateDebitJournalVoucherOutputItem(accountNumberDebit, description.Trim(), entryValue, journalVoucher),
+                CreateCreditJournalVoucherOutputItem(accountNumberCredit, description.Trim(), entryValue, journalVoucher)
             };
         }
 

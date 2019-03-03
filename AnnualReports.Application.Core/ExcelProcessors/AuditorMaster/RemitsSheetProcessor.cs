@@ -86,10 +86,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
             string restOfAccountNumber = "000.00.0000";
-            string accountNumber = $"{primaryFundId}.{restOfAccountNumber}";
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForRemit();
+            string accountNumberDebit = $"{primaryFundId}.{restOfAccountNumber}.{debitFundId}";
+            string accountNumberCredit = $"{primaryFundId}.{restOfAccountNumber}.{creditFundId}";
+
             return new[] {
-                CreateDebitJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher),
-                CreateCreditJournalVoucherOutputItem(accountNumber, description.Trim(), entryValue, journalVoucher)
+                CreateDebitJournalVoucherOutputItem(accountNumberDebit, description.Trim(), entryValue, journalVoucher),
+                CreateCreditJournalVoucherOutputItem(accountNumberCredit, description.Trim(), entryValue, journalVoucher)
             };
         }
 
