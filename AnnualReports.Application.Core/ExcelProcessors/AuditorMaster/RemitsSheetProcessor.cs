@@ -2,7 +2,6 @@
 using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
-using AnnualReports.Domain.Core.DistDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Collections.Generic;
 using System.IO;
@@ -13,16 +12,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
     public class RemitsSheetProcessor : AuditorMasterProcessor
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
+        private readonly IGcDbFundRepository _gcDbFundRepo;
         private readonly IDistDbFundRepository _distDbFundRepo;
         private readonly IReportService _reportService;
         private readonly string _sheetName = "Remits";
 
         public RemitsSheetProcessor(
             IAnnualReportsDbFundRepository fundsRepository,
+            IGcDbFundRepository gcDbFundRepo,
             IDistDbFundRepository distDbFundRepo,
             IReportService reportService)
         {
             _fundsRepository = fundsRepository;
+            _gcDbFundRepo = gcDbFundRepo;
             _distDbFundRepo = distDbFundRepo;
             _reportService = reportService;
         }
@@ -50,7 +52,8 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
                 if (existingFund.DbSource == DbSource.GC)
                 {
-                    results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, existingFund.GpDescription, remitInput));
+                    var gcFunds = _gcDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
+                    results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, gcFunds, remitInput, matchingResultBuilder));
                 }
                 else
                 {
@@ -65,40 +68,60 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
-           string primaryFundId,
-           string gpDescription,
-           RemitsSheetInputItem remits)
+            string primaryFundId,
+            List<Domain.Core.GcDbModels.Gl00100> gcFunds,
+            RemitsSheetInputItem input,
+            JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
             var results = new List<JournalVoucherReportOutputItem>();
 
-            results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, gpDescription, remits.Remits, JournalVoucherType.Remits));
+            results.AddRange(
+                CreateJournalVoucherOutputItemsForGc(
+                    primaryFundId, gcFunds, input.Remits, input.RowIndex, JournalVoucherType.Remits, matchingResultBuilder));
 
             return results;
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
             string primaryFundId,
-            string description,
+            List<Domain.Core.GcDbModels.Gl00100> gcFunds,
             decimal entryValue,
-            JournalVoucherType journalVoucher)
+            int entryRowIndex,
+            JournalVoucherType journalVoucher,
+            JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            string restOfAccountNumber = "000.00.0000";
             (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForRemit();
-            string accountNumberDebit = $"{primaryFundId}.{restOfAccountNumber}.{debitFundId}";
-            string accountNumberCredit = $"{primaryFundId}.{restOfAccountNumber}.{creditFundId}";
+
+            var debitFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == debitFundId);
+            var creditFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == creditFundId);
+
+            if (debitFund == null)
+            {
+                matchingResultBuilder.ReportUnmatchedGcFund(entryRowIndex, _sheetName, primaryFundId, journalVoucher, debitFundId);
+                return Enumerable.Empty<JournalVoucherReportOutputItem>();
+            }
+
+            if (creditFund == null)
+            {
+                matchingResultBuilder.ReportUnmatchedGcFund(entryRowIndex, _sheetName, primaryFundId, journalVoucher, creditFundId);
+                return Enumerable.Empty<JournalVoucherReportOutputItem>();
+            }
+
+            string debitAccountNumber = $"{primaryFundId}.{debitFund.Actnumbr2.Trim()}.{debitFund.Actnumbr3.Trim()}.{debitFund.Actnumbr4.Trim()}.{debitFundId}";
+            string creditAccountNumber = $"{primaryFundId}.{creditFund.Actnumbr2.Trim()}.{debitFund.Actnumbr3.Trim()}.{debitFund.Actnumbr4.Trim()}.{creditFundId}";
 
             return new[] {
-                CreateDebitJournalVoucherOutputItem(accountNumberDebit, description.Trim(), entryValue, journalVoucher),
-                CreateCreditJournalVoucherOutputItem(accountNumberCredit, description.Trim(), entryValue, journalVoucher)
+                CreateDebitJournalVoucherOutputItem(debitAccountNumber, debitFund.Actdescr.Trim(), entryValue, journalVoucher),
+                CreateCreditJournalVoucherOutputItem(creditAccountNumber, creditFund.Actdescr.Trim(), entryValue, journalVoucher)
             };
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
             string primaryFundId,
-            List<Gl00100> distFunds,
+            List<Domain.Core.DistDbModels.Gl00100> distFunds,
             RemitsSheetInputItem input,
             JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
@@ -113,7 +136,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
            string primaryFundId,
-           List<Gl00100> distFunds,
+           List<Domain.Core.DistDbModels.Gl00100> distFunds,
            decimal entryValue,
            int entryRowIndex,
            JournalVoucherType journalVoucher,
