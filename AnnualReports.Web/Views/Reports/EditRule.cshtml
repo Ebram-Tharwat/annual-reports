@@ -2,11 +2,7 @@
 
 @{
     ViewBag.Title = "Edit Rule";
-
 }
-
-
-
 
 @using (Html.BeginForm())
 {
@@ -17,7 +13,7 @@
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model=>model.JvType)
+        @Html.HiddenFor(model => model.JvType)
 
         <div class="form-group">
             @Html.LabelFor(model => model.CreditAccount, new { @class = "control-label col-md-2" })
@@ -51,14 +47,13 @@
             <div class="col-md-offset-2 col-md-2">
                 @Html.ActionLink("Cancel", "JournalVoucherReport", null, new { @class = "btn btn-default" })
                 <input type="submit" value="Save" class="btn btn-default" />
-
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to index", "Index")
+    @Html.ActionLink("Back to index", "journal-voucher", "Reports")
 </div>
 
 @section Scripts {
