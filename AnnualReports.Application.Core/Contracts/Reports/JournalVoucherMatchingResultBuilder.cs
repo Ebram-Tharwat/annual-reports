@@ -14,7 +14,7 @@ namespace AnnualReports.Application.Core.Contracts.Reports
 
         public void ReportUnmatchedFund(int rowIndex, string sheetName, string unmatchedFund)
         {
-            UnmatchedFunds.Add(new JournalVoucherUnamtchedResult(rowIndex, unmatchedFund, sheetName, "Annual Reports", null, ""));
+            UnmatchedFunds.Add(new JournalVoucherUnamtchedResult(rowIndex, unmatchedFund, sheetName, "Doesn't Exist", null, ""));
         }
 
         public void ReportUnmatchedGcFund(int rowIndex, string sheetName, string unmatchedFund, JournalVoucherType journalVoucher, string unmatchedJvRuleAccount)
