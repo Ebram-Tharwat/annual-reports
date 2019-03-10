@@ -108,15 +108,15 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             switch (journalVoucher)
             {
                 case JournalVoucherType.WarrantIssues:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantIssues();
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantIssues(primaryFundId);
                     break;
 
                 case JournalVoucherType.WarrantPresented:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantPresented();
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantPresented(primaryFundId);
                     break;
 
                 case JournalVoucherType.WarrantCancels:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantCancels(entryValue);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantCancels(primaryFundId, entryValue);
                     break;
 
                 default:
@@ -186,15 +186,15 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             switch (journalVoucher)
             {
                 case JournalVoucherType.WarrantIssues:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantIssues();
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantIssues(primaryFundId);
                     break;
 
                 case JournalVoucherType.WarrantPresented:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantPresented();
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantPresented(primaryFundId);
                     break;
 
                 case JournalVoucherType.WarrantCancels:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantCancels(entryValue);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForWarrantCancels(primaryFundId, entryValue);
                     break;
 
                 default:
@@ -223,21 +223,21 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantIssues()
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantIssues(string primaryFundId)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantIssues);
+            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantIssues, primaryFundId);
             return (result.DebitAccount, result.CreditAccount);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantPresented()
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantPresented(string primaryFundId)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantPresented);
+            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantPresented, primaryFundId);
             return (result.DebitAccount, result.CreditAccount);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantCancels(decimal cancelsValue)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantCancels(string primaryFundId, decimal cancelsValue)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantCancels);
+            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantCancels, primaryFundId);
             return (cancelsValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
     }

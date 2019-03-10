@@ -13,10 +13,13 @@ namespace AnnualReports.Application.Core.Interfaces
         List<ExceptionReportDataItemDetails> GetGcExceptionReportData(int year);
 
         List<MonthlyReportRule> GetMonthlyReportRules();
+
         MonthlyReportRule GetMonthlyReportRule(int id);
-        MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType);
+
+        MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType, string fundId);
+
         MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule);
+
         List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar);
-        
     }
 }

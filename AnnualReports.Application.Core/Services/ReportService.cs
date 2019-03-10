@@ -84,13 +84,22 @@ namespace AnnualReports.Application.Core.Services
             return _monthlyReportRepository.GetById(id);
         }
 
-        public MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType)
+        public MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType, string fundId)
         {
-            var reportRule = _monthlyReportRepository.OneOrDefault(t => t.Id == (int)jvType);
-            if (reportRule == null)
-                throw new KeyNotFoundException($"Unable to find rule for {jvType}");
+            var rules = _monthlyReportRepository.Get(t => t.JournalVoucherType == jvType).ToList();
+            var specificityRules = rules.Where(t => !string.IsNullOrWhiteSpace(t.FundIds));
+            var defaultRule = rules.FirstOrDefault(t => string.IsNullOrWhiteSpace(t.FundIds));
 
-            return reportRule;
+            foreach (var rule in specificityRules)
+            {
+                var isRuleHasMatchedFundId =
+                    rule.FundIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Any(fund => fund.Trim() == fundId.Trim());
+
+                if (isRuleHasMatchedFundId)
+                    return rule;
+            }
+            return defaultRule;
         }
 
         public MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule)
