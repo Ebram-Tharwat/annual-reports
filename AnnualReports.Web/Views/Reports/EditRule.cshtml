@@ -13,7 +13,7 @@
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.JvType)
+        @Html.HiddenFor(model => model.Description)
 
         <div class="form-group">
             @Html.LabelFor(model => model.CreditAccount, new { @class = "control-label col-md-2" })

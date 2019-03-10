@@ -18,7 +18,7 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         [Required]
         [StringLength(30)]
         [Display(Name ="Jv Type")]
-        public string JvType { get; set; }
+        public string Description { get; set; }
 
         [Required]
         [StringLength(10)]

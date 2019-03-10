@@ -37,23 +37,23 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
             context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 7, Name = "Warrants Issued" });
             context.InvestmentTypes.AddOrUpdate(new InvestmentTypes { Id = 8, Name = "Warrants Presented" });
 
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantIssues, JvType = "Warrant Issue", CreditAccount = "211000000", DebitAccount = "229000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantPresented, JvType = "Warrant Presented", CreditAccount = "101000000", DebitAccount = "211000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantIssues, Description = "Warrant Issue", CreditAccount = "211000000", DebitAccount = "229000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantPresented, Description = "Warrant Presented", CreditAccount = "101000000", DebitAccount = "211000000" });
             context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
             {
                 Id = (int)JournalVoucherType.WarrantCancels,
-                JvType = "Warrant Cancel",
+                Description = "Warrant Cancel",
                 CreditAccount = "211000000",
                 DebitAccount = "229000000",
                 CreditExceptionNegative = "229000000",
                 DebitExceptionNegative = "211000000"
             });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Taxes, JvType = "Taxes", CreditAccount = "311100000", DebitAccount = "101000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentPurchases, JvType = "Investment Purchase", CreditAccount = "101000000", DebitAccount = "118000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentSales, JvType = "Investment Sales", CreditAccount = "118000000", DebitAccount = "101000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentInterest, JvType = "Investment Interest", CreditAccount = "361110000", DebitAccount = "118000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantInterest, JvType = "Warrant Interest", CreditAccount = "101000000", DebitAccount = "229000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Remits, JvType = "Remits", CreditAccount = "101000000", DebitAccount = "229000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Taxes, Description = "Taxes", CreditAccount = "311100000", DebitAccount = "101000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentPurchases, Description = "Investment Purchase", CreditAccount = "101000000", DebitAccount = "118000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentSales, Description = "Investment Sales", CreditAccount = "118000000", DebitAccount = "101000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentInterest, Description = "Investment Interest", CreditAccount = "361110000", DebitAccount = "118000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantInterest, Description = "Warrant Interest", CreditAccount = "101000000", DebitAccount = "229000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Remits, Description = "Remits", CreditAccount = "101000000", DebitAccount = "229000000" });
 
             string[] systemRoles = new string[] { "Admin", "Clerk" };
             List<string> names = new List<string>();
