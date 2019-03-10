@@ -193,6 +193,10 @@
     <Compile Include="Migrations\AnnualReportsDb\201903101012167_RenameJvTypeIntoDescription.Designer.cs">
       <DependentUpon>201903101012167_RenameJvTypeIntoDescription.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\AnnualReportsDb\201903101101163_AddFundIdsColumn.cs" />
+    <Compile Include="Migrations\AnnualReportsDb\201903101101163_AddFundIdsColumn.Designer.cs">
+      <DependentUpon>201903101101163_AddFundIdsColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AnnualReportsDb\ConfigurationAnnualReportsDb.cs" />
     <Compile Include="Migrations\ScriptResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -306,6 +310,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\AnnualReportsDb\201903101012167_RenameJvTypeIntoDescription.resx">
       <DependentUpon>201903101012167_RenameJvTypeIntoDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\AnnualReportsDb\201903101101163_AddFundIdsColumn.resx">
+      <DependentUpon>201903101101163_AddFundIdsColumn.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\ScriptResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

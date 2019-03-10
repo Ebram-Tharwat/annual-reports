@@ -114,7 +114,7 @@ namespace AnnualReports.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-               return View( _journalVoucherReportUseCase.GetMonthlyReport(int.Parse(id)));
+                return View(_journalVoucherReportUseCase.GetMonthlyReport(int.Parse(id)));
             }
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }
@@ -124,20 +124,20 @@ namespace AnnualReports.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditRule(MonthlyReportRule model)
         {
-           
             if (ModelState.IsValid)
             {
                 var result = _journalVoucherReportUseCase.GetMonthlyReport(model.Id);
-                if(result == null)
+                if (result == null)
                 {
                     return HttpNotFound();
                 }
                 result.CreditAccount = model.CreditAccount;
                 result.DebitAccount = model.DebitAccount;
-                result.CreditExceptionNegative =string.IsNullOrWhiteSpace(model.CreditExceptionNegative)?null:model.CreditExceptionNegative;
+                result.CreditExceptionNegative = string.IsNullOrWhiteSpace(model.CreditExceptionNegative) ? null : model.CreditExceptionNegative;
                 result.DebitExceptionNegative = string.IsNullOrWhiteSpace(model.DebitExceptionNegative) ? null : model.DebitExceptionNegative;
+                result.FundIds = model.FundIds;
                 result = _journalVoucherReportUseCase.UpdateMonthlyReport(result);
-                if(result == null)
+                if (result == null)
                 {
                     return HttpNotFound();
                 }

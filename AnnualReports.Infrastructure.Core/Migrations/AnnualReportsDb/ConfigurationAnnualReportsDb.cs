@@ -3,9 +3,7 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
     using Domain.Core.AnnualReportsDbModels;
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
-    using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
@@ -21,7 +19,7 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
         {
             //  This method will be called after migrating to the latest version.
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            //  You can use the DbSet<T>.AddOrUpdate() helper extension method
             //  to avoid creating duplicate seed data. E.g.
 
             AddOrUpdateInvestmentTypes(context);
@@ -43,16 +41,98 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
 
         private void AddOrUpdateJournalVoucherRules(AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb.AnnualReportsDbContext context)
         {
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantIssues, Description = "Warrant Issue", CreditAccount = "211000000", DebitAccount = "229000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantPresented, Description = "Warrant Presented", CreditAccount = "101000000", DebitAccount = "211000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantCancels, Description = "Warrant Cancel", CreditAccount = "211000000", DebitAccount = "229000000", CreditExceptionNegative = "229000000", DebitExceptionNegative = "211000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Taxes, Description = "Taxes", CreditAccount = "311100000", DebitAccount = "101000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentPurchases, Description = "Investment Purchase", CreditAccount = "101000000", DebitAccount = "118000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentSales, Description = "Investment Sales", CreditAccount = "118000000", DebitAccount = "101000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.InvestmentInterest, Description = "Investment Interest", CreditAccount = "361110000", DebitAccount = "118000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.WarrantInterest, Description = "Warrant Interest", CreditAccount = "101000000", DebitAccount = "229000000" });
-            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule { Id = (int)JournalVoucherType.Remits, Description = "Remits", CreditAccount = "101000000", DebitAccount = "229000000" });
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.WarrantIssues,
+                JournalVoucherType = JournalVoucherType.WarrantIssues,
+                Description = "Warrant Issue",
+                CreditAccount = "211000000",
+                DebitAccount = "229000000"
+            });
 
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.WarrantPresented,
+                JournalVoucherType = JournalVoucherType.WarrantPresented,
+                Description = "Warrant Presented",
+                CreditAccount = "101000000",
+                DebitAccount = "211000000"
+            });
+
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.WarrantCancels,
+                JournalVoucherType = JournalVoucherType.WarrantCancels,
+                Description = "Warrant Cancel",
+                CreditAccount = "211000000",
+                DebitAccount = "229000000",
+                CreditExceptionNegative = "229000000",
+                DebitExceptionNegative = "211000000"
+            });
+
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.Taxes,
+                JournalVoucherType = JournalVoucherType.Taxes,
+                Description = "Taxes",
+                CreditAccount = "311100000",
+                DebitAccount = "101000000"
+            });
+
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.InvestmentPurchases,
+                JournalVoucherType = JournalVoucherType.InvestmentPurchases,
+                Description = "Investment Purchase",
+                CreditAccount = "101000000",
+                DebitAccount = "118000000"
+            });
+
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.InvestmentSales,
+                JournalVoucherType = JournalVoucherType.InvestmentSales,
+                Description = "Investment Sales",
+                CreditAccount = "118000000",
+                DebitAccount = "101000000"
+            });
+
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.InvestmentInterest,
+                JournalVoucherType = JournalVoucherType.InvestmentInterest,
+                Description = "Investment Interest",
+                CreditAccount = "361110000",
+                DebitAccount = "118000000"
+            });
+
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.WarrantInterest,
+                JournalVoucherType = JournalVoucherType.WarrantInterest,
+                Description = "Warrant Interest",
+                CreditAccount = "101000000",
+                DebitAccount = "229000000"
+            });
+
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = (int)JournalVoucherType.Remits,
+                JournalVoucherType = JournalVoucherType.Remits,
+                Description = "Remits",
+                CreditAccount = "101000000",
+                DebitAccount = "229000000"
+            });
+
+            context.MonthlyReportRules.AddOrUpdate(new MonthlyReportRule
+            {
+                Id = 10,
+                JournalVoucherType = JournalVoucherType.Taxes,
+                Description = "Taxes funds 664-667",
+                FundIds = "664, 665, 666, 667",
+                CreditAccount = "101000000",
+                DebitAccount = "311100000"
+            });
         }
 
         private void AddOrUpdateDefaultRolesAndUsers(AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb.AnnualReportsDbContext context)
@@ -87,7 +167,6 @@ namespace AnnualReports.Infrastructure.Core.Migrations.AnnualReportsDb
                     {
                         var roelResult = UserManager.AddToRoles(defaultUsers.Id, sysRole.Name);
                     }
-
                 }
             }
         }

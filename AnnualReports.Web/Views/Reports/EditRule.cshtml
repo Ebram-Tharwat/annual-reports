@@ -16,6 +16,15 @@
         @Html.HiddenFor(model => model.Description)
 
         <div class="form-group">
+            @Html.LabelFor(model => model.FundIds, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.FundIds, new { @class = "form-control" })
+                <label class="label label-info">You can enter multiple values using comma as separator</label>
+                @Html.ValidationMessageFor(model => model.FundIds)
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.CreditAccount, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.CreditAccount, new { @class = "form-control" })
