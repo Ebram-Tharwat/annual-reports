@@ -17,7 +17,8 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
            string accountNumber,
            string description,
            decimal entryValue,
-           JournalVoucherType journalVoucher)
+           JournalVoucherType journalVoucher,
+           DbSource dbSource)
         {
             return new JournalVoucherReportOutputItem()
             {
@@ -25,7 +26,8 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 Description = description,
                 Debit = Math.Abs(entryValue),
                 Credit = 0,
-                JournalVoucher = journalVoucher
+                JournalVoucher = journalVoucher,
+                DbSource = dbSource
             };
         }
 
@@ -33,7 +35,8 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
            string accountNumber,
            string description,
            decimal entryValue,
-           JournalVoucherType journalVoucher)
+           JournalVoucherType journalVoucher,
+           DbSource dbSource)
         {
             return new JournalVoucherReportOutputItem()
             {
@@ -41,7 +44,8 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 Description = description,
                 Debit = 0,
                 Credit = Math.Abs(entryValue),
-                JournalVoucher = journalVoucher
+                JournalVoucher = journalVoucher,
+                DbSource = dbSource
             };
         }
     }

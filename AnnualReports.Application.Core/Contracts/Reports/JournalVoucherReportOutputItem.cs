@@ -9,5 +9,6 @@ namespace AnnualReports.Application.Core.Contracts.Reports
         public decimal Debit { get; set; }
         public decimal Credit { get; set; }
         public JournalVoucherType JournalVoucher { get; set; }
+        public DbSource DbSource { get; set; }
     }
 }

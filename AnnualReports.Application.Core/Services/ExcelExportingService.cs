@@ -296,13 +296,19 @@ namespace AnnualReports.Application.Core.Services
             IEnumerable<JournalVoucherReportOutputItem> reportData,
             IEnumerable<JournalVoucherUnamtchedResult> unamtchedResults)
         {
-            var journalvoucherSheet = excelPackage.Workbook.Worksheets[1];
-            var exceptionsSheet = excelPackage.Workbook.Worksheets[2];
+            var journalvoucherSheetForGC = excelPackage.Workbook.Worksheets[1];
+            var journalvoucherSheetForDist = excelPackage.Workbook.Worksheets[2];
+            var exceptionsSheet = excelPackage.Workbook.Worksheets[3];
 
-            FillJournalVoucherSheet(journalvoucherSheet, reportData);
+            var gcFunds = reportData.Where(t => t.DbSource == DbSource.GC).ToList();
+            var distFunds = reportData.Where(t => t.DbSource == DbSource.DIST).ToList();
+
+            FillJournalVoucherSheet(journalvoucherSheetForGC, gcFunds);
+            FillJournalVoucherSheet(journalvoucherSheetForDist, distFunds);
             FillJournalVoucherExceptionsSheet(exceptionsSheet, unamtchedResults);
 
-            journalvoucherSheet.Cells.AutoFitColumns();
+            journalvoucherSheetForGC.Cells.AutoFitColumns();
+            journalvoucherSheetForDist.Cells.AutoFitColumns();
             exceptionsSheet.Cells.AutoFitColumns();
         }
 
