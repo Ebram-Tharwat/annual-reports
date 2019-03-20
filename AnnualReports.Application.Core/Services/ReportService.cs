@@ -15,6 +15,7 @@ namespace AnnualReports.Application.Core.Services
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IMonthlyReportRepository _monthlyReportRepository;
+        private readonly IMonthlyImportExceptionRuleRepository _monthlyImportExceptionRuleRepository;
         private readonly IBarService _barService;
         private readonly IMappingRuleRepository _mappingRuleRepository;
         private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
@@ -22,12 +23,14 @@ namespace AnnualReports.Application.Core.Services
 
         public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService,
                              IMappingRuleRepository mappingRuleRepository, IMonthlyReportRepository monthlyReportRepository,
+                             IMonthlyImportExceptionRuleRepository monthlyImportExceptionRuleRepository,
                              IUnitOfWork<AnnualReportsDbContext> uow)
         {
             this._fundsRepository = fundsRepository;
             this._barService = barService;
             this._mappingRuleRepository = mappingRuleRepository;
             this._monthlyReportRepository = monthlyReportRepository;
+            this._monthlyImportExceptionRuleRepository = monthlyImportExceptionRuleRepository;
             this._uow = uow;
         }
 
@@ -79,9 +82,19 @@ namespace AnnualReports.Application.Core.Services
             return _monthlyReportRepository.GetAll().ToList();
         }
 
+        public List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules()
+        {
+            return _monthlyImportExceptionRuleRepository.GetAll().ToList();
+        }
+
         public MonthlyReportRule GetMonthlyReportRule(int id)
         {
             return _monthlyReportRepository.GetById(id);
+        }
+
+        public MonthlyImportFundExceptionRule GetMonthlyImportExceptionRuleReport(int id)
+        {
+            return _monthlyImportExceptionRuleRepository.GetById(id);
         }
 
         public MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType, string fundId)
@@ -107,6 +120,20 @@ namespace AnnualReports.Application.Core.Services
             _monthlyReportRepository.Update(monthlyReportRule);
             _uow.Commit();
             return monthlyReportRule;
+        }
+
+        public MonthlyImportFundExceptionRule UpdateMonthlyImportExceptionRuleReport(MonthlyImportFundExceptionRule monthlyImportFundExceptionRule)
+        {
+            _monthlyImportExceptionRuleRepository.Update(monthlyImportFundExceptionRule);
+            _uow.Commit();
+            return monthlyImportFundExceptionRule;
+        }
+
+        public void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity)
+        {
+            _monthlyImportExceptionRuleRepository.Add(entity);
+            _uow.Commit();
+            
         }
 
         #region Helpers

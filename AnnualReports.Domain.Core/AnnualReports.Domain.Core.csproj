@@ -63,6 +63,7 @@
     <Compile Include="AnnualReportsDbModels\JournalVoucherType.cs" />
     <Compile Include="AnnualReportsDbModels\MappingRule.cs" />
     <Compile Include="AnnualReportsDbModels\MappingRuleOperator.cs" />
+    <Compile Include="AnnualReportsDbModels\MonthlyImportFundExceptionRule.cs" />
     <Compile Include="AnnualReportsDbModels\MonthlyReportRule.cs" />
     <Compile Include="Contracts\AnnualReportDataRow.cs" />
     <Compile Include="Contracts\GPDynamicsFundDetails.cs" />

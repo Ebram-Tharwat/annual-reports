@@ -12,10 +12,16 @@ namespace AnnualReports.Application.Core.UseCases
         MemoryStream Execute(Stream inputStream, int year);
 
         List<MonthlyReportRule> GetMonthlyReportRules();
+        List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules();
 
         MonthlyReportRule GetMonthlyReport(int id);
+        MonthlyImportFundExceptionRule GetMonthlyImportExceptionRuleReport(int id);
 
         MonthlyReportRule UpdateMonthlyReport(MonthlyReportRule monthlyReportRule);
+
+        MonthlyImportFundExceptionRule UpdateMonthlyImportExceptionRuleReport(MonthlyImportFundExceptionRule monthlyImportFundExceptionRule);
+
+        void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity);
     }
 
     public class GenerateJournalVoucherReportUseCase : IGenerateJournalVoucherReportUseCase
@@ -51,14 +57,33 @@ namespace AnnualReports.Application.Core.UseCases
             return _reportService.GetMonthlyReportRules();
         }
 
+        public List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules()
+        {
+            return _reportService.GetMonthlyImportExceptionRules();
+        }
+
         public MonthlyReportRule GetMonthlyReport(int id)
         {
             return _reportService.GetMonthlyReportRule(id);
         }
 
+        public MonthlyImportFundExceptionRule GetMonthlyImportExceptionRuleReport(int id)
+        {
+            return _reportService.GetMonthlyImportExceptionRuleReport(id);
+        }
+
         public MonthlyReportRule UpdateMonthlyReport(MonthlyReportRule monthlyReportRule)
         {
             return _reportService.UpdateMonthlyReportRule(monthlyReportRule);
+        }
+
+        public MonthlyImportFundExceptionRule UpdateMonthlyImportExceptionRuleReport(MonthlyImportFundExceptionRule monthlyImportFundExceptionRule)
+        {
+            return _reportService.UpdateMonthlyImportExceptionRuleReport(monthlyImportFundExceptionRule);
+        }
+        public void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity)
+        {
+             _reportService.AddMonthlyImportFundExceptionRuleReport(entity);
         }
     }
 }

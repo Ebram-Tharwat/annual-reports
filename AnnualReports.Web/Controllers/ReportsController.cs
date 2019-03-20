@@ -17,7 +17,7 @@ namespace AnnualReports.Web.Controllers
 {
     [RoutePrefix("reports")]
     [Authorize]
-    public class ReportsController : Controller
+    public class ReportsController : BaseController
     {
         private readonly IFundService _fundService;
         private readonly IExportingService _exportingService;
@@ -101,7 +101,71 @@ namespace AnnualReports.Web.Controllers
         {
             var viewmodel = new ReportFiltersViewModel();
             viewmodel.MonthlyReportRules = _journalVoucherReportUseCase.GetMonthlyReportRules();
+            viewmodel.MonthlyImportExceptionRule = _journalVoucherReportUseCase.GetMonthlyImportExceptionRules();
             return View(viewmodel);
+        }
+
+        [HttpGet]
+        [Route("journal-voucher-editImportRule")]
+        public ActionResult EditImportRule(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (ModelState.IsValid)
+            {
+                return View(_journalVoucherReportUseCase.GetMonthlyImportExceptionRuleReport(int.Parse(id)));
+            }
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        }
+
+        [HttpPost]
+        [Route("journal-voucher-editImportRule")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditImportRule(MonthlyImportFundExceptionRule model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _journalVoucherReportUseCase.GetMonthlyImportExceptionRuleReport(model.Id);
+                if (result == null)
+                {
+                    return HttpNotFound();
+                }
+                result.NewFundId = model.NewFundId;
+                result.OriginalFundId = model.OriginalFundId;
+                result = _journalVoucherReportUseCase.UpdateMonthlyImportExceptionRuleReport(result);
+                if (result == null)
+                {
+                    return HttpNotFound();
+                }
+                return RedirectToAction("JournalVoucherReport");
+            }
+            ModelState.AddModelError("", "An error occurred.");
+            return View();
+        }
+
+        [HttpGet]
+        [Route("journal-voucher-createImportRule")]
+        public ActionResult CreateImportRule()
+        {
+            var model = new MonthlyImportFundExceptionRule();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("journal-voucher-createImportRule")]
+        public ActionResult Create(MonthlyImportFundExceptionRule model)
+        {
+            if (ModelState.IsValid)
+            {
+                _journalVoucherReportUseCase.AddMonthlyImportFundExceptionRuleReport(model);
+
+                Success($"<strong>{model.OriginalFundId} - {model.NewFundId}</strong> was successfully saved.");
+                return RedirectToAction("JournalVoucherReport");
+            }
+            return View(model);
         }
 
         [HttpGet]

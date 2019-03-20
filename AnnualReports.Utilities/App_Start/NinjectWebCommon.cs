@@ -128,6 +128,7 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IBarService>().To<BarService>();
             kernel.Bind<IReportService>().To<ReportService>();
             kernel.Bind<IMonthlyReportRepository>().To<MonthlyReportRepository>();
+            kernel.Bind<IMonthlyImportExceptionRuleRepository>().To<MonthlyImportExceptionRuleRepository>();
             kernel.Bind<IGenerateJournalVoucherReportUseCase>().To<GenerateJournalVoucherReportUseCase>();
             kernel.Bind<AuditorMasterProcessor>().To<WarrantsSheetProcessor>();
             kernel.Bind<AuditorMasterProcessor>().To<TaxesSheetProcessor>();

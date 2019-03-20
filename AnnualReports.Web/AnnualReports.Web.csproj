@@ -469,6 +469,9 @@
     <Content Include="Views\Bars\Delete.cshtml" />
     <Content Include="Views\Reports\JournalVoucherReport.cshtml" />
     <Content Include="Views\Reports\EditRule.cshtml" />
+    <Content Include="Views\Reports\_MonthlyImportExceptionRuleList.cshtml" />
+    <Content Include="Views\Reports\EditImportRule.cshtml" />
+    <Content Include="Views\Reports\CreateImportRule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

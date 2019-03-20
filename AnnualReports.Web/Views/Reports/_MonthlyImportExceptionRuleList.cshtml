@@ -1,0 +1,39 @@
+﻿@model List<AnnualReports.Domain.Core.AnnualReportsDbModels.MonthlyImportFundExceptionRule>
+
+<div class="col-xs-12">
+    <div class="panel panel-default">
+        <div class="panel-heading bold">Monthly Import Exception Rules:</div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Original Rule
+                        </th>
+                        <th>
+                            New Rule
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OriginalFundId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NewFundId)
+                            </td>
+                            <td>
+                                <a href="@Url.Action("EditImportRule", "Reports", new { item.Id })" class="btn btn-info"> <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit </span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>

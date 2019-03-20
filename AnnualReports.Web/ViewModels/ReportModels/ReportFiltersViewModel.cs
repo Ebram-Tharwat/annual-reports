@@ -22,6 +22,8 @@ namespace AnnualReports.Web.ViewModels.ReportModels
 
         public List<MonthlyReportRule>  MonthlyReportRules { get; set; }
 
+        public List<MonthlyImportFundExceptionRule> MonthlyImportExceptionRule { get; set; }
+
         public string DateAsMonthYear
         {
             get { return Date.HasValue ? Date.Value.ToString("MM/yyyy") : ""; }

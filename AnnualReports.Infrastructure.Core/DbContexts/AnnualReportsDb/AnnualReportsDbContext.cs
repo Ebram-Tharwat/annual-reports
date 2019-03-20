@@ -15,6 +15,8 @@ namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
 
         public DbSet<MonthlyReportRule> MonthlyReportRules { get; set; }
 
+        public DbSet<MonthlyImportFundExceptionRule> MonthlyImportFundExceptionRules { get; set; }
+
         public DbSet<InvestmentTypes> InvestmentTypes { get; set; }
 
         public DbSet<MappingRule> MappingRules { get; set; }
