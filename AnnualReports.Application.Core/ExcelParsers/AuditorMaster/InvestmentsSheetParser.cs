@@ -1,6 +1,7 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Common.Extensions;
 using AnnualReports.Common.Utils;
+using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -10,7 +11,7 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
 {
     public static class InvestmentsSheetParser
     {
-        public static IEnumerable<InvestmentsSheetInputItem> Parse(Stream inputStream, int sheetIndex)
+        public static IEnumerable<InvestmentsSheetInputItem> Parse(Stream inputStream, int sheetIndex,List<MonthlyImportFundExceptionRule> exceptionRules)
         {
             var results = new List<InvestmentsSheetInputItem>();
             var columnsToParse = new[] { "Name", "Fund", "Purchases", "Sales", "Interest" };
@@ -21,7 +22,7 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
                 {
                     RowIndex = index + 2, // 2 => one for table header and one for zero-indexed loop
                     Name = row["Name"].ToString(),
-                    FundId = row["Fund"].ToString(),
+                    FundId = StringUtils.ApplyMonthlyImportExceptionRuleOnFund(row["Fund"].ToString(), exceptionRules),
                     Purchases = StringUtils.ParseNegativeValue(row["Purchases"].ToString()),
                     Sales = StringUtils.ParseNegativeValue(row["Sales"].ToString()),
                     Interest = StringUtils.ParseNegativeValue(row["Interest"].ToString()),

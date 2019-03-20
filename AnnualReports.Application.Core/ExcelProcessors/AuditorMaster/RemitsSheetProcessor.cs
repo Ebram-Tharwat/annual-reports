@@ -32,12 +32,12 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         public override IEnumerable<JournalVoucherReportOutputItem> Process(
             Stream inputStream,
             int year,
-            JournalVoucherMatchingResultBuilder matchingResultBuilder)
+            JournalVoucherMatchingResultBuilder matchingResultBuilder, List<MonthlyImportFundExceptionRule> exceptionRules)
         {
             List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
 
             const int remitsSheetIndex = 5;
-            var remitsSheetInputItems = RemitSheetParser.Parse(inputStream, remitsSheetIndex);
+            var remitsSheetInputItems = RemitSheetParser.Parse(inputStream, remitsSheetIndex,exceptionRules);
             var funds = _fundsRepository.Get(t => t.Year == year).ToList();
 
             foreach (var remitInput in remitsSheetInputItems)

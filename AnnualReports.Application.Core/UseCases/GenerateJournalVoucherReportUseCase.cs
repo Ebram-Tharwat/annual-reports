@@ -9,7 +9,7 @@ namespace AnnualReports.Application.Core.UseCases
 {
     public interface IGenerateJournalVoucherReportUseCase
     {
-        MemoryStream Execute(Stream inputStream, int year);
+        MemoryStream Execute(Stream inputStream, int year,List<MonthlyImportFundExceptionRule> exceptionRules);
 
         List<MonthlyReportRule> GetMonthlyReportRules();
         List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules();
@@ -39,14 +39,14 @@ namespace AnnualReports.Application.Core.UseCases
             _reportService = reportService;
         }
 
-        public MemoryStream Execute(Stream inputStream, int year)
+        public MemoryStream Execute(Stream inputStream, int year, List<MonthlyImportFundExceptionRule> exceptionRules)
         {
             List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
             var matchingResultBuilder = new JournalVoucherMatchingResultBuilder();
 
             foreach (var processor in _sheetProcessors)
             {
-                results.AddRange(processor.Process(inputStream, year, matchingResultBuilder));
+                results.AddRange(processor.Process(inputStream, year, matchingResultBuilder,exceptionRules));
             }
 
             return _exportingService.GetJournalVoucherReportExcel(results, matchingResultBuilder.UnmatchedFunds);

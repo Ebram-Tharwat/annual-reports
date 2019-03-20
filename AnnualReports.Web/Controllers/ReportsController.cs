@@ -221,7 +221,10 @@ namespace AnnualReports.Web.Controllers
                 if (viewmodel.ExcelFile != null && viewmodel.ExcelFile.ContentLength > 0)
                 {
                     SaveUploadedFile(viewmodel.ExcelFile, Server.MapPath("~/Uploads/WarrantReport/"));
-                    MemoryStream stream = _journalVoucherReportUseCase.Execute(viewmodel.ExcelFile.InputStream, viewmodel.Date.Value.Year);
+                    viewmodel.MonthlyImportExceptionRule = _journalVoucherReportUseCase.GetMonthlyImportExceptionRules();
+                    MemoryStream stream = _journalVoucherReportUseCase.Execute(viewmodel.ExcelFile.InputStream,
+                                                                               viewmodel.Date.Value.Year,
+                                                                               viewmodel.MonthlyImportExceptionRule);
 
                     return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.JournalVoucherReportExcelFileName, viewmodel.Date.Value.Year));
                 }
