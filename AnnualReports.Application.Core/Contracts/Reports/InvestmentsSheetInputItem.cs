@@ -8,5 +8,7 @@
         public decimal Purchases { get; set; }
         public decimal Sales { get; set; }
         public decimal Interest { get; set; }
+
+        public bool IsExceptionRuleMatched { get; set; }
     }
 }

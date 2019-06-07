@@ -21,7 +21,7 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
                 results.Add(new WarrantsSheetInputItem()
                 {
                     RowIndex = index + 2, // 2 => one for table header and one for zero-indexed loop
-                    FundId = StringUtils.ApplyMonthlyImportExceptionRuleOnFund(row["FundID"].ToString(), exceptionRules),
+                    FundId = StringUtils.ApplyMonthlyImportExceptionRuleOnFund(row["FundID"].ToString(), exceptionRules).Item2,
                     Name = row["Name"].ToString(),
                     Issues = StringUtils.ParseNegativeValue(row["Issues"].ToString()),
                     Presented = StringUtils.ParseNegativeValue(row["Presented"].ToString()),

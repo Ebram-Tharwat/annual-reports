@@ -18,11 +18,13 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
             var sheetData = ImportUtils.ImportXlsxToDataTable(inputStream, sheetIndex, columnsToParse);
             sheetData.AsEnumerable().ForEachWithIndex((row, index) =>
             {
+                var fundResult = StringUtils.ApplyMonthlyImportExceptionRuleOnFund(row["Fund"].ToString(), exceptionRules);
                 results.Add(new InvestmentsSheetInputItem()
                 {
                     RowIndex = index + 2, // 2 => one for table header and one for zero-indexed loop
                     Name = row["Name"].ToString(),
-                    FundId = StringUtils.ApplyMonthlyImportExceptionRuleOnFund(row["Fund"].ToString(), exceptionRules),
+                    FundId = fundResult.Item2,
+                    IsExceptionRuleMatched = fundResult.Item1,
                     Purchases = StringUtils.ParseNegativeValue(row["Purchases"].ToString()),
                     Sales = StringUtils.ParseNegativeValue(row["Sales"].ToString()),
                     Interest = StringUtils.ParseNegativeValue(row["Interest"].ToString()),
