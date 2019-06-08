@@ -54,14 +54,14 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 if (existingFund.DbSource == DbSource.GC)
                 {
                     var gcFunds = _gcDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
-                    results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, gcFunds, taxesInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForGc(taxesInput.FundId,primaryFundId, gcFunds, taxesInput, matchingResultBuilder));
                 }
                 else
                 {
                     primaryFundId = taxesInput.FundId.Replace("-", "").Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, taxesInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(taxesInput.FundId,primaryFundId, distFunds, taxesInput, matchingResultBuilder));
                 }
             }
 
@@ -69,6 +69,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
+            string fundId,
              string primaryFundId,
              List<Domain.Core.GcDbModels.Gl00100> gcFunds,
              TaxesSheetInputItem input,
@@ -78,16 +79,18 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    primaryFundId, gcFunds, input.Taxes, input.RowIndex, JournalVoucherType.Taxes, matchingResultBuilder));
+                    fundId,primaryFundId, gcFunds, input.Taxes, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.Taxes, matchingResultBuilder));
 
             return results;
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
+            string fundId,
             string primaryFundId,
             List<Domain.Core.GcDbModels.Gl00100> gcFunds,
             decimal entryValue,
             int entryRowIndex,
+            bool isExceptionRule,
             JournalVoucherType journalVoucher,
             JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
@@ -112,8 +115,20 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             }
 
             string debitAccountNumber = $"{primaryFundId}.{debitFund.Actnumbr2.Trim()}.{debitFund.Actnumbr3.Trim()}.{debitFund.Actnumbr4.Trim()}.{debitFundId}";
+
+            if (isExceptionRule)
+            {
+                fundId = fundId.Replace('-', '.');
+                debitAccountNumber = $"{fundId}.{debitFundId}";
+            }
+
             string creditAccountNumber = $"{primaryFundId}.{creditFund.Actnumbr2.Trim()}.{debitFund.Actnumbr3.Trim()}.{debitFund.Actnumbr4.Trim()}.{creditFundId}";
 
+            if (isExceptionRule)
+            {
+                fundId = fundId.Replace('-', '.');
+                creditAccountNumber = $"{fundId}.{creditFundId}";
+            }
             return new[] {
                 CreateDebitJournalVoucherOutputItem(debitAccountNumber, debitFund.Actdescr.Trim(), entryValue, journalVoucher, DbSource.GC),
                 CreateCreditJournalVoucherOutputItem(creditAccountNumber, creditFund.Actdescr.Trim(), entryValue, journalVoucher, DbSource.GC)
@@ -121,6 +136,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
+            string fundId,
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
             TaxesSheetInputItem input,
@@ -130,16 +146,18 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForDist(
-                    primaryFundId, distFunds, input.Taxes, input.RowIndex, JournalVoucherType.Taxes, matchingResultBuilder));
+                    fundId,primaryFundId, distFunds, input.Taxes, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.Taxes, matchingResultBuilder));
 
             return results;
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
+            string fundId,
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
             decimal entryValue,
             int entryRowIndex,
+            bool isExceptionRule,
             JournalVoucherType journalVoucher,
             JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
@@ -163,7 +181,20 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             }
 
             string debitAccountNumber = $"{primaryFundId}.{debitFund.Actnumbr2.Trim()}.{debitFundId}";
+
+            if (isExceptionRule)
+            {
+                fundId = fundId.Replace('-', '.');
+                debitAccountNumber = $"{fundId}.{debitFundId}";
+            }
+
             string creditAccountNumber = $"{primaryFundId}.{creditFund.Actnumbr2.Trim()}.{creditFundId}";
+
+            if (isExceptionRule)
+            {
+                fundId = fundId.Replace('-', '.');
+                creditAccountNumber = $"{fundId}.{debitFundId}";
+            }
 
             return new[] {
                 CreateDebitJournalVoucherOutputItem(debitAccountNumber, debitFund.Actdescr.Trim(), entryValue, journalVoucher, DbSource.DIST),
