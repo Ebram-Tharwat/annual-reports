@@ -17,7 +17,7 @@ namespace AnnualReports.Domain.Core.AnnualReportsDbModels
         [Display(Name = "Original Fund Id")]
         public string OriginalFundId { get; set; }
 
-        [Display(Name = "New Fund Id that will replace original fund id when applying rules")]
+        [Display(Name = "New Fund Id that will replace original fund id when applying rules. Note: Use Period (.) as separator instead of dash (-).")]
         public string NewFundId { get; set; }
 
     }
