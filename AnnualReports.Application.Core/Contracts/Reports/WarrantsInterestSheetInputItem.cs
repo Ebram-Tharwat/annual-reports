@@ -6,5 +6,6 @@
         public string FundId { get; set; }
         public string Name { get; set; }
         public decimal WarrantInterest { get; set; }
+        public bool IsExceptionRuleMatched { get; set; }
     }
 }
