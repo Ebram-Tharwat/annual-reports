@@ -7,6 +7,7 @@ using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 {
@@ -58,7 +59,9 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 }
                 else
                 {
-                    primaryFundId = taxesInput.FundId.Replace("-", "").Remove(6, 1);
+                    primaryFundId = Regex.Replace(taxesInput.FundId, @"[-.]", "")
+                                         .Truncate(9)
+                                         .Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
                     results.AddRange(CreateJournalVoucherOutputItemsForDist(taxesInput.FundId,primaryFundId, distFunds, taxesInput, matchingResultBuilder));
