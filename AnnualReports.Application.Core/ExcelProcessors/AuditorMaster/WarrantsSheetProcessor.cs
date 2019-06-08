@@ -45,7 +45,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             foreach (var warrantInput in warrantSheetInputItems)
             {
-                var primaryFundId = warrantInput.FundId.Split('.')[0];
+                var primaryFundId =warrantInput.IsExceptionRuleMatched? warrantInput.FundId.Split('.')[0]:warrantInput.FundId.Split('-')[0];
                 var existingFund = funds.FirstOrDefault(t => t.FundNumber.Trim() == primaryFundId);
                 if (existingFund == null)
                 {
@@ -65,7 +65,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                                          .Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateJournalVoucherOutputItemsForDist(primaryFundId, distFunds, warrantInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(warrantInput.FundId,primaryFundId, distFunds, warrantInput, matchingResultBuilder));
                 }
             }
 
@@ -167,6 +167,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
+            string fundId,
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
             WarrantsSheetInputItem input,
@@ -176,24 +177,26 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForDist(
-                    primaryFundId, distFunds, input.Issues, input.RowIndex, JournalVoucherType.WarrantIssues, matchingResultBuilder));
+                   fundId, primaryFundId, distFunds, input.Issues, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.WarrantIssues, matchingResultBuilder));
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForDist(
-                    primaryFundId, distFunds, input.Presented, input.RowIndex, JournalVoucherType.WarrantPresented, matchingResultBuilder));
+                   fundId, primaryFundId, distFunds, input.Presented, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.WarrantPresented, matchingResultBuilder));
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForDist(
-                    primaryFundId, distFunds, input.Cancels, input.RowIndex, JournalVoucherType.WarrantCancels, matchingResultBuilder));
+                   fundId, primaryFundId, distFunds, input.Cancels, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.WarrantCancels, matchingResultBuilder));
 
             return results;
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForDist(
+            string fundId,
             string primaryFundId,
             List<Domain.Core.DistDbModels.Gl00100> distFunds,
             decimal entryValue,
             int entryRowIndex,
+            bool isExceptionRule,
             JournalVoucherType journalVoucher,
             JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
@@ -235,7 +238,18 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             }
 
             string debitAccountNumber = $"{primaryFundId}.{debitFund?.Actnumbr2?.Trim()}.{debitFundId}";
+            if (isExceptionRule)
+            {
+                fundId = fundId.Replace('-', '.');
+                debitAccountNumber = $"{fundId}.{debitFundId}";
+            }
             string creditAccountNumber = $"{primaryFundId}.{creditFund?.Actnumbr2?.Trim()}.{creditFundId}";
+
+            if (isExceptionRule)
+            {
+                fundId = fundId.Replace('-', '.');
+                creditAccountNumber = $"{fundId}.{creditFundId}";
+            }
 
             return new[] {
                 CreateDebitJournalVoucherOutputItem(debitAccountNumber, debitFund?.Actdescr?.Trim(), entryValue, journalVoucher, DbSource.DIST),

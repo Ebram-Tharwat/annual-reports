@@ -45,7 +45,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             foreach (var investmentInput in investmentsSheetInputItems)
             {
-                var primaryFundId = investmentInput.FundId.Split('.')[0];
+                var primaryFundId = investmentInput.IsExceptionRuleMatched ? investmentInput.FundId.Split('.')[0] : investmentInput.FundId.Split('-')[0];
                 var existingFund = funds.FirstOrDefault(t => t.FundNumber.Trim() == primaryFundId);
                 if (existingFund == null)
                 {
