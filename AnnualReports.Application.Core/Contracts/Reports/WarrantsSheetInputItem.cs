@@ -8,5 +8,6 @@
         public decimal Issues { get; set; }
         public decimal Presented { get; set; }
         public decimal Cancels { get; set; }
+        public bool IsExceptionRuleMatched { get; set; }
     }
 }

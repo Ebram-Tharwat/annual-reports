@@ -43,7 +43,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             foreach (var warrantInput in warrantSheetInputItems)
             {
-                var primaryFundId = warrantInput.FundId.Split('-')[0];
+                var primaryFundId = warrantInput.FundId.Split('.')[0];
                 var existingFund = funds.FirstOrDefault(t => t.FundNumber.Trim() == primaryFundId);
                 if (existingFund == null)
                 {
@@ -54,7 +54,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 if (existingFund?.DbSource == DbSource.GC)
                 {
                     var gcFunds = _gcDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
-                    results.AddRange(CreateJournalVoucherOutputItemsForGc(primaryFundId, gcFunds, warrantInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForGc(warrantInput.FundId,primaryFundId, gcFunds, warrantInput, matchingResultBuilder));
                 }
                 else
                 {
@@ -69,6 +69,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
+            string fundId,
              string primaryFundId,
              List<Domain.Core.GcDbModels.Gl00100> gcFunds,
              WarrantsSheetInputItem input,
@@ -78,24 +79,26 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    primaryFundId, gcFunds, input.Issues, input.RowIndex, JournalVoucherType.WarrantIssues, matchingResultBuilder));
+                    fundId,primaryFundId, gcFunds, input.Issues, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.WarrantIssues, matchingResultBuilder));
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    primaryFundId, gcFunds, input.Presented, input.RowIndex, JournalVoucherType.WarrantPresented, matchingResultBuilder));
+                    fundId, primaryFundId, gcFunds, input.Presented, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.WarrantPresented, matchingResultBuilder));
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    primaryFundId, gcFunds, input.Cancels, input.RowIndex, JournalVoucherType.WarrantCancels, matchingResultBuilder));
+                   fundId,primaryFundId, gcFunds, input.Cancels, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.WarrantCancels, matchingResultBuilder));
 
             return results;
         }
 
         private IEnumerable<JournalVoucherReportOutputItem> CreateJournalVoucherOutputItemsForGc(
+            string fundId,
             string primaryFundId,
             List<Domain.Core.GcDbModels.Gl00100> gcFunds,
             decimal entryValue,
             int entryRowIndex,
+            bool isExceptionRule,
             JournalVoucherType journalVoucher,
             JournalVoucherMatchingResultBuilder matchingResultBuilder)
         {
@@ -138,7 +141,20 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             }
 
             string debitAccountNumber = $"{primaryFundId}.{debitFund.Actnumbr2.Trim()}.{debitFund.Actnumbr3.Trim()}.{debitFund.Actnumbr4.Trim()}.{debitFundId}";
+
+            if (isExceptionRule)
+            {
+                fundId = fundId.Replace('-', '.');
+                debitAccountNumber = $"{fundId}.{debitFundId}";
+            }
+
             string creditAccountNumber = $"{primaryFundId}.{creditFund.Actnumbr2.Trim()}.{debitFund.Actnumbr3.Trim()}.{debitFund.Actnumbr4.Trim()}.{creditFundId}";
+
+            if (isExceptionRule)
+            {
+                fundId = fundId.Replace('-', '.');
+                creditAccountNumber = $"{fundId}.{creditFundId}";
+            }
 
             return new[] {
                 CreateDebitJournalVoucherOutputItem(debitAccountNumber, debitFund.Actdescr.Trim(), entryValue, journalVoucher, DbSource.GC),
