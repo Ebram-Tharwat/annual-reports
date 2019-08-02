@@ -252,7 +252,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (isExceptionRule)
             {
                 fundId = fundId.Replace('-', '.');
-                creditAccountNumber = $"{fundId}.{debitFundId}";
+                creditAccountNumber = $"{fundId}.{creditFundId}";
             }
 
             return new[] {
