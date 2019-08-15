@@ -99,7 +99,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest(primaryFundId);
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest(primaryFundId,entryValue);
 
             var debitFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == debitFundId);
             var creditFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == creditFundId);
@@ -167,7 +167,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest(primaryFundId);
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest(primaryFundId,entryValue);
 
             var debitFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == debitFundId);
             var creditFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == creditFundId);
@@ -205,10 +205,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantInterest(string primaryFundId)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantInterest(string primaryFundId,decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantInterest, primaryFundId);
-            return (result.DebitAccount, result.CreditAccount);
+            return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
     }
 }

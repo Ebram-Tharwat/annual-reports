@@ -96,7 +96,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             return results;
         }
 
-        private (string debit, string credit) GetDebitAndCreditForInvestmentJournalVoucher(JournalVoucherType journalVoucher, string primaryFundId)
+        private (string debit, string credit) GetDebitAndCreditForInvestmentJournalVoucher(JournalVoucherType journalVoucher, string primaryFundId,decimal entryValue)
         {
             string debitFundId = string.Empty;
             string creditFundId = string.Empty;
@@ -104,13 +104,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             switch (journalVoucher)
             {
                 case JournalVoucherType.InvestmentPurchases:
-                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases(primaryFundId);
+                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases(primaryFundId,entryValue);
 
                 case JournalVoucherType.InvestmentSales:
-                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales(primaryFundId);
+                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales(primaryFundId,entryValue);
 
                 case JournalVoucherType.InvestmentInterest:
-                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(primaryFundId);
+                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(primaryFundId,entryValue);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(journalVoucher));
@@ -133,7 +133,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             string debitFundId = string.Empty;
             string creditFundId = string.Empty;
 
-            var getDebitAndCreditForInvestmentJournalVoucherResult = GetDebitAndCreditForInvestmentJournalVoucher(journalVoucher, primaryFundId);
+            var getDebitAndCreditForInvestmentJournalVoucherResult = GetDebitAndCreditForInvestmentJournalVoucher(journalVoucher, primaryFundId,entryValue);
             debitFundId = getDebitAndCreditForInvestmentJournalVoucherResult.debit;
             creditFundId = getDebitAndCreditForInvestmentJournalVoucherResult.credit;
             var debitFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == debitFundId);
@@ -213,15 +213,15 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             switch (journalVoucher)
             {
                 case JournalVoucherType.InvestmentPurchases:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases(primaryFundId);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases(primaryFundId,entryValue);
                     break;
 
                 case JournalVoucherType.InvestmentSales:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales(primaryFundId);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales(primaryFundId,entryValue);
                     break;
 
                 case JournalVoucherType.InvestmentInterest:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(primaryFundId);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(primaryFundId,entryValue);
                     break;
 
                 default:
@@ -261,22 +261,22 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentPurchases(string primaryFundId)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentPurchases(string primaryFundId,decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentPurchases, primaryFundId);
-            return (result.DebitAccount, result.CreditAccount);
+            return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentSales(string primaryFundId)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentSales(string primaryFundId,decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentSales, primaryFundId);
-            return (result.DebitAccount, result.CreditAccount);
+            return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentInterest(string primaryFundId)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentInterest(string primaryFundId,decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentInterest, primaryFundId);
-            return (result.DebitAccount, result.CreditAccount);
+            return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
     }
 }
