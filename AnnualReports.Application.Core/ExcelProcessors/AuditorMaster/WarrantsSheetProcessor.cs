@@ -241,6 +241,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (isExceptionRule)
             {
                 fundId = fundId.Replace('-', '.');
+                if (fundId.IndexOf('.') == 3)
+                {
+                    fundId = fundId.Remove(3, 1);
+                }
                 debitAccountNumber = $"{fundId}.{debitFundId}";
             }
             string creditAccountNumber = $"{primaryFundId}.{creditFund?.Actnumbr2?.Trim()}.{creditFundId}";
@@ -248,6 +252,10 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (isExceptionRule)
             {
                 fundId = fundId.Replace('-', '.');
+                if (fundId.IndexOf('.') == 3)
+                {
+                    fundId = fundId.Remove(3, 1);
+                }
                 creditAccountNumber = $"{fundId}.{creditFundId}";
             }
 
