@@ -1,4 +1,4 @@
-using AnnualReports.Application.Core.Contracts.MappingRuleEntities;
+﻿using AnnualReports.Application.Core.Contracts.MappingRuleEntities;
 using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
@@ -15,21 +15,22 @@ namespace AnnualReports.Application.Core.Services
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IMonthlyReportRepository _monthlyReportRepository;
+        private readonly IMonthlyImportExceptionRuleRepository _monthlyImportExceptionRuleRepository;
         private readonly IBarService _barService;
         private readonly IMappingRuleRepository _mappingRuleRepository;
         private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
-        private const int _allPeriodsValue = 13;
-        private const int _yearToExclude = 2020;
-        private const string _barAccountToExclude = "211";
+        private const int AllPeriodsValue = 13;
 
         public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService,
                              IMappingRuleRepository mappingRuleRepository, IMonthlyReportRepository monthlyReportRepository,
+                             IMonthlyImportExceptionRuleRepository monthlyImportExceptionRuleRepository,
                              IUnitOfWork<AnnualReportsDbContext> uow)
         {
             this._fundsRepository = fundsRepository;
             this._barService = barService;
             this._mappingRuleRepository = mappingRuleRepository;
             this._monthlyReportRepository = monthlyReportRepository;
+            this._monthlyImportExceptionRuleRepository = monthlyImportExceptionRuleRepository;
             this._uow = uow;
         }
 
@@ -66,12 +67,14 @@ namespace AnnualReports.Application.Core.Services
 
         public List<ExceptionReportDataItemDetails> GetDistExceptionReportData(int year)
         {
-            return _barService.GetDistExceptionByYear(year);
+            var distExceptionBarByYear = _barService.GetDistExceptionByYear(year);
+            return distExceptionBarByYear;
         }
 
         public List<ExceptionReportDataItemDetails> GetGcExceptionReportData(int year)
         {
-            return _barService.GetGcExceptionByYear(year);
+            var distExceptionBarByYear = _barService.GetGcExceptionByYear(year);
+            return distExceptionBarByYear;
         }
 
         public List<MonthlyReportRule> GetMonthlyReportRules()
@@ -79,9 +82,19 @@ namespace AnnualReports.Application.Core.Services
             return _monthlyReportRepository.GetAll().ToList();
         }
 
+        public List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules()
+        {
+            return _monthlyImportExceptionRuleRepository.GetAll().ToList();
+        }
+
         public MonthlyReportRule GetMonthlyReportRule(int id)
         {
             return _monthlyReportRepository.GetById(id);
+        }
+
+        public MonthlyImportFundExceptionRule GetMonthlyImportExceptionRuleReport(int id)
+        {
+            return _monthlyImportExceptionRuleRepository.GetById(id);
         }
 
         public MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType, string fundId)
@@ -109,6 +122,20 @@ namespace AnnualReports.Application.Core.Services
             return monthlyReportRule;
         }
 
+        public MonthlyImportFundExceptionRule UpdateMonthlyImportExceptionRuleReport(MonthlyImportFundExceptionRule monthlyImportFundExceptionRule)
+        {
+            _monthlyImportExceptionRuleRepository.Update(monthlyImportFundExceptionRule);
+            _uow.Commit();
+            return monthlyImportFundExceptionRule;
+        }
+
+        public void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity)
+        {
+            _monthlyImportExceptionRuleRepository.Add(entity);
+            _uow.Commit();
+            
+        }
+
         #region Helpers
 
         private IEnumerable<AnnualReportDataItemDetails> GetGcAnnualReportItems(int year, List<string> viewBars, List<Bar> dbBars, AnnualReportDataItemGroup fundGroup)
@@ -125,7 +152,7 @@ namespace AnnualReports.Application.Core.Services
                 {
                     if (Enumerable.Range(0, 13).Contains(targetBar.Period.Value)) // 0, 13 == 0..12
                         fundRows = fundRows.Where(t => t.View_Period == targetBar.Period.Value).ToList();
-                    else if (targetBar.Period.Value == _allPeriodsValue)
+                    else if (targetBar.Period.Value == AllPeriodsValue)
                         fundRows = fundRows.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
                 }
                 else
@@ -169,9 +196,6 @@ namespace AnnualReports.Application.Core.Services
                 if (targetBarMappings.Count == 0)
                     continue;
 
-                if (year >= _yearToExclude && targetViewBar.StartsWith(_barAccountToExclude))
-                    continue;
-
                 var fundRows = fundGroup.GroupData.Where(t => t.View_BarNumber == targetViewBar).ToList();
                 if (fundRows.Any())
                 {
@@ -183,7 +207,7 @@ namespace AnnualReports.Application.Core.Services
                         {
                             if (Enumerable.Range(0, 13).Contains(targetBarMapping.Period.Value)) // 0, 13 == 0..12
                                 fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => t.View_Period == targetBarMapping.Period.Value).ToList();
-                            else if (targetBarMapping.Period.Value == _allPeriodsValue)
+                            else if (targetBarMapping.Period.Value == AllPeriodsValue)
                                 fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
                         }
                         else
