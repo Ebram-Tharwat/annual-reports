@@ -224,7 +224,8 @@ namespace AnnualReports.Application.Core.Services
                                 BarNumber = targetBarMapping.BarNumber,
                                 BarDbSource = targetBarMapping.DbSource,
                                 Amount = GetDistBarTotalAmount(fundPeriodsByPeriod, targetBarMapping, targetViewBar),
-                                Rows = fundPeriodsByPeriod
+                                Rows = fundPeriodsByPeriod,
+                                BarDisplayName = targetBarMapping.DisplayName
                             });
                         }
                     }
@@ -236,7 +237,7 @@ namespace AnnualReports.Application.Core.Services
                 FundDisplayName = fundGroup.FundDisplayName,
                 FundDbSource = fundGroup.DbSource,
                 BarNumber = gKey.BarNumber,
-                //    BarDisplayName = targetBar.DisplayName,
+                BarDisplayName = gValue.FirstOrDefault()?.BarDisplayName,
                 //    MapToBarNumber = targetBar.MapToBarNumber,
                 Year = year,
                 MCAG = fundGroup.MCAG,
