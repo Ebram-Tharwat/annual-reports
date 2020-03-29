@@ -157,7 +157,7 @@ namespace AnnualReports.Application.Core.Services
                         fundRows = fundRows.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
                 }
                 else
-                    fundRows = fundRows.Where(t => Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
+                    fundRows = fundRows.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
 
                 fundRows = fundRows.Where(t => t.View_BarNumber == targetViewBar).ToList();
 
