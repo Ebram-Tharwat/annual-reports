@@ -215,7 +215,7 @@ namespace AnnualReports.Application.Core.Services
                                 fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
                         }
                         else
-                            fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
+                            fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
 
                         if (fundPeriodsByPeriod.Any())
                         {
