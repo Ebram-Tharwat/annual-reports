@@ -22,6 +22,8 @@ namespace AnnualReports.Application.Core.Services
         private const int _allPeriodsValue = 13;
         private const int _yearToExclude = 2020;
         private const string _barAccountToExclude = "211";
+        private Lazy<List<string>> _periodZeroAllowedBars = new Lazy<List<string>>(
+            () => Enumerable.Range(100, 100).Select(t => t.ToString()).ToList());
 
         public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService,
                              IMappingRuleRepository mappingRuleRepository, IMonthlyReportRepository monthlyReportRepository,
@@ -157,7 +159,13 @@ namespace AnnualReports.Application.Core.Services
                         fundRows = fundRows.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
                 }
                 else
-                    fundRows = fundRows.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
+                {
+                    // If it is period 0, then include accounts that start with 100-199. Else, include everything.
+                    fundRows = fundRows
+                               .Where(t => (t.View_Period == 0 && 
+                                            _periodZeroAllowedBars.Value.Any(allowedBar => t.View_BarNumber.StartsWith(allowedBar)))
+                                            || Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
+                }
 
                 fundRows = fundRows.Where(t => t.View_BarNumber == targetViewBar).ToList();
 
@@ -205,26 +213,32 @@ namespace AnnualReports.Application.Core.Services
                 {
                     foreach (var targetBarMapping in targetBarMappings)
                     {
-                        var fundPeriodsByPeriod = fundRows;
+                        var fundByPeriod = fundRows;
 
                         if (targetBarMapping.Period.HasValue)
                         {
                             if (Enumerable.Range(0, 13).Contains(targetBarMapping.Period.Value)) // 0, 13 == 0..12
-                                fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => t.View_Period == targetBarMapping.Period.Value).ToList();
+                                fundByPeriod = fundByPeriod.Where(t => t.View_Period == targetBarMapping.Period.Value).ToList();
                             else if (targetBarMapping.Period.Value == _allPeriodsValue)
-                                fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
+                                fundByPeriod = fundByPeriod.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
                         }
                         else
-                            fundPeriodsByPeriod = fundPeriodsByPeriod.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
+                        {
+                            // If it is period 0, then include accounts that start with 100-199. Else, include everything.
+                            fundByPeriod = fundByPeriod
+                                       .Where(t => (t.View_Period == 0 &&
+                                                    _periodZeroAllowedBars.Value.Any(allowedBar => t.View_BarNumber.StartsWith(allowedBar)))
+                                                    || Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
+                        }
 
-                        if (fundPeriodsByPeriod.Any())
+                        if (fundByPeriod.Any())
                         {
                             barReportItems.Add(new BarAnnualReportItem
                             {
                                 BarNumber = targetBarMapping.BarNumber,
                                 BarDbSource = targetBarMapping.DbSource,
-                                Amount = GetDistBarTotalAmount(fundPeriodsByPeriod, targetBarMapping, targetViewBar),
-                                Rows = fundPeriodsByPeriod,
+                                Amount = GetDistBarTotalAmount(fundByPeriod, targetBarMapping, targetViewBar),
+                                Rows = fundByPeriod,
                                 BarDisplayName = targetBarMapping.DisplayName
                             });
                         }
