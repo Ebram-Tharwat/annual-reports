@@ -1,5 +1,4 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace AnnualReports.Web.ViewModels.CommonModels

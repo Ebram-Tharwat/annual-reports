@@ -11,7 +11,7 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
 {
     public static class TaxesSheetParser
     {
-        public static IEnumerable<TaxesSheetInputItem> Parse(Stream inputStream, int sheetIndex,List<MonthlyImportFundExceptionRule> exceptionRules)
+        public static IEnumerable<TaxesSheetInputItem> Parse(Stream inputStream, int sheetIndex, List<MonthlyImportFundExceptionRule> exceptionRules)
         {
             var results = new List<TaxesSheetInputItem>();
             var columnsToParse = new[] { "Fund", "Name", "Taxes" };

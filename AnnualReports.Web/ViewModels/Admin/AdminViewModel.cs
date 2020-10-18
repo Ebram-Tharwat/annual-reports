@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace AnnualReports.Web.ViewModels.Admin
@@ -43,7 +40,6 @@ namespace AnnualReports.Web.ViewModels.Admin
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Full name")]
         public string FullName { get; set; }
-
 
         /// <summary>
         /// user phone number

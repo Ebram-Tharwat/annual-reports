@@ -7,6 +7,5 @@
         public string Name { get; set; }
         public decimal Taxes { get; set; }
         public bool IsExceptionRuleMatched { get; set; }
-
     }
 }

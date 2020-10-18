@@ -1,14 +1,12 @@
 ﻿using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.ExcelParsers.AuditorMaster;
 using AnnualReports.Application.Core.Interfaces;
-using AnnualReports.Common.Utils;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Domain.Core.DistDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 {
@@ -35,12 +33,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         public override IEnumerable<JournalVoucherReportOutputItem> Process(
             Stream inputStream,
             int year,
-            JournalVoucherMatchingResultBuilder matchingResultBuilder, List<MonthlyImportFundExceptionRule> exceptionRules)
+            JournalVoucherMatchingResultBuilder matchingResultBuilder,
+            List<MonthlyImportFundExceptionRule> exceptionRules)
         {
             List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
 
             const int warrantsInterestSheetIndex = 4;
-            var warrantsInterestSheetInputItems = WarrantInterestSheetParser.Parse(inputStream, warrantsInterestSheetIndex,exceptionRules);
+            var warrantsInterestSheetInputItems = WarrantInterestSheetParser.Parse(inputStream, warrantsInterestSheetIndex, exceptionRules);
             var funds = _fundsRepository.Get(t => t.Year == year).ToList();
 
             foreach (var warrantInterestInput in warrantsInterestSheetInputItems)
@@ -56,14 +55,14 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 if (existingFund.DbSource == DbSource.GC)
                 {
                     var gcFunds = _gcDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
-                    results.AddRange(CreateJournalVoucherOutputItemsForGc(warrantInterestInput.FundId,primaryFundId, gcFunds, warrantInterestInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForGc(warrantInterestInput.FundId, primaryFundId, gcFunds, warrantInterestInput, matchingResultBuilder));
                 }
                 else
                 {
                     primaryFundId = warrantInterestInput.FundId.Replace("-", "").Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateJournalVoucherOutputItemsForDist(warrantInterestInput.FundId,primaryFundId, distFunds, warrantInterestInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(warrantInterestInput.FundId, primaryFundId, distFunds, warrantInterestInput, matchingResultBuilder));
                 }
             }
 
@@ -81,7 +80,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    input.FundId,primaryFundId, gcFunds, input.WarrantInterest, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.WarrantInterest, matchingResultBuilder));
+                    input.FundId, primaryFundId, gcFunds, input.WarrantInterest, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.WarrantInterest, matchingResultBuilder));
 
             return results;
         }
@@ -99,7 +98,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest(primaryFundId,entryValue);
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest(primaryFundId, entryValue);
 
             var debitFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == debitFundId);
             var creditFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == creditFundId);
@@ -149,7 +148,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForDist(
-                   fundId, primaryFundId, distFunds, input.WarrantInterest, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.WarrantInterest, matchingResultBuilder));
+                   fundId, primaryFundId, distFunds, input.WarrantInterest, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.WarrantInterest, matchingResultBuilder));
 
             return results;
         }
@@ -167,7 +166,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest(primaryFundId,entryValue);
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForWarrantInterest(primaryFundId, entryValue);
 
             var debitFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == debitFundId);
             var creditFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == creditFundId);
@@ -213,7 +212,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantInterest(string primaryFundId,decimal entryValue)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantInterest(string primaryFundId, decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantInterest, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);

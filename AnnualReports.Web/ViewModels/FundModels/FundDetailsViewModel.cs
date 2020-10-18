@@ -1,5 +1,4 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
-using System;
 
 namespace AnnualReports.Web.ViewModels.FundModels
 {

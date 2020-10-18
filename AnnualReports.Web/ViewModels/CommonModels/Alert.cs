@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace AnnualReports.Web.ViewModels.CommonModels
+﻿namespace AnnualReports.Web.ViewModels.CommonModels
 {
     public class Alert
     {

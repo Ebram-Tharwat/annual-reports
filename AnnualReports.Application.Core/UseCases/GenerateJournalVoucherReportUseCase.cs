@@ -1,4 +1,4 @@
-﻿using AnnualReports.Application.Core.Contracts.Reports;
+using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.ExcelProcessors.AuditorMaster;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
@@ -9,7 +9,7 @@ namespace AnnualReports.Application.Core.UseCases
 {
     public interface IGenerateJournalVoucherReportUseCase
     {
-        MemoryStream Execute(Stream inputStream, int year,List<MonthlyImportFundExceptionRule> exceptionRules);
+        MemoryStream Execute(Stream inputStream, int year, List<MonthlyImportFundExceptionRule> exceptionRules);
 
         List<MonthlyReportRule> GetMonthlyReportRules();
         List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules();
@@ -46,7 +46,7 @@ namespace AnnualReports.Application.Core.UseCases
 
             foreach (var processor in _sheetProcessors)
             {
-                results.AddRange(processor.Process(inputStream, year, matchingResultBuilder,exceptionRules));
+                results.AddRange(processor.Process(inputStream, year, matchingResultBuilder, exceptionRules));
             }
 
             return _exportingService.GetJournalVoucherReportExcel(results, matchingResultBuilder.UnmatchedFunds);
@@ -81,9 +81,10 @@ namespace AnnualReports.Application.Core.UseCases
         {
             return _reportService.UpdateMonthlyImportExceptionRuleReport(monthlyImportFundExceptionRule);
         }
+
         public void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity)
         {
-             _reportService.AddMonthlyImportFundExceptionRuleReport(entity);
+            _reportService.AddMonthlyImportFundExceptionRuleReport(entity);
         }
     }
 }

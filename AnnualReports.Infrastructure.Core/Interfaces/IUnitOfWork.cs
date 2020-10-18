@@ -1,6 +1,5 @@
 ﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Data.Entity;
 
 namespace AnnualReports.Infrastructure.Core.Interfaces
 {

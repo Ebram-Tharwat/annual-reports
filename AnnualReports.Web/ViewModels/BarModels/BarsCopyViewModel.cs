@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AnnualReports.Web.ViewModels.BarModels
 {
     public class BarsCopyViewModel
     {
-
         [Required(ErrorMessage = "The from year field is required.")]
         [UIHint("YearDatePicker")]
         [Display(Name = "Please select year to copy from")]

@@ -20,7 +20,7 @@ namespace AnnualReports.Web.ViewModels.ReportModels
         [UIHint("FileUpload")]
         public HttpPostedFileBase ExcelFile { get; set; }
 
-        public List<MonthlyReportRule>  MonthlyReportRules { get; set; }
+        public List<MonthlyReportRule> MonthlyReportRules { get; set; }
 
         public List<MonthlyImportFundExceptionRule> MonthlyImportExceptionRule { get; set; }
 

@@ -1,8 +1,6 @@
 ﻿using AnnualReports.Web.Validations;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Web;
 
 namespace AnnualReports.Web.ViewModels.BarModels
@@ -24,7 +22,6 @@ namespace AnnualReports.Web.ViewModels.BarModels
         [UIHint("YearDatePicker")]
         [Display(Name = "Please select year")]
         public int? BarsYear { get; set; }
-
 
         public string DateAsMonthYear
         {

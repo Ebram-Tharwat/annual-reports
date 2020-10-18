@@ -3,8 +3,6 @@ using AnnualReports.Web.Models;
 using AnnualReports.Web.ViewModels.Admin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -18,9 +16,8 @@ namespace AnnualReports.Web.Controllers
     [Authorize(Roles = "Admin")]
     public class UserAdminController : Controller
     {
-        int pageSize = int.Parse(ConfigurationManager.AppSettings["pageSize"].ToString());
+        private int pageSize = int.Parse(ConfigurationManager.AppSettings["pageSize"].ToString());
         // GET: UserAdmin
-
 
         public UserAdminController()
         {
@@ -67,7 +64,6 @@ namespace AnnualReports.Web.Controllers
         /// <returns>index page html</returns>
         public async Task<ActionResult> Index(int? page)
         {
-
             return View();
         }
 
@@ -121,8 +117,6 @@ namespace AnnualReports.Web.Controllers
         {
             //MeetingsDataContext db = new MeetingsDataContext();
 
-
-
             //Get the list of Roles
             ViewBag.RoleId = new SelectList(await RoleManager.Roles.ToListAsync(), "Name", "Name");
             return View();
@@ -144,7 +138,7 @@ namespace AnnualReports.Web.Controllers
                 var user = new ApplicationUser { EmailConfirmed = true, UserName = userViewModel.UserName, Email = userViewModel.Email, FullName = userViewModel.FullName, PhoneNumber = userViewModel.PhoneNumber, };
                 var adminresult = await UserManager.CreateAsync(user, userViewModel.Password);
 
-                //Add User to the selected Roles 
+                //Add User to the selected Roles
                 if (adminresult.Succeeded)
                 {
                     if (selectedRoles != null)
@@ -163,7 +157,6 @@ namespace AnnualReports.Web.Controllers
                     ModelState.AddModelError("", adminresult.Errors.First());
                     ViewBag.RoleId = new SelectList(RoleManager.Roles, "Name", "Name");
                     return View();
-
                 }
                 return RedirectToAction("Index");
             }
@@ -186,7 +179,6 @@ namespace AnnualReports.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-
                 var user = await UserManager.FindByIdAsync(id);
                 if (user == null)
                 {
@@ -196,7 +188,7 @@ namespace AnnualReports.Web.Controllers
                 bool lockedout = await UserManager.IsLockedOutAsync(user.Id); // Check for lockout
                 // UserManager.ResetAccessFailedCountAsync(user.Id); // Clear failed count after success
                 //UserManager.AccessFailedAsync(user.Id); // Record a failure (this will lockout if enabled)
-                //UserManager.SetLockoutEnabled(user.Id, enabled) // Enables or disables lockout for a user  
+                //UserManager.SetLockoutEnabled(user.Id, enabled) // Enables or disables lockout for a user
 
                 var userRoles = await UserManager.GetRolesAsync(user.Id);
 
@@ -338,6 +330,5 @@ namespace AnnualReports.Web.Controllers
             }
             return View();
         }
-
     }
 }

@@ -1,10 +1,10 @@
-﻿using AnnualReports.Domain.Core.Contracts;
+﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
+using AnnualReports.Domain.Core.Contracts;
 using AnnualReports.Domain.Core.DistDbModels;
 using AnnualReports.Infrastructure.Core.DbContexts.DistDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using AnnualReports.Domain.Core.AnnualReportsDbModels;
 
 namespace AnnualReports.Infrastructure.Core.Repositories.DistDb
 {
@@ -34,7 +34,6 @@ namespace AnnualReports.Infrastructure.Core.Repositories.DistDb
                             Description = fundGroup.FirstOrDefault().Description,
                             DbSource = DbSource.DIST
                         };
-
 
             var test = query.Distinct();
             return query.Distinct().ToList();

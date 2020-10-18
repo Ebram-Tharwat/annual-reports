@@ -16,8 +16,6 @@ namespace AnnualReports.Utilities.App_Start
 {
     using AnnualReports.Application.Core.ExcelProcessors.AuditorMaster;
     using AnnualReports.Application.Core.UseCases;
-    using AnnualReports.Domain.Core.AnnualReportsDbModels;
-    using AnnualReports.Infrastructure.Core.Repositories;
     using Domain.Core.DistDbModels;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;

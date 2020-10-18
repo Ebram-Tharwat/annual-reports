@@ -22,6 +22,7 @@ namespace AnnualReports.Application.Core.Services
         private const int _allPeriodsValue = 13;
         private const int _yearToExclude = 2020;
         private const string _barAccountToExclude = "211";
+
         private Lazy<List<string>> _periodZeroAllowedBars = new Lazy<List<string>>(
             () => Enumerable.Range(100, 100).Select(t => t.ToString()).ToList());
 
@@ -162,7 +163,7 @@ namespace AnnualReports.Application.Core.Services
                 {
                     // If it is period 0, then include accounts that start with 100-199. Else, include everything.
                     fundRows = fundRows
-                               .Where(t => (t.View_Period == 0 && 
+                               .Where(t => (t.View_Period == 0 &&
                                             _periodZeroAllowedBars.Value.Any(allowedBar => t.View_BarNumber.StartsWith(allowedBar)))
                                             || Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
                 }

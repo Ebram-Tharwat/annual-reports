@@ -64,7 +64,6 @@ namespace AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb
                             = l.ProviderKey
                     }).ToTable("AspNetUserLogins");
 
-
             EntityTypeConfiguration<IdentityUserClaim> table1 =
                 modelBuilder.Entity<IdentityUserClaim>().ToTable("AspNetUserClaims");
 

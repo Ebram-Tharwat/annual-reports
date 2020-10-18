@@ -1,10 +1,9 @@
-﻿using System;
+﻿using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.Interfaces;
-using System.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Data.Entity.Validation;
 using System.Text;
-using Microsoft.AspNet.Identity.EntityFramework;
-using AnnualReports.Domain.Core.AnnualReportsDbModels;
 
 namespace AnnualReports.Infrastructure.Core
 {

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 
-
 namespace AnnualReports.Common.Utils
 {
     public static class StringUtils
@@ -24,7 +23,7 @@ namespace AnnualReports.Common.Utils
             return str.Substring(0, Math.Min(str.Length, maxLength));
         }
 
-        public static Tuple<bool,string> ApplyMonthlyImportExceptionRuleOnFund(string fundId,List<MonthlyImportFundExceptionRule> monthlyImportFundExceptionRules)
+        public static Tuple<bool, string> ApplyMonthlyImportExceptionRuleOnFund(string fundId, List<MonthlyImportFundExceptionRule> monthlyImportFundExceptionRules)
         {
             string result = fundId.Trim();
             for (int i = 0; i < monthlyImportFundExceptionRules.Count; i++)
@@ -32,7 +31,7 @@ namespace AnnualReports.Common.Utils
                 if (result.Contains(monthlyImportFundExceptionRules[i].OriginalFundId.Trim()))
                 {
                     result = result.Replace(monthlyImportFundExceptionRules[i].OriginalFundId.Trim(), monthlyImportFundExceptionRules[i].NewFundId.Trim());
-                    return new Tuple<bool, string>(true,result);
+                    return new Tuple<bool, string>(true, result);
                 }
             }
             return new Tuple<bool, string>(false, result);

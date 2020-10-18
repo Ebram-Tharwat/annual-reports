@@ -11,7 +11,7 @@ namespace AnnualReports.Application.Core.ExcelParsers.AuditorMaster
 {
     public static class WarrantSheetParser
     {
-        public static IEnumerable<WarrantsSheetInputItem> Parse(Stream inputStream, int sheetIndex,List<MonthlyImportFundExceptionRule> exceptionRules)
+        public static IEnumerable<WarrantsSheetInputItem> Parse(Stream inputStream, int sheetIndex, List<MonthlyImportFundExceptionRule> exceptionRules)
         {
             var results = new List<WarrantsSheetInputItem>();
             var columnsToParse = new[] { "FundID", "Name", "Issues", "Presented", "Cancels" };

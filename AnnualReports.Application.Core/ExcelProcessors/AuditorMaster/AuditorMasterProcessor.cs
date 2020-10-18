@@ -11,7 +11,8 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         public abstract IEnumerable<JournalVoucherReportOutputItem> Process(
             Stream inputStream,
             int year,
-            JournalVoucherMatchingResultBuilder matchingResultBuilder, List<MonthlyImportFundExceptionRule> exceptionRules);
+            JournalVoucherMatchingResultBuilder matchingResultBuilder,
+            List<MonthlyImportFundExceptionRule> exceptionRules);
 
         protected JournalVoucherReportOutputItem CreateDebitJournalVoucherOutputItem(
            string accountNumber,

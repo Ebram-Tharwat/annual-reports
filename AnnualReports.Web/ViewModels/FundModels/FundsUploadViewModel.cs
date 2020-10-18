@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AnnualReports.Web.Validations;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Web;
-using AnnualReports.Web.Validations;
 
 namespace AnnualReports.Web.ViewModels.FundModels
 {

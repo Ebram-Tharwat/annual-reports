@@ -35,12 +35,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         public override IEnumerable<JournalVoucherReportOutputItem> Process(
             Stream inputStream,
             int year,
-            JournalVoucherMatchingResultBuilder matchingResultBuilder, List<MonthlyImportFundExceptionRule> exceptionRules)
+            JournalVoucherMatchingResultBuilder matchingResultBuilder,
+            List<MonthlyImportFundExceptionRule> exceptionRules)
         {
             List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
 
             const int investmentsSheetIndex = 3;
-            var investmentsSheetInputItems = InvestmentsSheetParser.Parse(inputStream, investmentsSheetIndex,exceptionRules);
+            var investmentsSheetInputItems = InvestmentsSheetParser.Parse(inputStream, investmentsSheetIndex, exceptionRules);
             var funds = _fundsRepository.Get(t => t.Year == year).ToList();
 
             foreach (var investmentInput in investmentsSheetInputItems)
@@ -56,7 +57,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 if (existingFund.DbSource == DbSource.GC)
                 {
                     var gcFunds = _gcDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
-                    results.AddRange(CreateJournalVoucherOutputItemsForGc(investmentInput.FundId,primaryFundId, gcFunds, investmentInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForGc(investmentInput.FundId, primaryFundId, gcFunds, investmentInput, matchingResultBuilder));
                 }
                 else
                 {
@@ -65,7 +66,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                                          .Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateJournalVoucherOutputItemsForDist(investmentInput.FundId,primaryFundId, distFunds, investmentInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(investmentInput.FundId, primaryFundId, distFunds, investmentInput, matchingResultBuilder));
                 }
             }
 
@@ -83,20 +84,20 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    fundId,primaryFundId, gcFunds, input.Purchases, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.InvestmentPurchases, matchingResultBuilder));
+                    fundId, primaryFundId, gcFunds, input.Purchases, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.InvestmentPurchases, matchingResultBuilder));
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    fundId,primaryFundId, gcFunds, input.Sales, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.InvestmentSales, matchingResultBuilder));
+                    fundId, primaryFundId, gcFunds, input.Sales, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.InvestmentSales, matchingResultBuilder));
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    fundId,primaryFundId, gcFunds, input.Interest, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.InvestmentInterest, matchingResultBuilder));
+                    fundId, primaryFundId, gcFunds, input.Interest, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.InvestmentInterest, matchingResultBuilder));
 
             return results;
         }
 
-        private (string debit, string credit) GetDebitAndCreditForInvestmentJournalVoucher(JournalVoucherType journalVoucher, string primaryFundId,decimal entryValue)
+        private (string debit, string credit) GetDebitAndCreditForInvestmentJournalVoucher(JournalVoucherType journalVoucher, string primaryFundId, decimal entryValue)
         {
             string debitFundId = string.Empty;
             string creditFundId = string.Empty;
@@ -104,13 +105,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             switch (journalVoucher)
             {
                 case JournalVoucherType.InvestmentPurchases:
-                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases(primaryFundId,entryValue);
+                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases(primaryFundId, entryValue);
 
                 case JournalVoucherType.InvestmentSales:
-                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales(primaryFundId,entryValue);
+                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales(primaryFundId, entryValue);
 
                 case JournalVoucherType.InvestmentInterest:
-                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(primaryFundId,entryValue);
+                    return (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(primaryFundId, entryValue);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(journalVoucher));
@@ -133,7 +134,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             string debitFundId = string.Empty;
             string creditFundId = string.Empty;
 
-            var getDebitAndCreditForInvestmentJournalVoucherResult = GetDebitAndCreditForInvestmentJournalVoucher(journalVoucher, primaryFundId,entryValue);
+            var getDebitAndCreditForInvestmentJournalVoucherResult = GetDebitAndCreditForInvestmentJournalVoucher(journalVoucher, primaryFundId, entryValue);
             debitFundId = getDebitAndCreditForInvestmentJournalVoucherResult.debit;
             creditFundId = getDebitAndCreditForInvestmentJournalVoucherResult.credit;
             var debitFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == debitFundId);
@@ -189,7 +190,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForDist(
-                    fundId,primaryFundId, distFunds, input.IsExceptionRuleMatched, input.Interest, input.RowIndex, JournalVoucherType.InvestmentInterest, matchingResultBuilder));
+                    fundId, primaryFundId, distFunds, input.IsExceptionRuleMatched, input.Interest, input.RowIndex, JournalVoucherType.InvestmentInterest, matchingResultBuilder));
 
             return results;
         }
@@ -213,15 +214,15 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             switch (journalVoucher)
             {
                 case JournalVoucherType.InvestmentPurchases:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases(primaryFundId,entryValue);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentPurchases(primaryFundId, entryValue);
                     break;
 
                 case JournalVoucherType.InvestmentSales:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales(primaryFundId,entryValue);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentSales(primaryFundId, entryValue);
                     break;
 
                 case JournalVoucherType.InvestmentInterest:
-                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(primaryFundId,entryValue);
+                    (debitFundId, creditFundId) = GetDebitAndCreditFundIdsForInvestmentInterest(primaryFundId, entryValue);
                     break;
 
                 default:
@@ -246,7 +247,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (isExceptionRule)
             {
                 fundId = fundId.Replace('-', '.');
-                if(fundId.IndexOf('.') == 3)
+                if (fundId.IndexOf('.') == 3)
                 {
                     fundId = fundId.Remove(3, 1);
                 }
@@ -269,19 +270,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentPurchases(string primaryFundId,decimal entryValue)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentPurchases(string primaryFundId, decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentPurchases, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentSales(string primaryFundId,decimal entryValue)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentSales(string primaryFundId, decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentSales, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentInterest(string primaryFundId,decimal entryValue)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentInterest(string primaryFundId, decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentInterest, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);

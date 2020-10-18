@@ -126,7 +126,6 @@ namespace AnnualReports.Web.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
-
     }
 
     /// <summary>
@@ -142,6 +141,5 @@ namespace AnnualReports.Web.Models
         /// activation code
         /// </summary>
         public string Code { get; set; }
-
     }
 }

@@ -1,8 +1,6 @@
 ﻿using AnnualReports.Web.ViewModels.CommonModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace AnnualReports.Web.ViewModels.BarModels
 {

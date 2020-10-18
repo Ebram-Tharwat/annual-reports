@@ -34,12 +34,13 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         public override IEnumerable<JournalVoucherReportOutputItem> Process(
             Stream inputStream,
             int year,
-            JournalVoucherMatchingResultBuilder matchingResultBuilder, List<MonthlyImportFundExceptionRule> exceptionRules)
+            JournalVoucherMatchingResultBuilder matchingResultBuilder,
+            List<MonthlyImportFundExceptionRule> exceptionRules)
         {
             List<JournalVoucherReportOutputItem> results = new List<JournalVoucherReportOutputItem>();
 
             const int taxesSheetIndex = 2;
-            var taxesSheetInputItems = TaxesSheetParser.Parse(inputStream, taxesSheetIndex,exceptionRules);
+            var taxesSheetInputItems = TaxesSheetParser.Parse(inputStream, taxesSheetIndex, exceptionRules);
             var funds = _fundsRepository.Get(t => t.Year == year).ToList();
 
             foreach (var taxesInput in taxesSheetInputItems)
@@ -55,7 +56,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                 if (existingFund.DbSource == DbSource.GC)
                 {
                     var gcFunds = _gcDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
-                    results.AddRange(CreateJournalVoucherOutputItemsForGc(taxesInput.FundId,primaryFundId, gcFunds, taxesInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForGc(taxesInput.FundId, primaryFundId, gcFunds, taxesInput, matchingResultBuilder));
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
                                          .Remove(6, 1);
                     var distFunds = _distDbFundRepo.Get(t => t.FundNumber.StartsWith(primaryFundId)).ToList();
 
-                    results.AddRange(CreateJournalVoucherOutputItemsForDist(taxesInput.FundId,primaryFundId, distFunds, taxesInput, matchingResultBuilder));
+                    results.AddRange(CreateJournalVoucherOutputItemsForDist(taxesInput.FundId, primaryFundId, distFunds, taxesInput, matchingResultBuilder));
                 }
             }
 
@@ -82,7 +83,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForGc(
-                    fundId,primaryFundId, gcFunds, input.Taxes, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.Taxes, matchingResultBuilder));
+                    fundId, primaryFundId, gcFunds, input.Taxes, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.Taxes, matchingResultBuilder));
 
             return results;
         }
@@ -100,7 +101,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForTaxes(primaryFundId,entryValue);
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForTaxes(primaryFundId, entryValue);
 
             var debitFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == debitFundId);
             var creditFund = gcFunds.FirstOrDefault(t => t.Actnumbr5.Trim() == creditFundId);
@@ -149,7 +150,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
             results.AddRange(
                 CreateJournalVoucherOutputItemsForDist(
-                    fundId,primaryFundId, distFunds, input.Taxes, input.RowIndex,input.IsExceptionRuleMatched, JournalVoucherType.Taxes, matchingResultBuilder));
+                    fundId, primaryFundId, distFunds, input.Taxes, input.RowIndex, input.IsExceptionRuleMatched, JournalVoucherType.Taxes, matchingResultBuilder));
 
             return results;
         }
@@ -167,7 +168,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             if (entryValue == 0)
                 return Enumerable.Empty<JournalVoucherReportOutputItem>();
 
-            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForTaxes(primaryFundId,entryValue);
+            (string debitFundId, string creditFundId) = GetDebitAndCreditFundIdsForTaxes(primaryFundId, entryValue);
 
             var debitFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == debitFundId);
             var creditFund = distFunds.FirstOrDefault(t => t.Actnumbr3.Trim() == creditFundId);
@@ -213,7 +214,7 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
             };
         }
 
-        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForTaxes(string primaryFundId,decimal entryValue)
+        private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForTaxes(string primaryFundId, decimal entryValue)
         {
             var result = _reportService.GetMonthlyReportRule(JournalVoucherType.Taxes, primaryFundId.Truncate(3));
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
