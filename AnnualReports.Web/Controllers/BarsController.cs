@@ -68,10 +68,11 @@ namespace AnnualReports.Web.Controllers
                 Data = entities.ToMappedPagedList<Bar, BarDetailsViewModel>(pagingInfo)
             };
 
-            ViewBag.AvailableDbSources = new List<SelectListItem>() {
-                 new SelectListItem() {Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
-                 new SelectListItem() {Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
-                 };
+            ViewBag.AvailableDbSources = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text = DbSource.GC.ToString(), Value = ((int)DbSource.GC).ToString() },
+                new SelectListItem() { Text = DbSource.DIST.ToString(), Value = ((int)DbSource.DIST).ToString() }
+            };
             ViewBag.DisplayBarNumberTarget = filter.DbSource.HasValue && (filter.DbSource.Value == DbSource.DIST);
             return View(viewmodel);
         }

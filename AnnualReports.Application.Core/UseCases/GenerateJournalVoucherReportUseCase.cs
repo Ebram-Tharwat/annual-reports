@@ -25,6 +25,8 @@ namespace AnnualReports.Application.Core.UseCases
         MonthlyImportFundExceptionRule UpdateMonthlyImportExceptionRuleReport(MonthlyImportFundExceptionRule monthlyImportFundExceptionRule);
 
         void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity);
+
+        void AddJournalVoucherRule(MonthlyReportRule entity);
     }
 
     public class GenerateJournalVoucherReportUseCase : IGenerateJournalVoucherReportUseCase
@@ -90,6 +92,11 @@ namespace AnnualReports.Application.Core.UseCases
         public void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity)
         {
             _reportService.AddMonthlyImportFundExceptionRuleReport(entity);
+        }
+
+        public void AddJournalVoucherRule(MonthlyReportRule entity)
+        {
+            _reportService.AddJournalVoucherRule(entity);
         }
     }
 }

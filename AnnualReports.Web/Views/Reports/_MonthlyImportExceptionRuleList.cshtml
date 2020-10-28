@@ -4,6 +4,9 @@
     <div class="panel panel-default">
         <div class="panel-heading bold">Monthly Import Exception Rules:</div>
         <div class="panel-body">
+            <p>
+                @Html.ActionLink("Create new Exception Rule", "CreateImportRule", null, new { @class = "btn btn-primary" })
+            </p>
             <table class="table">
                 <thead>
                     <tr>
@@ -27,12 +30,11 @@
                                 @Html.DisplayFor(modelItem => item.NewFundId)
                             </td>
                             <td>
-                                <a href="@Url.Action("EditImportRule", "Reports", new { item.Id })" class="btn btn-info"> <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit </span></a>
+                                <a href="@Url.Action("EditImportRule", "Reports", new { item.Id })" class="btn btn-primary"> <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit </span></a>
                             </td>
                         </tr>
                     }
                 </tbody>
-
             </table>
         </div>
     </div>

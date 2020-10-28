@@ -1,0 +1,69 @@
+﻿@model List<AnnualReports.Domain.Core.AnnualReportsDbModels.MonthlyReportRule>
+
+<div class="col-xs-12">
+    <div class="panel panel-default">
+        <div class="panel-heading bold">Journal Voucher Rules:</div>
+        <div class="panel-body">
+            <p>
+                @Html.ActionLink("Create new Journal Voucher rule", "CreateJournalVoucherRule", null, new { @class = "btn btn-primary" })
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Fund Ids
+                        </th>
+                        <th>
+                            Debit Account
+                        </th>
+                        <th>
+                            Credit Account
+                        </th>
+                        <th>
+                            Debit Negative
+                        </th>
+                        <th>
+                            Credit Negative
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.JournalVoucherType)
+                            </td>
+                            <td>
+                                @foreach (var fundId in (item.FundIds ?? "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    @fundId.Trim()<br />
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DebitAccount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreditAccount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DebitExceptionNegative)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreditExceptionNegative)
+                            </td>
+
+                            <td>
+                                <a href="@Url.Action("EditRule", "Reports", new { item.Id })" class="btn btn-primary"> <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit </span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

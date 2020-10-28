@@ -17,7 +17,6 @@ namespace AnnualReports.Application.Core.Services
         private readonly IMonthlyReportRepository _monthlyReportRepository;
         private readonly IMonthlyImportExceptionRuleRepository _monthlyImportExceptionRuleRepository;
         private readonly IBarService _barService;
-        private readonly IMappingRuleRepository _mappingRuleRepository;
         private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
         private const int _allPeriodsValue = 13;
         private const int _yearToExclude = 2020;
@@ -33,7 +32,6 @@ namespace AnnualReports.Application.Core.Services
         {
             this._fundsRepository = fundsRepository;
             this._barService = barService;
-            this._mappingRuleRepository = mappingRuleRepository;
             this._monthlyReportRepository = monthlyReportRepository;
             this._monthlyImportExceptionRuleRepository = monthlyImportExceptionRuleRepository;
             this._uow = uow;
@@ -137,6 +135,12 @@ namespace AnnualReports.Application.Core.Services
         public void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity)
         {
             _monthlyImportExceptionRuleRepository.Add(entity);
+            _uow.Commit();
+        }
+
+        public void AddJournalVoucherRule(MonthlyReportRule entity)
+        {
+            _monthlyReportRepository.Add(entity);
             _uow.Commit();
         }
 

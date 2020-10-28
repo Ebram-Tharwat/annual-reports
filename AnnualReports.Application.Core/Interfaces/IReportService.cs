@@ -27,6 +27,8 @@ namespace AnnualReports.Application.Core.Interfaces
 
         void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity);
 
+        void AddJournalVoucherRule(MonthlyReportRule entity);
+
         List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar);
     }
 }

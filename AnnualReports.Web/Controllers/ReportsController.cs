@@ -169,6 +169,28 @@ namespace AnnualReports.Web.Controllers
         }
 
         [HttpGet]
+        [Route("journal-voucher-createJournalVoucherRule")]
+        public ActionResult CreateJournalVoucherRule()
+        {
+            var model = new MonthlyReportRule();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("journal-voucher-createJournalVoucherRule")]
+        public ActionResult CreateJournalVoucherRule(MonthlyReportRule model)
+        {
+            if (ModelState.IsValid)
+            {
+                _journalVoucherReportUseCase.AddJournalVoucherRule(model);
+                Success($"<strong>{model.Description}</strong> for <strong>{model.FundIds}</strong> was successfully saved.");
+                return RedirectToAction("JournalVoucherReport");
+            }
+            return View(model);
+        }
+
+        [HttpGet]
         [Route("journal-voucher-edit")]
         public ActionResult EditRule(string id)
         {

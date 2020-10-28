@@ -1,0 +1,84 @@
+﻿@model AnnualReports.Domain.Core.AnnualReportsDbModels.MonthlyReportRule
+@using AnnualReports.Domain.Core.AnnualReportsDbModels;
+
+@{
+    ViewBag.Title = "Create Journal Voucher Rule";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.JournalVoucherType, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.JournalVoucherType, EnumHelper.GetSelectList(typeof(JournalVoucherType)), "-- Please Select--", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.JournalVoucherType, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.FundIds, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.FundIds, new { @class = "form-control" })
+                <label class="label label-info">You can enter multiple values using comma as separator</label>
+                @Html.ValidationMessageFor(model => model.FundIds, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreditAccount, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.CreditAccount, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CreditAccount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DebitAccount, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.DebitAccount, new { @class = "form-control", })
+                @Html.ValidationMessageFor(model => model.DebitAccount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreditExceptionNegative, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.CreditExceptionNegative, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CreditExceptionNegative, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DebitExceptionNegative, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.DebitExceptionNegative, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.DebitExceptionNegative, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-2">
+                @Html.ActionLink("Cancel", "JournalVoucherReport", null, new { @class = "btn btn-default" })
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to index", "journal-voucher", "Reports")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
