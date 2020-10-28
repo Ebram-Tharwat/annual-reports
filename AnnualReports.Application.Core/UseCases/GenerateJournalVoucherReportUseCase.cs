@@ -4,6 +4,7 @@ using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace AnnualReports.Application.Core.UseCases
 {
@@ -12,9 +13,11 @@ namespace AnnualReports.Application.Core.UseCases
         MemoryStream Execute(Stream inputStream, int year, List<MonthlyImportFundExceptionRule> exceptionRules);
 
         List<MonthlyReportRule> GetMonthlyReportRules();
+
         List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules();
 
         MonthlyReportRule GetMonthlyReport(int id);
+
         MonthlyImportFundExceptionRule GetMonthlyImportExceptionRuleReport(int id);
 
         MonthlyReportRule UpdateMonthlyReport(MonthlyReportRule monthlyReportRule);
@@ -54,7 +57,9 @@ namespace AnnualReports.Application.Core.UseCases
 
         public List<MonthlyReportRule> GetMonthlyReportRules()
         {
-            return _reportService.GetMonthlyReportRules();
+            return _reportService.GetMonthlyReportRules()
+                .OrderBy(t => t.JournalVoucherType)
+                .ToList();
         }
 
         public List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules()
