@@ -31,12 +31,32 @@ namespace AnnualReports.Web.Controllers
         }
 
         [HttpGet]
+        [Route("annual-report")]
         public ActionResult AnnualReport()
         {
             return View();
         }
 
         [HttpGet]
+        [Route("annual-report/year/{year:int}/export/excel")]
+        public ActionResult ExportAnnualReportToExcel(int year, int? fundId = null)
+        {
+            MemoryStream stream = _exportingService.GetAnnualReportExcel(year, fundId);
+
+            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.AnnualReportExcelFileName, year));
+        }
+
+        [HttpGet]
+        [Route("annual-report/year/{year:int}/fundId/{fundId:int}/export/excel")]
+        public ActionResult ExportAnnualReportToExcelByFundId(int year, int fundId)
+        {
+            MemoryStream stream = _exportingService.GetAnnualReportExcel(year, fundId);
+
+            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.AnnualReportExcelFileName, year));
+        }
+
+        [HttpGet]
+        [Route("monthly-report")]
         public ActionResult MonthlyReport()
         {
             var viewmodel = new MonthlyReportGenerateViewModel();
@@ -44,19 +64,8 @@ namespace AnnualReports.Web.Controllers
             return View(viewmodel);
         }
 
-        [HttpGet]
-        public ActionResult DistExceptionReport()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public ActionResult GcExceptionReport()
-        {
-            return View();
-        }
-
         [HttpPost]
+        [Route("monthly-report")]
         [ValidateAntiForgeryToken]
         public ActionResult MonthlyReport(MonthlyReportGenerateViewModel viewmodel)
         {
@@ -96,6 +105,36 @@ namespace AnnualReports.Web.Controllers
         }
 
         [HttpGet]
+        [Route("dist-exception-report")]
+        public ActionResult DistExceptionReport()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("dist-exception-report/year/{year:int}/export/excel")]
+        public ActionResult ExportDistExceptionReportToExcel(int year)
+        {
+            MemoryStream stream = _exportingService.GetDistExceptionReportExcel(year);
+            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.DistExceptionReportExcelFileName, year));
+        }
+
+        [HttpGet]
+        [Route("gc-exception-report")]
+        public ActionResult GcExceptionReport()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("gc-exception-report/year/{year:int}/export/excel")]
+        public ActionResult ExportGcExceptionReportToExcel(int year)
+        {
+            MemoryStream stream = _exportingService.GetGcExceptionReportExcel(year);
+            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.GcExceptionReportExcelFileName, year));
+        }
+
+        [HttpGet]
         [Route("journal-voucher")]
         public ActionResult JournalVoucherReport()
         {
@@ -103,134 +142,6 @@ namespace AnnualReports.Web.Controllers
             viewmodel.MonthlyReportRules = _journalVoucherReportUseCase.GetMonthlyReportRules();
             viewmodel.MonthlyImportExceptionRule = _journalVoucherReportUseCase.GetMonthlyImportExceptionRules();
             return View(viewmodel);
-        }
-
-        [HttpGet]
-        [Route("journal-voucher-editImportRule")]
-        public ActionResult EditImportRule(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if (ModelState.IsValid)
-            {
-                return View(_journalVoucherReportUseCase.GetMonthlyImportExceptionRuleReport(int.Parse(id)));
-            }
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        }
-
-        [HttpPost]
-        [Route("journal-voucher-editImportRule")]
-        [ValidateAntiForgeryToken]
-        public ActionResult EditImportRule(MonthlyImportFundExceptionRule model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = _journalVoucherReportUseCase.GetMonthlyImportExceptionRuleReport(model.Id);
-                if (result == null)
-                {
-                    return HttpNotFound();
-                }
-                result.NewFundId = model.NewFundId;
-                result.OriginalFundId = model.OriginalFundId;
-                result = _journalVoucherReportUseCase.UpdateMonthlyImportExceptionRuleReport(result);
-                if (result == null)
-                {
-                    return HttpNotFound();
-                }
-                return RedirectToAction("JournalVoucherReport");
-            }
-            ModelState.AddModelError("", "An error occurred.");
-            return View();
-        }
-
-        [HttpGet]
-        [Route("journal-voucher-createImportRule")]
-        public ActionResult CreateImportRule()
-        {
-            var model = new MonthlyImportFundExceptionRule();
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("journal-voucher-createImportRule")]
-        public ActionResult Create(MonthlyImportFundExceptionRule model)
-        {
-            if (ModelState.IsValid)
-            {
-                _journalVoucherReportUseCase.AddMonthlyImportFundExceptionRuleReport(model);
-
-                Success($"<strong>{model.OriginalFundId} - {model.NewFundId}</strong> was successfully saved.");
-                return RedirectToAction("JournalVoucherReport");
-            }
-            return View(model);
-        }
-
-        [HttpGet]
-        [Route("journal-voucher-createJournalVoucherRule")]
-        public ActionResult CreateJournalVoucherRule()
-        {
-            var model = new MonthlyReportRule();
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("journal-voucher-createJournalVoucherRule")]
-        public ActionResult CreateJournalVoucherRule(MonthlyReportRule model)
-        {
-            if (ModelState.IsValid)
-            {
-                _journalVoucherReportUseCase.AddJournalVoucherRule(model);
-                Success($"<strong>{model.Description}</strong> for <strong>{model.FundIds}</strong> was successfully saved.");
-                return RedirectToAction("JournalVoucherReport");
-            }
-            return View(model);
-        }
-
-        [HttpGet]
-        [Route("journal-voucher-edit")]
-        public ActionResult EditRule(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if (ModelState.IsValid)
-            {
-                return View(_journalVoucherReportUseCase.GetMonthlyReport(int.Parse(id)));
-            }
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        }
-
-        [HttpPost]
-        [Route("journal-voucher-edit")]
-        [ValidateAntiForgeryToken]
-        public ActionResult EditRule(MonthlyReportRule model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = _journalVoucherReportUseCase.GetMonthlyReport(model.Id);
-                if (result == null)
-                {
-                    return HttpNotFound();
-                }
-                result.CreditAccount = model.CreditAccount;
-                result.DebitAccount = model.DebitAccount;
-                result.CreditExceptionNegative = string.IsNullOrWhiteSpace(model.CreditExceptionNegative) ? null : model.CreditExceptionNegative;
-                result.DebitExceptionNegative = string.IsNullOrWhiteSpace(model.DebitExceptionNegative) ? null : model.DebitExceptionNegative;
-                result.FundIds = model.FundIds;
-                result = _journalVoucherReportUseCase.UpdateMonthlyReport(result);
-                if (result == null)
-                {
-                    return HttpNotFound();
-                }
-                return RedirectToAction("JournalVoucherReport");
-            }
-            ModelState.AddModelError("", "An error occurred.");
-            return View();
         }
 
         [HttpPost]
@@ -255,28 +166,131 @@ namespace AnnualReports.Web.Controllers
         }
 
         [HttpGet]
-        [Route("ExportAnnualReportToExcel/{year:int}/{fundId:int?}")]
-        public ActionResult ExportAnnualReportToExcel(int year, int? fundId)
+        [Route("journal-voucher/rule/add")]
+        public ActionResult AddJournalVoucherRule()
         {
-            MemoryStream stream = _exportingService.GetAnnualReportExcel(year, fundId);
+            var model = new MonthlyReportRule();
+            return View(model);
+        }
 
-            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.AnnualReportExcelFileName, year));
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("journal-voucher/rule/add")]
+        public ActionResult AddJournalVoucherRule(MonthlyReportRule model)
+        {
+            if (ModelState.IsValid)
+            {
+                _journalVoucherReportUseCase.AddJournalVoucherRule(model);
+                Success($"<strong>{model.Description}</strong> for <strong>{model.FundIds}</strong> was successfully saved.");
+                return RedirectToAction("JournalVoucherReport");
+            }
+            return View(model);
         }
 
         [HttpGet]
-        [Route("ExportDistExceptionReportToExcel/{year:int}")]
-        public ActionResult ExportDistExceptionReportToExcel(int year)
+        [Route("journal-voucher/rule/edit")]
+        public ActionResult EditJournalVoucherRule(string id)
         {
-            MemoryStream stream = _exportingService.GetDistExceptionReportExcel(year);
-            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.DistExceptionReportExcelFileName, year));
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (ModelState.IsValid)
+            {
+                return View(_journalVoucherReportUseCase.GetMonthlyReport(int.Parse(id)));
+            }
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        }
+
+        [HttpPost]
+        [Route("journal-voucher/rule/edit")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditJournalVoucherRule(MonthlyReportRule model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _journalVoucherReportUseCase.GetMonthlyReport(model.Id);
+                if (result == null)
+                {
+                    return HttpNotFound();
+                }
+                result.CreditAccount = model.CreditAccount;
+                result.DebitAccount = model.DebitAccount;
+                result.CreditExceptionNegative = string.IsNullOrWhiteSpace(model.CreditExceptionNegative) ? null : model.CreditExceptionNegative;
+                result.DebitExceptionNegative = string.IsNullOrWhiteSpace(model.DebitExceptionNegative) ? null : model.DebitExceptionNegative;
+                result.FundIds = model.FundIds;
+                result = _journalVoucherReportUseCase.UpdateMonthlyReport(result);
+                if (result == null)
+                {
+                    return HttpNotFound();
+                }
+                return RedirectToAction("JournalVoucherReport");
+            }
+            ModelState.AddModelError("", "An error occurred.");
+            return View();
         }
 
         [HttpGet]
-        [Route("ExportGcExceptionReportToExcel/{year:int}")]
-        public ActionResult ExportGcExceptionReportToExcel(int year)
+        [Route("monthly-import-exception-rule/edit")]
+        public ActionResult EditMonthlyImportExceptionRule(string id)
         {
-            MemoryStream stream = _exportingService.GetGcExceptionReportExcel(year);
-            return File(stream, Constants.ExcelFilesMimeType, string.Format(Constants.GcExceptionReportExcelFileName, year));
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (ModelState.IsValid)
+            {
+                return View(_journalVoucherReportUseCase.GetMonthlyImportExceptionRuleReport(int.Parse(id)));
+            }
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        }
+
+        [HttpPost]
+        [Route("monthly-import-exception-rule/edit")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditMonthlyImportExceptionRule(MonthlyImportFundExceptionRule model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _journalVoucherReportUseCase.GetMonthlyImportExceptionRuleReport(model.Id);
+                if (result == null)
+                {
+                    return HttpNotFound();
+                }
+                result.NewFundId = model.NewFundId;
+                result.OriginalFundId = model.OriginalFundId;
+                result = _journalVoucherReportUseCase.UpdateMonthlyImportExceptionRuleReport(result);
+                if (result == null)
+                {
+                    return HttpNotFound();
+                }
+                return RedirectToAction("JournalVoucherReport");
+            }
+            ModelState.AddModelError("", "An error occurred.");
+            return View();
+        }
+
+        [HttpGet]
+        [Route("monthly-import-exception-rule/add")]
+        public ActionResult AddMonthlyImportExceptionRule()
+        {
+            var model = new MonthlyImportFundExceptionRule();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("monthly-import-exception-rule/add")]
+        public ActionResult AddMonthlyImportExceptionRule(MonthlyImportFundExceptionRule model)
+        {
+            if (ModelState.IsValid)
+            {
+                _journalVoucherReportUseCase.AddMonthlyImportFundExceptionRuleReport(model);
+
+                Success($"<strong>{model.OriginalFundId} - {model.NewFundId}</strong> was successfully saved.");
+                return RedirectToAction("JournalVoucherReport");
+            }
+            return View(model);
         }
 
         private void SaveUploadedFile(HttpPostedFileBase file, string folderPath)

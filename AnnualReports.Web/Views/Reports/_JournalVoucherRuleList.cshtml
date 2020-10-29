@@ -5,7 +5,7 @@
         <div class="panel-heading bold">Journal Voucher Rules:</div>
         <div class="panel-body">
             <p>
-                @Html.ActionLink("Create new Journal Voucher rule", "CreateJournalVoucherRule", null, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Create new Journal Voucher rule", "AddJournalVoucherRule", null, new { @class = "btn btn-primary" })
             </p>
             <table class="table">
                 <thead>
@@ -58,7 +58,7 @@
                             </td>
 
                             <td>
-                                <a href="@Url.Action("EditRule", "Reports", new { item.Id })" class="btn btn-primary"> <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit </span></a>
+                                <a href="@Url.Action("EditJournalVoucherRule", "Reports", new { item.Id })" class="btn btn-primary"> <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit </span></a>
                             </td>
                         </tr>
                     }

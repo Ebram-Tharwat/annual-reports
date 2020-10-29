@@ -468,11 +468,11 @@
     <Content Include="Views\MappingRules\Delete.cshtml" />
     <Content Include="Views\Bars\Delete.cshtml" />
     <Content Include="Views\Reports\JournalVoucherReport.cshtml" />
-    <Content Include="Views\Reports\EditRule.cshtml" />
+    <Content Include="Views\Reports\EditJournalVoucherRule.cshtml" />
     <Content Include="Views\Reports\_MonthlyImportExceptionRuleList.cshtml" />
-    <Content Include="Views\Reports\EditImportRule.cshtml" />
-    <Content Include="Views\Reports\CreateImportRule.cshtml" />
-    <Content Include="Views\Reports\CreateMonthlyReportRule.cshtml" />
+    <Content Include="Views\Reports\EditMonthlyImportExceptionRule.cshtml" />
+    <Content Include="Views\Reports\AddMonthlyImportExceptionRule.cshtml" />
+    <Content Include="Views\Reports\AddJournalVoucherRule.cshtml" />
     <Content Include="Views\Reports\_JournalVoucherRuleList.cshtml" />
   </ItemGroup>
   <ItemGroup>

@@ -187,7 +187,7 @@
                         angular.forEach(result.data, function (item) {
                             item.subGridOptions = {
                                 columnDefs: [{ displayName: "Debit", field: "debit", cellFilter: 'currency' }, { displayName: "Credit", field: "credit", cellFilter: 'currency' }
-                                /*, { displayName: "Period", field: "view_Period" }*/, { displayName: "Act Desc", field: "accountDescription", width: '*', cellTooltip: true }
+                                    , { displayName: "Act Desc", field: "accountDescription", width: '*', cellTooltip: true }
                                     , { displayName: "Act #1", field: "actnumbR_1" }, { displayName: "Act #2", field: "actnumbR_2" }
                                     , { displayName: "Act #3", field: "actnumbR_3" }, { displayName: "Act #4", field: "actnumbR_4" }
                                     , { displayName: "Act #5", field: "actnumbR_5" }],
@@ -200,12 +200,12 @@
 
                 function downloadAnnualReportData() {
                     var selectedYear = new Date(vm.exportModel.year).getFullYear();
-                    window.open('/reports/ExportAnnualReportToExcel/' + selectedYear, '_blank', '');
+                    window.open(`/reports/annual-report/year/${selectedYear}/export/excel`, '_blank', '');
                 }
 
                 function downloadAnnualReportDataByFund() {
                     var selectedYear = new Date(vm.year).getFullYear();
-                    window.open('/reports/ExportAnnualReportToExcel/' + selectedYear + '/' + vm.selectedFund.id, '_blank', '');
+                    window.open(`annual-report/year/${selectedYear}/fundId/${vm.selectedFund.id}/export/excel`, '_blank', '');
                 }
             }
         })();
