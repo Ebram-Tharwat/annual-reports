@@ -14,5 +14,7 @@ namespace AnnualReports.Application.Core.Interfaces
         MonthlyReportRule Update(MonthlyReportRule monthlyReportRule);
 
         void Add(MonthlyReportRule entity);
+
+        void Delete(int id);
     }
 }

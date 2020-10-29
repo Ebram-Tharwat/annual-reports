@@ -474,6 +474,7 @@
     <Content Include="Views\Reports\AddMonthlyImportExceptionRule.cshtml" />
     <Content Include="Views\Reports\AddJournalVoucherRule.cshtml" />
     <Content Include="Views\Reports\_JournalVoucherRuleList.cshtml" />
+    <Content Include="Views\Reports\DeleteJournalVoucherRule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

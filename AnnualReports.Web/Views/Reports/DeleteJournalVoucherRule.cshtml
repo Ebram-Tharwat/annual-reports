@@ -1,0 +1,65 @@
+﻿@model AnnualReports.Domain.Core.AnnualReportsDbModels.MonthlyReportRule
+
+@{
+    ViewBag.Title = "Delete Rule";
+}
+
+<h3>Are you sure you want to delete this rule?</h3>
+<div>
+    <h4>@Model.Description</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Fund Ids:
+        </dt>
+
+        <dd>
+            @foreach (var fundId in (Model.FundIds ?? "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                @fundId.Trim()<br />
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreditAccount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreditAccount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DebitAccount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DebitAccount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreditExceptionNegative)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreditExceptionNegative)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DebitExceptionNegative)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DebitExceptionNegative)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            @Html.ActionLink("Back to index", "journal-voucher", "reports")
+        </div>
+    }
+</div>

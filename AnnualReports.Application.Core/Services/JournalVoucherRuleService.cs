@@ -62,5 +62,11 @@ namespace AnnualReports.Application.Core.Services
             _uow.Commit();
             return monthlyReportRule;
         }
+
+        public void Delete(int id)
+        {
+            _monthlyReportRepository.Delete(id);
+            _uow.Commit();
+        }
     }
 }

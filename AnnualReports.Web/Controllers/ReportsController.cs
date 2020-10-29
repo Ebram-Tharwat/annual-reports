@@ -236,6 +236,29 @@ namespace AnnualReports.Web.Controllers
             return View();
         }
 
+        [Route("journal-voucher/rule/delete/{id}")]
+        public ActionResult DeleteJournalVoucherRule(int id)
+        {
+            var viewmodel = _journalVoucherRuleService.Get(id);
+            if (viewmodel == null)
+            {
+                return HttpNotFound();
+            }
+            return View(viewmodel);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Route("journal-voucher/rule/delete/{id}")]
+        public ActionResult DeleteJournalVoucherRuleConfirmed(int id)
+        {
+            var model = _journalVoucherRuleService.Get(id);
+            if (model != null) _journalVoucherRuleService.Delete(id);
+
+            Success($"<strong>{model.Description}</strong> was successfully deleted.");
+            return RedirectToAction("JournalVoucherReport");
+        }
+
         [HttpGet]
         [Route("monthly-import-exception-rule/add")]
         public ActionResult AddMonthlyImportExceptionRule()
