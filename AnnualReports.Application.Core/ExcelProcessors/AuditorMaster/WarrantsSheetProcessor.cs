@@ -17,19 +17,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IGcDbFundRepository _gcDbFundRepo;
         private readonly IDistDbFundRepository _distDbFundRepo;
-        private readonly IReportService _reportService;
+        private readonly IJournalVoucherRuleService _journalVoucherRuleService;
         private const string _sheetName = "Warrants";
 
         public WarrantsSheetProcessor(
             IAnnualReportsDbFundRepository fundsRepository,
             IGcDbFundRepository gcDbFundRepo,
             IDistDbFundRepository distDbFundRepo,
-            IReportService reportService)
+            IJournalVoucherRuleService journalVoucherRuleService)
         {
             _fundsRepository = fundsRepository;
             _gcDbFundRepo = gcDbFundRepo;
             _distDbFundRepo = distDbFundRepo;
-            _reportService = reportService;
+            _journalVoucherRuleService = journalVoucherRuleService;
         }
 
         public override IEnumerable<JournalVoucherReportOutputItem> Process(
@@ -268,19 +268,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantIssues(string primaryFundId, decimal entryValue)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantIssues, primaryFundId);
+            var result = _journalVoucherRuleService.GetMonthlyReportRule(JournalVoucherType.WarrantIssues, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantPresented(string primaryFundId, decimal entryValue)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantPresented, primaryFundId);
+            var result = _journalVoucherRuleService.GetMonthlyReportRule(JournalVoucherType.WarrantPresented, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForWarrantCancels(string primaryFundId, decimal cancelsValue)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.WarrantCancels, primaryFundId);
+            var result = _journalVoucherRuleService.GetMonthlyReportRule(JournalVoucherType.WarrantCancels, primaryFundId);
             return (cancelsValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
     }

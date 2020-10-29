@@ -22,12 +22,21 @@ namespace AnnualReports.Web.Controllers
         private readonly IFundService _fundService;
         private readonly IExportingService _exportingService;
         private readonly IGenerateJournalVoucherReportUseCase _journalVoucherReportUseCase;
+        private readonly IJournalVoucherRuleService _journalVoucherRuleService;
+        private readonly IMonthlyImportExceptionRuleService _monthlyImportExceptionRuleService;
 
-        public ReportsController(IFundService fundService, IExportingService exportingService, IGenerateJournalVoucherReportUseCase journalVoucherReportUseCase)
+        public ReportsController(
+            IFundService fundService,
+            IExportingService exportingService,
+            IGenerateJournalVoucherReportUseCase journalVoucherReportUseCase,
+            IJournalVoucherRuleService journalVoucherRuleService,
+            IMonthlyImportExceptionRuleService monthlyImportExceptionRuleService)
         {
             _fundService = fundService;
             _exportingService = exportingService;
             _journalVoucherReportUseCase = journalVoucherReportUseCase;
+            _journalVoucherRuleService = journalVoucherRuleService;
+            _monthlyImportExceptionRuleService = monthlyImportExceptionRuleService;
         }
 
         [HttpGet]
@@ -139,8 +148,8 @@ namespace AnnualReports.Web.Controllers
         public ActionResult JournalVoucherReport()
         {
             var viewmodel = new ReportFiltersViewModel();
-            viewmodel.MonthlyReportRules = _journalVoucherReportUseCase.GetMonthlyReportRules();
-            viewmodel.MonthlyImportExceptionRule = _journalVoucherReportUseCase.GetMonthlyImportExceptionRules();
+            viewmodel.MonthlyReportRules = _journalVoucherRuleService.GetAll();
+            viewmodel.MonthlyImportExceptionRule = _monthlyImportExceptionRuleService.GetAll();
             return View(viewmodel);
         }
 
@@ -154,7 +163,7 @@ namespace AnnualReports.Web.Controllers
                 if (viewmodel.ExcelFile != null && viewmodel.ExcelFile.ContentLength > 0)
                 {
                     SaveUploadedFile(viewmodel.ExcelFile, Server.MapPath("~/Uploads/WarrantReport/"));
-                    viewmodel.MonthlyImportExceptionRule = _journalVoucherReportUseCase.GetMonthlyImportExceptionRules();
+                    viewmodel.MonthlyImportExceptionRule = _monthlyImportExceptionRuleService.GetAll();
                     MemoryStream stream = _journalVoucherReportUseCase.Execute(viewmodel.ExcelFile.InputStream,
                                                                                viewmodel.Date.Value.Year,
                                                                                viewmodel.MonthlyImportExceptionRule);
@@ -180,7 +189,7 @@ namespace AnnualReports.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _journalVoucherReportUseCase.AddJournalVoucherRule(model);
+                _journalVoucherRuleService.Add(model);
                 Success($"<strong>{model.Description}</strong> for <strong>{model.FundIds}</strong> was successfully saved.");
                 return RedirectToAction("JournalVoucherReport");
             }
@@ -189,17 +198,14 @@ namespace AnnualReports.Web.Controllers
 
         [HttpGet]
         [Route("journal-voucher/rule/edit")]
-        public ActionResult EditJournalVoucherRule(string id)
+        public ActionResult EditJournalVoucherRule(int id)
         {
-            if (id == null)
+            var viewmodel = _journalVoucherRuleService.Get(id);
+            if (viewmodel == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return HttpNotFound();
             }
-            if (ModelState.IsValid)
-            {
-                return View(_journalVoucherReportUseCase.GetMonthlyReport(int.Parse(id)));
-            }
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            return View(viewmodel);
         }
 
         [HttpPost]
@@ -209,7 +215,7 @@ namespace AnnualReports.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = _journalVoucherReportUseCase.GetMonthlyReport(model.Id);
+                var result = _journalVoucherRuleService.Get(model.Id);
                 if (result == null)
                 {
                     return HttpNotFound();
@@ -219,47 +225,7 @@ namespace AnnualReports.Web.Controllers
                 result.CreditExceptionNegative = string.IsNullOrWhiteSpace(model.CreditExceptionNegative) ? null : model.CreditExceptionNegative;
                 result.DebitExceptionNegative = string.IsNullOrWhiteSpace(model.DebitExceptionNegative) ? null : model.DebitExceptionNegative;
                 result.FundIds = model.FundIds;
-                result = _journalVoucherReportUseCase.UpdateMonthlyReport(result);
-                if (result == null)
-                {
-                    return HttpNotFound();
-                }
-                return RedirectToAction("JournalVoucherReport");
-            }
-            ModelState.AddModelError("", "An error occurred.");
-            return View();
-        }
-
-        [HttpGet]
-        [Route("monthly-import-exception-rule/edit")]
-        public ActionResult EditMonthlyImportExceptionRule(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if (ModelState.IsValid)
-            {
-                return View(_journalVoucherReportUseCase.GetMonthlyImportExceptionRuleReport(int.Parse(id)));
-            }
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        }
-
-        [HttpPost]
-        [Route("monthly-import-exception-rule/edit")]
-        [ValidateAntiForgeryToken]
-        public ActionResult EditMonthlyImportExceptionRule(MonthlyImportFundExceptionRule model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = _journalVoucherReportUseCase.GetMonthlyImportExceptionRuleReport(model.Id);
-                if (result == null)
-                {
-                    return HttpNotFound();
-                }
-                result.NewFundId = model.NewFundId;
-                result.OriginalFundId = model.OriginalFundId;
-                result = _journalVoucherReportUseCase.UpdateMonthlyImportExceptionRuleReport(result);
+                result = _journalVoucherRuleService.Update(result);
                 if (result == null)
                 {
                     return HttpNotFound();
@@ -285,12 +251,52 @@ namespace AnnualReports.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _journalVoucherReportUseCase.AddMonthlyImportFundExceptionRuleReport(model);
+                _monthlyImportExceptionRuleService.Add(model);
 
                 Success($"<strong>{model.OriginalFundId} - {model.NewFundId}</strong> was successfully saved.");
                 return RedirectToAction("JournalVoucherReport");
             }
             return View(model);
+        }
+
+        [HttpGet]
+        [Route("monthly-import-exception-rule/edit")]
+        public ActionResult EditMonthlyImportExceptionRule(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (ModelState.IsValid)
+            {
+                return View(_monthlyImportExceptionRuleService.Get(int.Parse(id)));
+            }
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        }
+
+        [HttpPost]
+        [Route("monthly-import-exception-rule/edit")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditMonthlyImportExceptionRule(MonthlyImportFundExceptionRule model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _monthlyImportExceptionRuleService.Get(model.Id);
+                if (result == null)
+                {
+                    return HttpNotFound();
+                }
+                result.NewFundId = model.NewFundId;
+                result.OriginalFundId = model.OriginalFundId;
+                result = _monthlyImportExceptionRuleService.Update(result);
+                if (result == null)
+                {
+                    return HttpNotFound();
+                }
+                return RedirectToAction("JournalVoucherReport");
+            }
+            ModelState.AddModelError("", "An error occurred.");
+            return View();
         }
 
         private void SaveUploadedFile(HttpPostedFileBase file, string folderPath)

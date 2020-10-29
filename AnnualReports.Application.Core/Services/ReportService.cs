@@ -3,7 +3,6 @@ using AnnualReports.Application.Core.Contracts.Reports;
 using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Domain.Core.Contracts;
-using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,10 +13,7 @@ namespace AnnualReports.Application.Core.Services
     public class ReportService : IReportService
     {
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
-        private readonly IMonthlyReportRepository _monthlyReportRepository;
-        private readonly IMonthlyImportExceptionRuleRepository _monthlyImportExceptionRuleRepository;
         private readonly IBarService _barService;
-        private readonly IUnitOfWork<AnnualReportsDbContext> _uow;
         private const int _allPeriodsValue = 13;
         private const int _yearToExclude = 2020;
         private const string _barAccountToExclude = "211";
@@ -25,16 +21,12 @@ namespace AnnualReports.Application.Core.Services
         private Lazy<List<string>> _periodZeroAllowedBars = new Lazy<List<string>>(
             () => Enumerable.Range(100, 100).Select(t => t.ToString()).ToList());
 
-        public ReportService(IAnnualReportsDbFundRepository fundsRepository, IBarService barService,
-                             IMappingRuleRepository mappingRuleRepository, IMonthlyReportRepository monthlyReportRepository,
-                             IMonthlyImportExceptionRuleRepository monthlyImportExceptionRuleRepository,
-                             IUnitOfWork<AnnualReportsDbContext> uow)
+        public ReportService(
+            IAnnualReportsDbFundRepository fundsRepository,
+            IBarService barService)
         {
             this._fundsRepository = fundsRepository;
             this._barService = barService;
-            this._monthlyReportRepository = monthlyReportRepository;
-            this._monthlyImportExceptionRuleRepository = monthlyImportExceptionRuleRepository;
-            this._uow = uow;
         }
 
         public List<AnnualReportDataItemDetails> GetAnnualReportData(int year, int? fundId = null, string barNumber = null)
@@ -78,70 +70,6 @@ namespace AnnualReports.Application.Core.Services
         {
             var distExceptionBarByYear = _barService.GetGcExceptionByYear(year);
             return distExceptionBarByYear;
-        }
-
-        public List<MonthlyReportRule> GetMonthlyReportRules()
-        {
-            return _monthlyReportRepository.GetAll().ToList();
-        }
-
-        public List<MonthlyImportFundExceptionRule> GetMonthlyImportExceptionRules()
-        {
-            return _monthlyImportExceptionRuleRepository.GetAll().ToList();
-        }
-
-        public MonthlyReportRule GetMonthlyReportRule(int id)
-        {
-            return _monthlyReportRepository.GetById(id);
-        }
-
-        public MonthlyImportFundExceptionRule GetMonthlyImportExceptionRuleReport(int id)
-        {
-            return _monthlyImportExceptionRuleRepository.GetById(id);
-        }
-
-        public MonthlyReportRule GetMonthlyReportRule(JournalVoucherType jvType, string fundId)
-        {
-            var rules = _monthlyReportRepository.Get(t => t.JournalVoucherType == jvType).ToList();
-            var specificityRules = rules.Where(t => !string.IsNullOrWhiteSpace(t.FundIds));
-            var defaultRule = rules.FirstOrDefault(t => string.IsNullOrWhiteSpace(t.FundIds));
-
-            foreach (var rule in specificityRules)
-            {
-                var isRuleHasMatchedFundId =
-                    rule.FundIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Any(fund => fund.Trim() == fundId.Trim());
-
-                if (isRuleHasMatchedFundId)
-                    return rule;
-            }
-            return defaultRule;
-        }
-
-        public MonthlyReportRule UpdateMonthlyReportRule(MonthlyReportRule monthlyReportRule)
-        {
-            _monthlyReportRepository.Update(monthlyReportRule);
-            _uow.Commit();
-            return monthlyReportRule;
-        }
-
-        public MonthlyImportFundExceptionRule UpdateMonthlyImportExceptionRuleReport(MonthlyImportFundExceptionRule monthlyImportFundExceptionRule)
-        {
-            _monthlyImportExceptionRuleRepository.Update(monthlyImportFundExceptionRule);
-            _uow.Commit();
-            return monthlyImportFundExceptionRule;
-        }
-
-        public void AddMonthlyImportFundExceptionRuleReport(MonthlyImportFundExceptionRule entity)
-        {
-            _monthlyImportExceptionRuleRepository.Add(entity);
-            _uow.Commit();
-        }
-
-        public void AddJournalVoucherRule(MonthlyReportRule entity)
-        {
-            _monthlyReportRepository.Add(entity);
-            _uow.Commit();
         }
 
         #region Helpers

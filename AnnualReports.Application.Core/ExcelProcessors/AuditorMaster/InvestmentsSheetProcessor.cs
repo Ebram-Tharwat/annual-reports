@@ -17,19 +17,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
         private readonly IAnnualReportsDbFundRepository _fundsRepository;
         private readonly IGcDbFundRepository _gcDbFundRepo;
         private readonly IDistDbFundRepository _distDbFundRepo;
-        private readonly IReportService _reportService;
+        private readonly IJournalVoucherRuleService _journalVoucherRuleService;
         private const string _sheetName = "Investments";
 
         public InvestmentsSheetProcessor(
             IAnnualReportsDbFundRepository fundsRepository,
             IGcDbFundRepository gcDbFundRepo,
             IDistDbFundRepository distDbFundRepo,
-            IReportService reportService)
+            IJournalVoucherRuleService journalVoucherRuleService)
         {
             _fundsRepository = fundsRepository;
             _gcDbFundRepo = gcDbFundRepo;
             _distDbFundRepo = distDbFundRepo;
-            _reportService = reportService;
+            _journalVoucherRuleService = journalVoucherRuleService;
         }
 
         public override IEnumerable<JournalVoucherReportOutputItem> Process(
@@ -272,19 +272,19 @@ namespace AnnualReports.Application.Core.ExcelProcessors.AuditorMaster
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentPurchases(string primaryFundId, decimal entryValue)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentPurchases, primaryFundId);
+            var result = _journalVoucherRuleService.GetMonthlyReportRule(JournalVoucherType.InvestmentPurchases, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentSales(string primaryFundId, decimal entryValue)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentSales, primaryFundId);
+            var result = _journalVoucherRuleService.GetMonthlyReportRule(JournalVoucherType.InvestmentSales, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
 
         private (string debitFundId, string creditFundId) GetDebitAndCreditFundIdsForInvestmentInterest(string primaryFundId, decimal entryValue)
         {
-            var result = _reportService.GetMonthlyReportRule(JournalVoucherType.InvestmentInterest, primaryFundId);
+            var result = _journalVoucherRuleService.GetMonthlyReportRule(JournalVoucherType.InvestmentInterest, primaryFundId);
             return (entryValue > 0) ? (result.DebitAccount, result.CreditAccount) : (result.DebitExceptionNegative, result.CreditExceptionNegative);
         }
     }

@@ -125,6 +125,8 @@ namespace AnnualReports.Utilities.App_Start
             kernel.Bind<IExportingService>().To<ExcelExportingService>();
             kernel.Bind<IBarService>().To<BarService>();
             kernel.Bind<IReportService>().To<ReportService>();
+            kernel.Bind<IJournalVoucherRuleService>().To<JournalVoucherRuleService>();
+            kernel.Bind<IMonthlyImportExceptionRuleService>().To<MonthlyImportExceptionRuleService>();
             kernel.Bind<IMonthlyReportRepository>().To<MonthlyReportRepository>();
             kernel.Bind<IMonthlyImportExceptionRuleRepository>().To<MonthlyImportExceptionRuleRepository>();
             kernel.Bind<IGenerateJournalVoucherReportUseCase>().To<GenerateJournalVoucherReportUseCase>();
