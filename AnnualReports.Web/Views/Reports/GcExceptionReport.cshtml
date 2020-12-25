@@ -82,7 +82,7 @@
 
                 function downloadGcExceptionReportData() {
                     var selectedYear = new Date(vm.exportModel.year).getFullYear();
-                    window.open(`/reports/gc-exception-report/${selectedYear}/export/excel/`, '_blank', '');
+                    window.open(`/reports/gc-exception-report/year/${selectedYear}/export/excel/`, '_blank', '');
                 }
             }
         })();

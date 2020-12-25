@@ -82,7 +82,7 @@
 
                 function downloadDistExceptionReportData() {
                     var selectedYear = new Date(vm.exportModel.year).getFullYear();
-                    window.open(`/reports/dist-exception-report/${selectedYear}/export/excel/`, '_blank', '');
+                    window.open(`/reports/dist-exception-report/year/${selectedYear}/export/excel/`, '_blank', '');
                 }
             }
         })();
