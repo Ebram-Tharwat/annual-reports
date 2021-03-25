@@ -79,39 +79,42 @@ namespace AnnualReports.Application.Core.Services
             var barReportItems = new List<BarAnnualReportItem>();
             foreach (var targetViewBar in viewBars)
             {
-                var targetBar = GetGcTargetBarMappings(dbBars, targetViewBar);
-                if (targetBar == null)
+                var targetBarMappings = GetGcTargetBarMappings(dbBars, targetViewBar);
+                if (targetBarMappings.Count == 0)
                     continue;
 
-                var fundRows = fundGroup.GroupData;
-                if (targetBar.Period.HasValue)
+                foreach (var targetBarMapping in targetBarMappings)
                 {
-                    if (Enumerable.Range(0, 13).Contains(targetBar.Period.Value)) // 0, 13 == 0..12
-                        fundRows = fundRows.Where(t => t.View_Period == targetBar.Period.Value).ToList();
-                    else if (targetBar.Period.Value == _allPeriodsValue)
-                        fundRows = fundRows.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
-                }
-                else
-                {
-                    // If it is period 0, then include accounts that start with 100-199. Else, include everything.
-                    fundRows = fundRows
-                               .Where(t => (t.View_Period == 0 &&
-                                            _periodZeroAllowedBars.Value.Any(allowedBar => t.View_BarNumber.StartsWith(allowedBar)))
-                                            || Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
-                }
-
-                fundRows = fundRows.Where(t => t.View_BarNumber == targetViewBar).ToList();
-
-                if (fundRows.Any())
-                {
-                    barReportItems.Add(new BarAnnualReportItem
+                    var fundRows = fundGroup.GroupData;
+                    if (targetBarMapping.Period.HasValue)
                     {
-                        BarNumber = targetBar.BarNumber,
-                        BarDisplayName = targetBar.DisplayName,
-                        BarDbSource = targetBar.DbSource,
-                        Amount = GetGcBarTotalAmount(fundRows, targetBar.BarNumber),
-                        Rows = fundRows
-                    });
+                        if (Enumerable.Range(0, 13).Contains(targetBarMapping.Period.Value)) // 0, 13 == 0..12
+                            fundRows = fundRows.Where(t => t.View_Period == targetBarMapping.Period.Value).ToList();
+                        else if (targetBarMapping.Period.Value == _allPeriodsValue)
+                            fundRows = fundRows.Where(t => Enumerable.Range(0, 13).Contains(t.View_Period)).ToList();
+                    }
+                    else
+                    {
+                        // If it is period 0, then include accounts that start with 100-199. Else, include everything.
+                        fundRows = fundRows
+                                   .Where(t => (t.View_Period == 0 &&
+                                                _periodZeroAllowedBars.Value.Any(allowedBar => t.View_BarNumber.StartsWith(allowedBar)))
+                                                || Enumerable.Range(1, 12).Contains(t.View_Period)).ToList();
+                    }
+
+                    fundRows = fundRows.Where(t => t.View_BarNumber == targetViewBar).ToList();
+
+                    if (fundRows.Any())
+                    {
+                        barReportItems.Add(new BarAnnualReportItem
+                        {
+                            BarNumber = targetBarMapping.BarNumber,
+                            BarDisplayName = targetBarMapping.DisplayName,
+                            BarDbSource = targetBarMapping.DbSource,
+                            Amount = GetGcBarTotalAmount(fundRows, targetBarMapping.BarNumber),
+                            Rows = fundRows
+                        });
+                    }
                 }
             }
 
@@ -213,12 +216,13 @@ namespace AnnualReports.Application.Core.Services
             return mapToBarList;
         }
 
-        private Bar GetGcTargetBarMappings(List<Bar> dbBars, string bar)
+        private List<Bar> GetGcTargetBarMappings(List<Bar> dbBars, string bar)
         {
-            return dbBars.FirstOrDefault(t => (t.DbSource.HasValue && t.DbSource.Value == DbSource.GC)
+            return dbBars.Where(t => (t.DbSource.HasValue && t.DbSource.Value == DbSource.GC)
                     && t.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(item => item.Trim())
-                    .Any(item => bar.StartsWith(item)));
+                    .Any(item => bar.StartsWith(item)))
+                .ToList();
         }
 
         public List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar)
@@ -226,7 +230,8 @@ namespace AnnualReports.Application.Core.Services
             return dbBars.Where(t => (t.DbSource.HasValue && t.DbSource.Value == DbSource.DIST)
                     && t.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(item => item.Trim())
-                    .Any(item => bar.StartsWith(item))).ToList();
+                    .Any(item => bar.StartsWith(item)))
+                .ToList();
         }
 
         private decimal GetGcBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, string targetBarNumber)
