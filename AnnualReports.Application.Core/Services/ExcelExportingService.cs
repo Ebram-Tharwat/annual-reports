@@ -253,7 +253,7 @@ namespace AnnualReports.Application.Core.Services
                     // ToDo: move the following logic to centralized service.
                     if (summeryItem.FundDbSource == DbSource.GC)
                     {
-                        if (summeryItem.BarNumber.StartsWith("5") || summeryItem.BarNumber.StartsWith("1"))
+                        if (summeryItem.BarNumber == "3081000" || summeryItem.BarNumber.StartsWith("5") || summeryItem.BarNumber.StartsWith("1"))
                             detailsSheet.Cells["K" + detailsIndex].Formula = $"=I{detailsIndex}-J{detailsIndex}";
                         else
                             detailsSheet.Cells["K" + detailsIndex].Formula = $"=J{detailsIndex}-I{detailsIndex}";

@@ -236,7 +236,7 @@ namespace AnnualReports.Application.Core.Services
 
         private decimal GetGcBarTotalAmount(IEnumerable<AnnualReportDataRow> fundRows, string targetBarNumber)
         {
-            if (targetBarNumber.StartsWith("5") || targetBarNumber.StartsWith("1"))
+            if (targetBarNumber == "3081000" || targetBarNumber.StartsWith("5") || targetBarNumber.StartsWith("1"))
                 return fundRows.Sum(t => t.Debit - t.Credit);
             else
                 return fundRows.Sum(t => t.Credit - t.Debit);
