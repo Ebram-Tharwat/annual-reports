@@ -227,10 +227,12 @@ namespace AnnualReports.Application.Core.Services
 
         public List<Bar> GetDistTargetBarMappings(List<Bar> dbBars, string bar)
         {
-            return dbBars.Where(t => (t.DbSource.HasValue && t.DbSource.Value == DbSource.DIST)
-                    && t.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(item => item.Trim())
-                    .Any(item => bar.StartsWith(item)))
+            return dbBars == null || !dbBars.Any() || bar == null ? new List<Bar>()
+                                  : dbBars.Where(t => t.DbSource.HasValue && t.DbSource.Value == DbSource.DIST
+                                  && !string.IsNullOrWhiteSpace(t.MapToBarNumber)
+                                  && t.MapToBarNumber.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                  .Select(item => item.Trim())
+                                  .Any(item => bar.StartsWith(item)))
                 .ToList();
         }
 
