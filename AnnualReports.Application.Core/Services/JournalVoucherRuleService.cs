@@ -1,10 +1,11 @@
-﻿using AnnualReports.Application.Core.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using AnnualReports.Application.Core.Interfaces;
 using AnnualReports.Domain.Core.AnnualReportsDbModels;
 using AnnualReports.Infrastructure.Core.DbContexts.AnnualReportsDb;
 using AnnualReports.Infrastructure.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AnnualReports.Application.Core.Services
 {
@@ -40,9 +41,21 @@ namespace AnnualReports.Application.Core.Services
 
             foreach (var rule in specificityRules)
             {
-                var isRuleHasMatchedFundId =
-                    rule.FundIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                bool isRuleHasMatchedFundId = false;
+                if (jvType == JournalVoucherType.Remits)
+                {
+                    isRuleHasMatchedFundId =
+                        rule.FundIds
+                        .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Any(fund => fundId.Trim().StartsWith(fund.Trim()));
+                }
+                else
+                {
+                    isRuleHasMatchedFundId =
+                        rule.FundIds
+                        .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                         .Any(fund => fund.Trim() == fundId.Trim());
+                }
 
                 if (isRuleHasMatchedFundId)
                     return rule;
